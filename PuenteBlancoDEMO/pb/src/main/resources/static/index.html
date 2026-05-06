@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLIFARVET Puente Blanco</title>
+  <!-- FontAwesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Icono de la pagina -->
+  <link rel="icon"
+    href="https://scontent.flim2-1.fna.fbcdn.net/v/t39.30808-6/472784097_1034431978701507_3701480566925006923_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=UyNR2TB0rbIQ7kNvwFl-qAC&_nc_oc=AdmrkWr4yrO5zpC7kixImfSABg9Vze7WwI7YvVpLWpRi7Xg1aZEOhMp1KpvriDPge0A&_nc_zt=23&_nc_ht=scontent.flim2-1.fna&_nc_gid=2i9FZaeSqjDNmmofhAXH8A&oh=00_AfMvdDtdWkGwuCf76a0DROCETTrt2k3l_jhGeMxuZJlqmw&oe=6856780B"
+    type="image/jpg" /> <!-- URL de la imagen -->
+
+  <!-- AOS Animate on Scroll CSS -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+
+</head>
+
+<body class="bg-gray-100 overflow-x-hidden">
+
+  <!-- Navbar Responsive -->
+  <header class="bg-teal-800 text-white px-6 py-4">
+    <div class="flex items-center justify-between">
+      <!-- Logo -->
+      <div class="flex items-center space-x-3">
+        <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Logo Puente Blanco"
+          class="h-10 w-10 rounded-full" />
+        <div>
+          <h1 class="text-xl font-bold leading-5">Puente Blanco</h1>
+          <p class="text-sm text-white">Clínica Veterinaria</p>
+        </div>
+      </div>
+
+      <!-- Botón Hamburguesa para móviles -->
+      <button id="nav-toggle" class="md:hidden text-white focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <!-- Navegación (Desktop) -->
+      <nav class="hidden md:flex gap-3 items-center text-sm font-medium" id="nav-menu">
+        <a href="#" onclick="openLogin('CLIENT')"
+          class="flex items-center gap-2 bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700">
+          👤 Cliente
+        </a>
+        <a href="#" onclick="openLogin('VETERINARIAN')"
+          class="flex items-center gap-2 bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-300">
+          🩺 Veterinario
+        </a>
+        <a href="#" onclick="openLogin('INTERN')"
+          class="flex items-center gap-2 bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-700">
+          👨‍⚕️ Practicante
+        </a>
+        <a href="#" onclick="openLogin('ADMIN')"
+          class="flex items-center gap-2 bg-blue-300 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+          🛡️ Administrador
+        </a>
+        <a href="#" onclick="toggleRegister()" class="text-white hover:text-blue-300">
+          Registrarse
+        </a>
+        <a href="#ubicacion" class="text-white hover:text-blue-300">
+          Contáctanos
+        </a>
+      </nav>
+    </div>
+
+    <!-- Menú desplegable (Mobile) -->
+    <div id="mobile-menu" class="md:hidden hidden mt-4 space-y-3 text-sm font-medium">
+      <a href="#" onclick="openLogin('CLIENT')"
+        class="block bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700">
+        👤 Cliente
+      </a>
+      <a href="#" onclick="openLogin('VETERINARIAN')"
+        class="block bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-300">
+        🩺 Veterinario
+      </a>
+      <a href="#" onclick="openLogin('INTERN')"
+        class="block bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-700">
+        👨‍⚕️ Practicante
+      </a>
+      <a href="#" onclick="openLogin('ADMIN')"
+        class="block bg-blue-300 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+        🛡️ Administrador
+      </a>
+      <a href="#" onclick="toggleRegister()" class="block text-white hover:text-blue-300">
+        Registrarse
+      </a>
+      <a href="#ubicacion" class="block text-white hover:text-blue-300">
+        Contáctanos
+      </a>
+    </div>
+  </header>
+
+
+  <!--PORTADA-->
+  <section id="inicio" class="relative h-screen flex items-center justify-center overflow-hidden">
+    <!-- Imagen de fondo con capa oscura -->
+    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+      style="background-image: url('img/perroguinando.jpg');">
+      <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+    </div>
+
+    <!-- Contenido -->
+    <div class="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
+      <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+        Clínica Farmacéutica
+        <span class="block text-yellow-400">Puente Blanco</span>
+      </h1>
+      <p class="text-xl md:text-2xl mb-8 leading-relaxed">
+        Cuidamos a tu mascota con amor, profesionalismo y la mejor tecnología veterinaria
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button href="#" onclick="openLogin('CLIENT')"
+          class="bg-yellow-600 hover:bg-yellow-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all transform hover:scale-105 shadow-lg">
+          Agendar Cita
+        </button>
+        <a href="#servicios"
+          class="border-2 border-white text-white hover:bg-white hover:text-gray-800 px-8 py-4 rounded-full text-lg font-semibold transition-all">
+          Conocer Servicios
+        </a>
+      </div>
+    </div>
+
+    <!-- Indicador de scroll -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <div class="w-6 h-10 border-2 border-white rounded-full flex justify-center">
+        <div class="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- SERVICIOSSSS -->
+  <section id="servicios" class="py-16 bg-white">
+    <div class="text-center mb-12 px-4">
+      <h2 class="text-4xl font-bold text-gray-800">Nuestros Servicios</h2>
+      <p class="text-gray-600 mt-2">Brindamos atención integral para la salud y bienestar de tus mascotas</p>
+    </div>
+
+    <div class="space-y-16 max-w-6xl mx-auto px-4">
+      <!-- Servicio 1 -->
+      <div class="flex flex-col md:flex-row items-center gap-8" data-aos="fade-right">
+        <img src="img/medicina.jpg" alt="Consulta médica" class="w-full md:w-1/2 rounded-xl shadow-lg">
+        <div class="md:w-1/2">
+          <h3 class="text-2xl font-semibold text-teal-700 mb-2">Consultas Médicas</h3>
+          <p class="text-gray-600 text-lg">Ofrecemos evaluaciones clínicas exhaustivas realizadas por médicos
+            veterinarios altamente calificados.
+            Diagnosticamos enfermedades, realizamos seguimiento de tratamientos, aplicamos vacunas, y orientamos
+            sobre la prevención y el cuidado general de la salud de tu mascota. Nuestro objetivo es garantizar el
+            bienestar integral en cada visita.
+        </div>
+      </div>
+
+      <!-- Servicio 2 -->
+      <div class="flex flex-col md:flex-row-reverse items-center gap-8" data-aos="fade-left">
+        <img src="/img/senioyperro.jpg" alt="Cirugía veterinaria" class="w-full md:w-1/2 rounded-xl shadow-lg">
+        <div class="md:w-1/2">
+          <h3 class="text-2xl font-semibold text-teal-700 mb-2">Cirugías</h3>
+          <p class="text-gray-600 text-lg">Realizamos cirugías veterinarias programadas y de emergencia con protocolos
+            de seguridad estrictos.
+            Desde esterilizaciones hasta procedimientos complejos, contamos con un quirófano equipado y personal
+            especializado
+            que garantiza atención segura, efectiva y con un proceso postoperatorio supervisado..</p>
+        </div>
+      </div>
+
+      <!-- Servicio 3 -->
+      <div class="flex flex-col md:flex-row items-center gap-8" data-aos="fade-right">
+        <img src="/img/gatitolab.jpg" alt="Laboratorio veterinario" class="w-full md:w-1/2 rounded-xl shadow-lg">
+        <div class="md:w-1/2">
+          <h3 class="text-2xl font-semibold text-teal-700 mb-2">Pruebas de Laboratorio</h3>
+          <p class="text-gray-600 text-lg">Contamos con un laboratorio clínico que realiza análisis de sangre, orina,
+            heces, y pruebas específicas
+            que permiten obtener diagnósticos rápidos y precisos. Estas pruebas son clave para detectar enfermedades
+            tempranas
+            y establecer tratamientos adecuados para tu mascota.
+        </div>
+      </div>
+
+      <!-- Servicio 4 -->
+      <div class="flex flex-col md:flex-row-reverse items-center gap-8" data-aos="fade-left">
+        <img src="/img/prueba.jpg" alt="Grooming para mascotas" class="w-full md:w-1/2 rounded-xl shadow-lg">
+        <div class="md:w-1/2">
+          <h3 class="text-2xl font-semibold text-teal-700 mb-2">Grooming</h3>
+          <p class="text-gray-600 text-lg">Ofrecemos servicios de baño, corte de pelo, limpieza de oídos y corte de
+            uñas para que tu mascota
+            luzca y se sienta bien. Utilizamos productos dermatológicamente aprobados y adaptados a las necesidades de
+            cada peludo.
+            Ideal para mantener su higiene, salud y belleza en óptimas condiciones.</p>
+        </div>
+      </div>
+
+      <!-- Servicio 5 -->
+      <div class="flex flex-col md:flex-row items-center gap-8" data-aos="fade-right">
+        <img src="/img/producto.jpg" alt="Farmacia veterinaria" class="w-full md:w-1/2 rounded-xl shadow-lg">
+        <div class="md:w-1/2">
+          <h3 class="text-2xl font-semibold text-teal-700 mb-2">Farmacia Veterinaria</h3>
+          <p class="text-gray-600 text-lg">Disponemos de un amplio surtido de medicamentos, vitaminas, antiparasitarios,
+            alimentos balanceados y accesorios
+            recomendados por nuestros especialistas. Todo lo necesario para el cuidado y prevención en un solo lugar,
+            con atención personalizada para resolver tus dudas.
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Modal Loginaaaaaaa -->
+  <div id="login-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md space-y-6">
+      <h2 class="text-2xl font-bold text-center text-gray-800">Iniciar Sesión</h2>
+      <form id="loginForm" class="space-y-4">
+        <input type="email" name="correo" placeholder="Correo" required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none transition" />
+        <div class="relative mb-4">
+
+          <input type="password" id="loginContrasena" name="contrasena" placeholder="Contraseña" required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none transition" />
+          <i id="toggleLoginPassword"
+            class="fa-solid fa-eye absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"></i>
+        </div>
+
+        <input type="hidden" name="expectedRole" id="expectedRole" />
+        <button type="submit"
+          class="w-full bg-gradient-to-r from-green-600 to-green-500 text-white font-semibold py-2 rounded-lg hover:from-green-700 hover:to-green-600 transition shadow-md">Iniciar
+          sesión</button>
+      </form>
+      <button onclick="toggleLogin()"
+        class="w-full bg-gradient-to-r from-red-600 to-red-500 text-white font-semibold py-2 rounded-lg hover:from-red-700 hover:to-red-600 transition shadow-md">Cancelar</button>
+      <a id="forgotLink" href="#" onclick="openForgotPassword()"
+        class="hidden block text-center text-sm text-blue-500 hover:underline">
+        ¿Olvidaste tu contraseña?
+      </a>
+    </div>
+  </div>
+
+  <!-- Modal Recuperar Contraseña -->
+  <div id="forgot-password-modal"
+    class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md space-y-6">
+      <h2 class="text-2xl font-bold text-center text-gray-800">Recuperar Contraseña</h2>
+      <form id="forgotPasswordForm" class="space-y-4">
+        <input type="email" id="forgotCorreo" placeholder="Correo electrónico" required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none transition" />
+        <small id="forgot-info" class="text-gray-500 text-sm block mt-1"></small>
+        <button type="submit"
+          class="w-full bg-gradient-to-r from-green-600 to-green-500 text-white font-semibold py-2 rounded-lg hover:from-green-700 hover:to-green-600 transition shadow-md">
+          Enviar código de recuperación
+        </button>
+      </form>
+      <button onclick="toggleForgotPassword()"
+        class="w-full bg-gradient-to-r from-red-600 to-red-500 text-white font-semibold py-2 rounded-lg hover:from-red-700 hover:to-red-600 transition shadow-md">
+        Cancelar
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal Ingresar Código y Nueva Contraseña -->
+  <div id="reset-password-modal"
+    class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md space-y-6">
+      <h2 class="text-2xl font-bold text-center text-gray-800">Restablecer Contraseña</h2>
+      <p id="codigo-expira-msg" class="text-center text-sm text-gray-600 hidden">
+        El código expira en <span id="countdown">05:00</span> minutos.
+      </p>
+
+
+      <form id="resetPasswordForm" class="space-y-4">
+        <!-- Código enviado al correo -->
+        <input type="text" id="codigoRecuperacion" placeholder="Código de recuperación" required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none transition" />
+
+        <!-- Nueva contraseña -->
+        <div class="relative">
+          <input type="password" id="nuevaContrasena" placeholder="Nueva Contraseña" required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none transition" />
+          <i id="toggleNuevaContrasena"
+            class="fa-solid fa-eye absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"></i>
+        </div>
+
+        <!-- Confirmar nueva contraseña -->
+        <div class="relative">
+          <input type="password" id="confirmarNuevaContrasena" placeholder="Confirmar Nueva Contraseña" required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none transition" />
+          <i id="toggleConfirmarContrasena"
+            class="fa-solid fa-eye absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"></i>
+        </div>
+
+        <button type="submit"
+          class="w-full bg-gradient-to-r from-green-600 to-green-500 text-white font-semibold py-2 rounded-lg hover:from-green-700 hover:to-green-600 transition shadow-md">
+          Cambiar Contraseña
+        </button>
+      </form>
+
+      <button onclick="toggleResetPassword()"
+        class="w-full bg-gradient-to-r from-red-600 to-red-500 text-white font-semibold py-2 rounded-lg hover:from-red-700 hover:to-red-600 transition shadow-md">
+        Cancelar
+      </button>
+    </div>
+  </div>
+<!-- Modal de cuenta desactivada -->
+<div id="modalDesactivado"
+  class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center hidden z-50">
+  <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md space-y-4 text-center">
+    <h2 class="text-2xl font-bold text-red-600">Cuenta desactivada</h2>
+    <p class="text-gray-700 text-base">Tu cuenta ha sido desactivada. Si crees que es un error, comunícate con el administrador.</p>
+    <button onclick="cerrarModalDesactivado()"
+      class="mt-4 bg-gradient-to-r from-red-600 to-red-500 text-white font-semibold py-2 px-6 rounded-lg hover:from-red-700 hover:to-red-600 transition shadow-md">
+      Cerrar
+    </button>
+  </div>
+</div>
+
+
+
+  <!-- Modal Registro Cliente -->
+  <div id="register-modal"
+    class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-2xl space-y-6 overflow-y-auto max-h-[90vh]">
+      <h2 class="text-2xl font-bold text-center text-gray-800">Registro de Cliente</h2>
+      <form id="registerForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <!-- Tipo de documento -->
+        <div>
+          <label class="block mb-1 font-medium">Tipo de Documento</label>
+          <select id="tipoDocumentoId" name="tipoDocumentoId" required
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none">
+            <option value="" disabled selected>Selecciona un tipo</option>
+            <option value="1">DNI</option>
+            <option value="2">RUC</option>
+            <option value="3">PASAPORTE</option>
+          </select>
+        </div>
+
+        <!-- Número de documento -->
+        <div>
+          <label class="block mb-1 font-medium">Número de documento</label>
+          <input type="text" id="numeroIdentidad" name="numeroIdentidad" placeholder="Número de Documento" required
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none" />
+          <small id="error-numeroIdentidad" class="text-red-500 text-sm"></small>
+        </div>
+
+        <!-- Nombres -->
+        <div>
+          <label class="block mb-1 font-medium">Nombres</label>
+          <input type="text" id="nombres" name="nombres" placeholder="Nombres" required
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none" />
+          <small id="error-nombres" class="text-red-500 text-sm"></small>
+        </div>
+
+        <!-- Apellido Paterno -->
+        <div>
+          <label class="block mb-1 font-medium">Apellido Paaterno</label>
+          <input type="text" id="apellidoPaterno" name="apellidoPaterno" placeholder="Apellido Paterno" required
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none" />
+          <small id="error-apellidoPaterno" class="text-red-500 text-sm"></small>
+        </div>
+
+        <!-- Apellido Materno -->
+        <div>
+          <label class="block mb-1 font-medium">Apellido Materno</label>
+          <input type="text" id="apellidoMaterno" name="apellidoMaterno" placeholder="Apellido Materno" required
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none" />
+          <small id="error-apellidoMaterno" class="text-red-500 text-sm"></small>
+        </div>
+
+        <!-- Teléfono -->
+        <div>
+          <label class="block mb-1 font-medium">Teléfono</label>
+          <input type="text" id="telefono" name="telefono" placeholder="Teléfono" required
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none" />
+          <small id="error-telefono" class="text-red-500 text-sm"></small>
+        </div>
+
+        <!-- Sexo -->
+        <div>
+          <label class="block mb-1 font-medium">Sexo</label>
+          <div class="flex flex-wrap gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="sexo" value="Masculino" required class="accent-teal-600 w-5 h-5" />
+              <span>Masculino</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="sexo" value="Femenino" required class="accent-pink-500 w-5 h-5" />
+              <span>Femenino</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="sexo" value="No Binario" required class="accent-purple-600 w-5 h-5" />
+              <span>No Binario</span>
+            </label>
+          </div>
+          <small id="error-sexo" class="text-red-500 text-sm"></small>
+        </div>
+
+        <!-- Fecha de nacimiento -->
+        <div>
+          <label class="block mb-1 font-medium">Fecha de Nacimiento</label>
+          <input type="date" id="fechaNacimiento" name="fechaNacimiento" required
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none" />
+        </div>
+
+        <!-- Dirección -->
+        <div>
+          <label class="block mb-1 font-medium">Dirección</label>
+          <input type="text" id="direccion" name="direccion" placeholder="Dirección" required
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none" />
+        </div>
+
+        <!-- Correo -->
+        <div>
+          <label class="block mb-1 font-medium">Correo Electrónico</label>
+          <input type="email" id="correo" name="correo" placeholder="Correo Electrónico funcional" required
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500" />
+          <small id="error-correo" class="text-red-500 text-sm"></small>
+          <small id="info-correo" class="text-green-600 text-sm"></small>
+        </div>
+
+        <!-- Contraseña con ojo -->
+        <div class="relative">
+          <label class="block mb-1 font-medium">Contraseña</label>
+          <input type="password" id="contrasena" name="contrasena" required
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm pr-10 focus:outline-none focus:ring-2 focus:ring-teal-500" />
+          <i id="toggleContrasena"
+            class="fa-solid fa-eye absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"></i>
+          <small id="error-contrasena" class="text-red-500 text-sm"></small>
+        </div>
+
+        <!-- Confirmar contraseña -->
+        <div class="relative">
+          <label class="block mb-1 font-medium">Confirmar Contraseña</label>
+          <input type="password" id="contrasenaConfirm" name="contrasenaConfirm" required
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm pr-10 focus:outline-none focus:ring-2 focus:ring-teal-500" />
+          <i id="toggleContrasenaConfirm"
+            class="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 fa-solid fa-eye"></i>
+          <small id="error-contrasenaConfirm" class="text-red-500 text-sm"></small>
+        </div>
+
+        <button type="submit"
+          class="w-full bg-gradient-to-r from-green-600 to-green-500 text-white font-semibold py-2 rounded-lg hover:from-green-700 hover:to-green-600 transition shadow-md">Registrarse</button>
+        <button onclick="toggleRegister()"
+          class="w-full bg-gradient-to-r from-red-600 to-red-500 text-white font-semibold py-2 rounded-lg hover:from-red-700 hover:to-red-600 transition shadow-md">Cancelar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- CARRRRRRRRRRRRRRRRRUSEEEEEEEEEEEEEEL -->
+  <section id="carrusel" class="relative w-full max-w-5xl mx-auto my-12 rounded-xl overflow-hidden shadow-lg">
+    <div class="relative h-64 md:h-96 bg-transparent">
+      <div class="carousel-slides w-full h-full relative">
+        <!-- Slide 1 -->
+        <div
+          class="absolute inset-0 transition-opacity duration-700 opacity-100 flex justify-center items-center bg-teal-600">
+          <img src="/img/perritos3.jpg" alt="Imagen 1" class="max-h-full max-w-full object-contain">
+          <div
+            class="absolute bottom-6 left-6 bg-white/80 text-gray-800 px-4 py-2 rounded-lg text-lg shadow-lg backdrop-blur-md">
+            Atención Veterinaria Integral
+          </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div
+          class="absolute inset-0 transition-opacity duration-700 opacity-0 flex justify-center items-center bg-teal-600">
+          <img src="/img/cirujia.jpg" alt="Imagen 2" class="max-h-full max-w-full object-contain">
+          <div
+            class="absolute bottom-6 left-6 bg-white/80 text-gray-800 px-4 py-2 rounded-lg text-lg shadow-lg backdrop-blur-md">
+            Cirugías Especializadas
+          </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div
+          class="absolute inset-0 transition-opacity duration-700 opacity-0 flex justify-center items-center bg-teal-600">
+          <img src="/img/local.jpg" alt="Imagen 3" class="max-h-full max-w-full object-contain">
+          <div
+            class="absolute bottom-6 left-6 bg-white/80 text-gray-800 px-4 py-2 rounded-lg text-lg shadow-lg backdrop-blur-md">
+            Local
+          </div>
+        </div>
+
+        <!-- Slide 4 -->
+        <div
+          class="absolute inset-0 transition-opacity duration-700 opacity-0 flex justify-center items-center bg-teal-600">
+          <img src="/img/alimentacion.jpg" alt="Imagen 4" class="max-h-full max-w-full object-contain">
+          <div
+            class="absolute bottom-6 left-6 bg-white/80 text-gray-800 px-4 py-2 rounded-lg text-lg shadow-lg backdrop-blur-md">
+            Alimentacion
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón Anterior -->
+      <button id="prevBtn"
+        class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white text-teal-700 hover:text-white hover:bg-teal-600 border border-gray-200 rounded-full p-2 shadow-lg transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-teal-400 z-10">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      <!-- Botón Siguiente -->
+      <button id="nextBtn"
+        class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white text-teal-700 hover:text-white hover:bg-teal-600 border border-gray-200 rounded-full p-2 shadow-lg transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-teal-400 z-10">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+
+      <!-- Indicadores -->
+      <div class="flex justify-center items-center gap-2 mt-4">
+        <button class="carousel-indicator w-3 h-3 bg-gray-300 rounded-full transition duration-300"></button>
+        <button class="carousel-indicator w-3 h-3 bg-gray-300 rounded-full transition duration-300"></button>
+        <button class="carousel-indicator w-3 h-3 bg-gray-300 rounded-full transition duration-300"></button>
+        <button class="carousel-indicator w-3 h-3 bg-gray-300 rounded-full transition duration-300"></button>
+      </div>
+  </section>
+
+  <!-- Mapaaa -->
+
+  <section id="ubicacion" class="py-16 bg-gray-100">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-10">
+        <h2 class="text-4xl font-bold text-gray-800 flex justify-center items-center gap-2" data-aos="fade-up"> <svg
+            class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-4.5 8-10a8 8 0 10-16 0c0 5.5 8 10 8 10z" />
+          </svg> Nuestra Ubicación </h2>
+        <p class="text-lg text-gray-600 mt-2" data-aos="fade-up" data-aos-delay="100"> Encuentra fácilmente nuestra
+          veterinaria en J- S/N, Av Cutervo 9, Ica </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-6xl mx-auto">
+        <!-- Mapa -->
+        <div class="lg:col-span-7 aspect-[4/3] overflow-hidden shadow-xl border-4 border-white rounded-xl"
+          data-aos="fade-right">
+          <div id="map" class="w-full h-full min-h-[300px] lg:min-h-[400px] rounded-xl"></div>
+        </div>
+
+        <!-- Información -->
+        <div class="lg:col-span-5 bg-white rounded-2xl shadow-xl p-6 border-4 border-white space-y-4"
+          data-aos="fade-left">
+          <h3 class="text-2xl font-bold text-gray-800">📅 Horarios de Atención</h3>
+          <ul class="text-gray-600 space-y-1">
+            <li><strong>Lunes a Viernes:</strong> 8:00 a.m. - 6:00 p.m.</li>
+            <li><strong>Sábados:</strong> 9:00 a.m. - 1:00 p.m.</li>
+            <li><strong>Domingos y Feriados:</strong> Cerrado</li>
+          </ul>
+
+          <div class="mt-6">
+            <h4 class="text-xl font-bold text-red-600">🚨 Emergencias</h4>
+            <p class="text-gray-700 mt-1">Si tienes una emergencia fuera de horario, llámanos al:</p>
+            <p class="text-lg font-semibold text-teal-700 mt-2">
+              <i class="fas fa-phone-alt"></i> +51 987 654 321
+            </p>
+          </div>
+
+          <div class="mt-6">
+            <h4 class="text-xl font-bold text-gray-800">🌐 Síguenos en redes</h4>
+            <div class="flex gap-4 mt-2">
+              <a href="#" class="text-blue-600 hover:text-blue-800"><i class="fab fa-facebook fa-lg"></i></a>
+              <a href="#" class="text-pink-500 hover:text-pink-700"><i class="fab fa-instagram fa-lg"></i></a>
+              <a href="#" class="text-blue-400 hover:text-blue-600"><i class="fab fa-twitter fa-lg"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-6 right-6 z-50 space-y-4"></div>
+
+
+  <script>
+    function initMap() {
+      const ubicacionClinica = { lat: -14.076819637086812, lng: -75.7389531413638 };
+
+      const mapa = new google.maps.Map(document.getElementById("map"), {
+        zoom: 16,
+        center: ubicacionClinica,
+        disableDefaultUI: true,
+      });
+
+      new google.maps.Marker({
+        position: ubicacionClinica,
+        map: mapa,
+        title: "Clínica Veterinaria Puente Blanco"
+      });
+    }
+
+    document.getElementById("comentarioForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const comentario = document.getElementById("comentarioTexto").value.trim();
+
+      const tieneSesion = document.cookie.split(';').some(c => c.trim().startsWith('jwt='));
+
+      if (!tieneSesion) {
+        alert("Debes iniciar sesión para comentar.");
+        openLogin('CLIENT');
+        return;
+      }
+
+      // Agrega el comentario visualmente
+      const lista = document.getElementById("comentariosPublicados");
+      const nuevoComentario = document.createElement("div");
+      nuevoComentario.className = "p-4 border rounded bg-gray-50 text-gray-800";
+      nuevoComentario.innerText = comentario;
+      lista.prepend(nuevoComentario);
+
+      // Limpia el campo
+      document.getElementById("comentarioTexto").value = "";
+      document.getElementById("comentarioMensaje").classList.remove("hidden");
+
+      // Puedes aquí hacer un fetch() POST al backend si deseas persistir
+    });
+  </script>
+
+  <!-- API de Google Maps (asegúrate de tener la facturación habilitada y que tu clave esté activa) -->
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAh5GriehkiRaeWMMB1-Zw7kw0zRyqB6Cw&callback=initMap">
+    </script>
+
+  <script>
+    //Este es para el navbar responsive
+    const toggleBtn = document.getElementById('nav-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    toggleBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+  </script>
+
+
+  <!-- Script DEL CARRUSELLL -->
+  <script>
+    const slides = document.querySelectorAll('.carousel-slides > div');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const indicators = document.querySelectorAll('.carousel-indicator');
+    let currentSlide = 0;
+    let autoSlideInterval;
+    const intervalTime = 5000;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('opacity-100', i === index);
+        slide.classList.toggle('opacity-0', i !== index);
+      });
+      indicators.forEach((ind, i) => {
+        ind.classList.toggle('bg-teal-600', i === index);
+        ind.classList.toggle('bg-gray-300', i !== index);
+      });
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
+    }
+
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      showSlide(currentSlide);
+    }
+
+    function startAutoSlide() {
+      autoSlideInterval = setInterval(nextSlide, intervalTime);
+    }
+
+    function stopAutoSlide() {
+      clearInterval(autoSlideInterval);
+    }
+
+    nextBtn.addEventListener('click', () => {
+      stopAutoSlide();
+      nextSlide();
+      startAutoSlide();
+    });
+
+    prevBtn.addEventListener('click', () => {
+      stopAutoSlide();
+      prevSlide();
+      startAutoSlide();
+    });
+
+    indicators.forEach((ind, i) => {
+      ind.addEventListener('click', () => {
+        stopAutoSlide();
+        currentSlide = i;
+        showSlide(currentSlide);
+        startAutoSlide();
+      });
+    });
+
+    const carousel = document.querySelector('#carrusel');
+    carousel.addEventListener('mouseenter', stopAutoSlide);
+    carousel.addEventListener('mouseleave', startAutoSlide);
+
+    // Iniciar
+    showSlide(currentSlide);
+    startAutoSlide();
+  </script>
+<script>
+  function cerrarModalDesactivado() {
+    document.getElementById("modalDesactivado").classList.add("hidden");
+  }
+</script>
+
+  <!-- Scripts -->
+  <script>
+    // Elementos de modales
+    const loginModal = document.getElementById('login-modal');
+    const registerModal = document.getElementById('register-modal');
+    const expectedRoleInput = document.getElementById('expectedRole');
+
+    // Validaciones en tiempo real de texto sin números
+    function validarTextoSinNumeros(idInput, idError) {
+      const input = document.getElementById(idInput);
+      const mensaje = document.getElementById(idError);
+
+      input.addEventListener('input', () => {
+        const valor = input.value.trim();
+        if (!valor) {
+          mensaje.textContent = "";
+        } else if (/\d/.test(valor)) {
+          mensaje.textContent = "No debe contener números.";
+        } else {
+          mensaje.textContent = "";
+        }
+      });
+    }
+    validarTextoSinNumeros('nombres', 'error-nombres');
+    validarTextoSinNumeros('apellidoPaterno', 'error-apellidoPaterno');
+    validarTextoSinNumeros('apellidoMaterno', 'error-apellidoMaterno');
+
+    // Validaciones de documento según tipo
+    const tipoDocSelect = document.getElementById('tipoDocumentoId');
+    const numeroIdentidadInput = document.getElementById('numeroIdentidad');
+    const errorNumero = document.getElementById('error-numeroIdentidad');
+
+    function validarNumeroDocumento() {
+      const tipo = tipoDocSelect.value;
+      const valor = numeroIdentidadInput.value.trim();
+
+      if (!valor) {
+        errorNumero.textContent = "";
+      } else if (tipo === "1" && !/^\d{8}$/.test(valor)) {
+        errorNumero.textContent = "Debe contener 8 dígitos numéricos.";
+      } else if (tipo === "2" && !/^\d{11}$/.test(valor)) {
+        errorNumero.textContent = "Debe contener 11 dígitos numéricos.";
+      } else if (tipo === "3" && !/^[A-Za-z0-9]{6,12}$/.test(valor)) {
+        errorNumero.textContent = "Debe contener entre 6 y 12 caracteres alfanuméricos.";
+      } else {
+        errorNumero.textContent = "";
+      }
+    }
+    numeroIdentidadInput.addEventListener('input', validarNumeroDocumento);
+    tipoDocSelect.addEventListener('change', () => {
+      numeroIdentidadInput.value = '';
+      errorNumero.textContent = '';
+    });
+
+    numeroIdentidadInput.addEventListener('blur', async () => {
+      const tipo = tipoDocSelect.value;
+      const valor = numeroIdentidadInput.value.trim();
+
+      if (tipo === "1" && /^\d{8}$/.test(valor)) {
+        try {
+          const res = await fetch(`http://localhost:8082/api/reniec/dni/${valor}`);
+          const data = await res.json();
+
+          document.getElementById('nombres').value = data.nombres || "";
+          document.getElementById('apellidoPaterno').value = data.apellidoPaterno || "";
+          document.getElementById('apellidoMaterno').value = data.apellidoMaterno || "";
+        } catch (err) {
+          console.error("Error al consultar RENIEC:", err);
+        }
+      }
+    });
+
+    // Validación de teléfono en tiempo real
+    const telefonoInput = document.getElementById('telefono');
+    const errorTelefono = document.getElementById('error-telefono');
+
+    telefonoInput.addEventListener('input', () => {
+      const valor = telefonoInput.value.trim();
+      if (!valor) {
+        errorTelefono.textContent = "";
+      } else if (!/^\d{9}$/.test(valor)) {
+        errorTelefono.textContent = "Debe contener 9 dígitos numéricos.";
+      } else {
+        errorTelefono.textContent = "";
+      }
+    });
+
+    const contrasenaInput = document.getElementById('contrasena');
+    contrasenaInput.addEventListener('input', () => {
+      const valor = contrasenaInput.value;
+      const mensaje = document.getElementById('error-contrasena');
+      mensaje.textContent = valor.length < 6
+        ? "Mínimo 6 caracteres."
+        : (!/[A-Z]/.test(valor) || !/\d/.test(valor)
+          ? "Debe incluir al menos una mayúscula y un número."
+          : "");
+    });
+
+    // Validación de correo en tiempo real
+    const correoInput = document.getElementById('correo');
+    correoInput.addEventListener('input', () => {
+      const mensaje = document.getElementById('error-correo');
+      const info = document.getElementById('info-correo');
+      const valor = correoInput.value.trim();
+      const regex = /^[^\s@]+@[^\s@]+\.(com|pe|org|edu)(\.[a-z]{2})?$/i;
+
+      if (!valor) {
+        mensaje.textContent = "";
+        info.textContent = "";
+      } else if (!regex.test(valor)) {
+        mensaje.textContent = "Debe tener un formato válido (ej: ejemplo@correo.com)";
+        info.textContent = "";
+      } else {
+        mensaje.textContent = "";
+        info.textContent = "✓ Correo válido. Verifica que esté escrito correctamente y sea funcional.";
+      }
+    });
+
+
+    // Validación de sexo
+    const sexoRadios = document.querySelectorAll('input[name="sexo"]');
+    const sexoError = document.getElementById('error-sexo');
+
+    function validarSexo() {
+      const seleccionado = Array.from(sexoRadios).some(radio => radio.checked);
+      sexoError.textContent = seleccionado ? "" : "Selecciona un sexo.";
+    }
+    sexoRadios.forEach(radio => radio.addEventListener('change', validarSexo));
+
+    // Validación de contraseña fuerte
+    const cpasswordInput = document.getElementById('contrasena');
+    const contrasenaConfirmInput = document.getElementById('contrasenaConfirm');
+    const errorContra = document.getElementById('error-contrasena');
+    const errorConfirm = document.getElementById('error-contrasenaConfirm');
+
+    function validarContra() {
+      const v = contrasenaInput.value;
+      const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+      errorContra.textContent = strongRegex.test(v)
+        ? ""
+        : "Mín. 8 carac., mayúsc., minúsc., número y símbolo.";
+      return strongRegex.test(v);
+    }
+
+    function validarConfirm() {
+      errorConfirm.textContent = contrasenaConfirmInput.value === contrasenaInput.value
+        ? ""
+        : "Las contraseñas no coinciden.";
+      return contrasenaConfirmInput.value === contrasenaInput.value;
+    }
+
+    contrasenaInput.addEventListener('input', validarContra);
+    contrasenaConfirmInput.addEventListener('input', validarConfirm);
+
+
+    // Validar nueva contraseña fuerte
+    function validarNuevaContrasena() {
+      const input = document.getElementById('nuevaContrasena');
+      const valor = input.value;
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+      if (!regex.test(valor)) {
+        showNotification("Contraseña débil: mín. 8 carac., mayúscula, minúscula, número y símbolo.", 'error');
+        return false;
+      }
+      return true;
+    }
+
+    // Confirmar nueva contraseñas iguales
+    function validarConfirmacionContrasena() {
+      const nueva = document.getElementById('nuevaContrasena').value;
+      const confirmar = document.getElementById('confirmarNuevaContrasena').value;
+      if (nueva !== confirmar) {
+        showNotification("Las contraseñas no coinciden.", 'error');
+        return false;
+      }
+      return true;
+    }
+
+    // Autocompleta y bloquea si ya está logueado en localStorage 
+    function openForgotPassword() {
+      const correoGuardado = localStorage.getItem('correoCliente');
+      const correoInput = document.getElementById('forgotCorreo');
+      const info = document.getElementById('forgot-info');
+
+      correoInput.value = correoGuardado || '';
+      correoInput.readOnly = false; // Editable siempre
+
+      info.textContent = correoGuardado
+        ? "Correo autocompletado del último inicio de sesión exitoso. Puedes modificarlo si lo necesitas."
+        : "";
+
+      toggleForgotPassword();
+    }
+
+    // Mostrar/ocultar contraseña
+    document.getElementById('toggleContrasena').addEventListener('click', () => {
+      const type = contrasenaInput.type === 'password' ? 'text' : 'password';
+      contrasenaInput.type = type;
+      document.getElementById('toggleContrasena').classList.toggle('fa-eye-slash');
+    });
+
+    document.getElementById('toggleContrasenaConfirm').addEventListener('click', () => {
+      const type = contrasenaConfirmInput.type === 'password' ? 'text' : 'password';
+      contrasenaConfirmInput.type = type;
+      document.getElementById('toggleContrasenaConfirm').classList.toggle('fa-eye-slash');
+    });
+
+    // Mostrar/ocultar contraseñas en los inputs
+    document.getElementById('toggleNuevaContrasena').addEventListener('click', () => {
+      const input = document.getElementById('nuevaContrasena');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+
+    document.getElementById('toggleConfirmarContrasena').addEventListener('click', () => {
+      const input = document.getElementById('confirmarNuevaContrasena');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+
+
+    // Modales
+    function toggleLogin() {
+      loginModal.classList.toggle('hidden');
+      limpiarFormularioLogin();
+    }
+    function limpiarFormularioLogin() {
+      const form = document.getElementById('loginForm');
+      form.reset(); // limpia los inputs
+      const passwordInput = document.getElementById('loginContrasena');
+      const eyeIcon = document.getElementById('toggleLoginPassword');
+
+      // Reset al tipo y al ícono
+      passwordInput.type = 'password';
+      eyeIcon.classList.remove('fa-eye-slash');
+      eyeIcon.classList.add('fa-eye');
+    }
+
+    function toggleRegister() {
+      registerModal.classList.toggle('hidden');
+      limpiarFormularioRegistro();
+    }
+    function limpiarFormularioRegistro() {
+      document.getElementById("registerForm").reset();
+      document.querySelectorAll('#registerForm small').forEach(msj => msj.textContent = "");
+    }
+
+    function openLogin(role, modo = '') {
+      expectedRoleInput.value = role;
+      sessionStorage.setItem("loginModo", modo); // NUEVO: guardar modo
+      // Mostrar el enlace solo para el cliente
+      const forgotLink = document.getElementById('forgotLink');
+      forgotLink.classList.toggle('hidden', role !== 'CLIENT');
+
+      toggleLogin();
+    }
+
+
+    // Mostrar/ocultar modal de recuperar contraseña
+    function toggleForgotPassword() {
+      document.getElementById('forgot-password-modal').classList.toggle('hidden');
+    }
+
+    // Mostrar/ocultar modal de reset de contraseña
+    function toggleResetPassword() {
+      document.getElementById('reset-password-modal').classList.toggle('hidden');
+    }
+
+    function logout() {
+      localStorage.removeItem('correoCliente');
+      document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      window.location.href = '/';
+    }
+
+    // Enviar código de recuperación
+    document.getElementById('forgotPasswordForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const correo = document.getElementById('forgotCorreo').value.trim();
+      const botonEnviar = e.target.querySelector('button[type="submit"]');
+      if (!correo) {
+        showNotification("Ingresa tu correo.", 'error');
+        return;
+      }
+
+      // Deshabilita el botón para evitar múltiples clics
+      botonEnviar.disabled = true;
+      botonEnviar.textContent = "Enviando...";
+
+      try {
+        const res = await fetch('http://localhost:8082/api/password/send-code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ correo })
+        });
+        const msg = await res.text();
+        if (res.ok) {
+          showNotification("Código enviado correctamente.", 'success');
+          toggleForgotPassword();
+          toggleResetPassword();
+          iniciarCuentaRegresiva(5); // inicia 5 minutos
+        } else {
+          showNotification(msg, 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        showNotification("Error enviando código.", 'error');
+      } finally {
+        // Habilita nuevamente el botón
+        botonEnviar.disabled = false;
+        botonEnviar.textContent = "Enviar código de recuperación";
+      }
+    });
+
+    function iniciarCuentaRegresiva(minutos) {
+      const countdownEl = document.getElementById('countdown');
+      const msgEl = document.getElementById('codigo-expira-msg');
+      let tiempoRestante = minutos * 60;
+      msgEl.classList.remove('hidden');
+
+      const timer = setInterval(() => {
+        const mins = String(Math.floor(tiempoRestante / 60)).padStart(2, '0');
+        const secs = String(tiempoRestante % 60).padStart(2, '0');
+        countdownEl.textContent = `${mins}:${secs}`;
+        tiempoRestante--;
+
+        if (tiempoRestante < 0) {
+          clearInterval(timer);
+          msgEl.innerHTML = "<span class='text-red-600'>El código ha expirado. Solicita uno nuevo.</span>";
+        }
+      }, 1000);
+    }
+
+
+// Diccionario de roles para mostrar nombres amigables
+
+  function mostrarModalDesactivado() {
+    document.getElementById("modalDesactivado").classList.remove("hidden");
+  }
+
+  function cerrarModalDesactivado() {
+    document.getElementById("modalDesactivado").classList.add("hidden");
+  }
+
+  const roles = {
+    ADMIN: "Administrador",
+    CLIENT: "Cliente",
+    INTERN: "Practicante",
+    VETERINARIAN: "Veterinario"
+  };
+
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const { correo, contrasena, expectedRole } = e.target;
+
+    localStorage.setItem('correoCliente', correo.value);
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ correo: correo.value, password: contrasena.value })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        if (data.rol !== expectedRole.value) {
+          showNotification(`Acceso denegado. Este acceso es para ${roles[expectedRole.value]}, pero has iniciado sesión como ${roles[data.rol]}.`, 'error');
+          return;
+        }
+
+        document.cookie = `jwt=${data.token}; path=/; SameSite=Lax; Secure`;
+
+        const saludo = `¡Bienvenido ${roles[data.rol]} ${data.nombreCompleto || ''}!`;
+        showNotification(saludo, 'success');
+
+        const redirecciones = {
+          CLIENT: '/dashboard',
+          VETERINARIAN: '/vet/veterinarian_dashboard.html',
+          INTERN: '/intern/intern_dashboard.html',
+          ADMIN: '/admin/admin_dashboard.html'
+        };
+        window.location.href = redirecciones[data.rol];
+      } else {
+        if (data.message && data.message.includes("desactivada")) {
+          mostrarModalDesactivado();
+        } else {
+          showNotification(data.error || "Credenciales incorrectas", 'error');
+        }
+      }
+    } catch (err) {
+      showNotification("Error al conectar con el servidor.", 'error');
+      console.error(err);
+    }
+  });
+
+
+    // Mostrar/ocultar contraseña en login
+    const loginPasswordInput = document.getElementById('loginContrasena');
+    const toggleLoginPasswordIcon = document.getElementById('toggleLoginPassword');
+
+    toggleLoginPasswordIcon.addEventListener('click', () => {
+      const type = loginPasswordInput.type === 'password' ? 'text' : 'password';
+      loginPasswordInput.type = type;
+      toggleLoginPasswordIcon.classList.toggle('fa-eye-slash');
+    });
+
+
+    // Registro de cliente con validaciones completas
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Validar campos obligatorios vacíos
+      const requiredInputs = document.querySelectorAll('#registerForm input[required], #registerForm select[required]');
+      for (let input of requiredInputs) {
+        if (!input.value.trim()) {
+          alert("Completa todos los campos antes de enviar.");
+          input.focus();
+          return;
+        }
+      }
+
+      // Validar errores en mensajes <small> que sean de error (id empieza con error-)
+      const errores = document.querySelectorAll('#registerForm small');
+      for (let error of errores) {
+        if (error.id.startsWith('error-') && error.textContent !== "") {
+          alert("Corrige los errores antes de enviar.");
+          return;
+        }
+      }
+
+      // Validar sexo seleccionado
+      const sexoRadios = document.querySelectorAll('input[name="sexo"]');
+      const sexoError = document.getElementById('error-sexo');
+      const seleccionado = Array.from(sexoRadios).some(radio => radio.checked);
+      if (!seleccionado) {
+        sexoError.textContent = "Selecciona un sexo.";
+        alert("Selecciona un sexo antes de enviar.");
+        return;
+      } else {
+        sexoError.textContent = "";
+      }
+
+      // Validar contraseñas iguales
+      const contrasenaInput = document.getElementById('contrasena');
+      const contrasenaConfirmInput = document.getElementById('contrasenaConfirm');
+      if (contrasenaInput.value !== contrasenaConfirmInput.value) {
+        alert("Las contraseñas no coinciden.");
+        return;
+      }
+
+      // Construir body a enviar
+      const formData = new FormData(e.target);
+      const body = Object.fromEntries(formData.entries());
+      body.fechaNacimiento = new Date(body.fechaNacimiento).toISOString().split('T')[0];
+      body.tipoDocumentoId = parseInt(body.tipoDocumentoId);
+
+      // Enviar registro
+      try {
+        const res = await fetch('/api/auth/register/client', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+
+        if (res.ok) {
+          showNotification("🎉 Registro exitoso. Ya puedes iniciar sesión.", "success");
+          limpiarFormularioRegistro();
+          toggleRegister();
+          openLogin('CLIENT');
+        } else {
+          const errorJson = await res.json();
+          showNotification(errorJson.error, 'error');  // Notificación clara y bonita
+        }
+      } catch (err) {
+        alert("Error al conectar con el servidor.");
+        console.error(err);
+      }
+    });
+
+    // Cambiar contraseña
+    document.getElementById('resetPasswordForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const correo = document.getElementById('forgotCorreo').value.trim();
+      const codigo = document.getElementById('codigoRecuperacion').value.trim();
+      const nuevaContrasena = document.getElementById('nuevaContrasena').value;
+
+      if (!validarNuevaContrasena() || !validarConfirmacionContrasena()) return;
+
+      try {
+        const res = await fetch(`http://localhost:8082/api/password/reset?correo=${encodeURIComponent(correo)}&codigo=${encodeURIComponent(codigo)}&nuevaContrasena=${encodeURIComponent(nuevaContrasena)}`, {
+          method: 'POST'
+        });
+        const msg = await res.text();
+        if (res.ok) {
+          showNotification("Contraseña actualizada. Inicia sesión.", 'success');
+          toggleResetPassword();
+          toggleLogin();
+          document.querySelector('#login-modal input[name="correo"]').value = correo;
+          document.querySelector('#login-modal input[name="contrasena"]').value = '';
+        }
+        else {
+          showNotification(msg, 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        showNotification("Error cambiando contraseña.", 'error');
+      }
+    });
+
+    // Validaciones en vivo en reset-password modal
+    document.getElementById('nuevaContrasena').addEventListener('input', validarNuevaContrasena);
+    document.getElementById('confirmarNuevaContrasena').addEventListener('input', validarConfirmacionContrasena);
+
+    function showNotification(mensaje, tipo = 'success') {
+      const container = document.getElementById('toast-container');
+      const colors = {
+        success: 'bg-green-500',
+        error: 'bg-red-500',
+        info: 'bg-blue-500'
+      };
+      const toast = document.createElement('div');
+      toast.className = `${colors[tipo]} text-white px-4 py-2 rounded shadow transition flex items-center gap-2`;
+      toast.innerHTML = `<i class="fa-solid fa-circle-info"></i><span>${mensaje}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3500);
+    }
+
+    function showNotification(mensaje, tipo = "success") { const container = document.getElementById("toast-container"); const colores = { success: "bg-green-500", error: "bg-red-500", info: "bg-blue-500", warning: "bg-yellow-500" }; const iconos = { success: '<i class="fas fa-check-circle"></i>', error: '<i class="fas fa-times-circle"></i>', info: '<i class="fas fa-info-circle"></i>', warning: '<i class="fas fa-exclamation-circle"></i>' }; const toast = document.createElement("div"); toast.className = `${colores[tipo]} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-fade-in-down`; toast.innerHTML = `${iconos[tipo] || ""}<span>${mensaje}</span>`; container.appendChild(toast); setTimeout(() => { toast.classList.add("animate-fade-out-up"); setTimeout(() => toast.remove(), 500); }, 4000); }
+  </script>
+  <script>
+    function mostrarModalDesactivado() {
+  document.getElementById('modalDesactivado').classList.remove('hidden');
+}
+
+function cerrarModalDesactivado() {
+  document.getElementById('modalDesactivado').classList.add('hidden');
+}
+
+  </script>
+
+  <footer class="bg-teal-800 text-white py-10 mt-16">
+    <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+
+      <!-- Contacto -->
+      <div class="space-y-3">
+        <h3 class="font-bold text-lg mb-3">Contacto</h3>
+        <p>Clínica Veterinaria dedicada al cuidado integral de tu mascota.</p>
+        <div class="flex items-center justify-center md:justify-start space-x-2">
+          <i class="fas fa-map-marker-alt text-teal-400"></i>
+          <span>Urb. Pte Blanco J-9, Ica</span>
+        </div>
+        <div class="flex items-center justify-center md:justify-start space-x-2">
+          <i class="fas fa-envelope text-teal-400"></i>
+          <span>puenteblanco.vet@gmail.com</span>
+        </div>
+        <div class="flex items-center justify-center md:justify-start space-x-2">
+          <i class="fas fa-phone-alt text-teal-400"></i>
+          <span>+51 987 654 321</span>
+        </div>
+      </div>
+
+      <!-- Enlaces -->
+      <div>
+        <h3 class="font-bold text-lg mb-3">Enlaces Rápidos</h3>
+        <ul class="space-y-2">
+          <li><a href="#" class="hover:underline">Inicio</a></li>
+          <li><a href="#servicios" class="hover:underline">Servicios</a></li>
+          <li><a href="#" class="hover:underline">Contáctanos</a></li>
+        </ul>
+      </div>
+
+      <!-- Redes Sociales -->
+      <div>
+        <h3 class="font-bold text-lg mb-3">Síguenos</h3>
+        <div class="flex justify-center md:justify-start space-x-4">
+          <!-- Facebook -->
+          <a href="https://facebook.com/puenteblanco.vet" target="_blank"
+            class="w-10 h-10 rounded-full bg-[#1877F2] flex items-center justify-center text-white text-xl hover:opacity-80 transition">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <!-- Instagram -->
+          <a href="https://www.instagram.com/vet.puenteblanco.ica/" target="_blank"
+            class="w-10 h-10 rounded-full bg-[#E1306C] flex items-center justify-center text-white text-xl hover:opacity-80 transition">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <!-- WhatsApp -->
+          <a href="https://wa.me/51987654321" target="_blank"
+            class="w-10 h-10 rounded-full bg-[#25D366] flex items-center justify-center text-white text-xl hover:opacity-80 transition">
+            <i class="fab fa-whatsapp"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+    <div class="text-center mt-8 text-sm text-black">© 2025 Clínica Veterinaria Puente Blanco. Todos los derechos
+      reservados.</div>
+  </footer>
+
+
+  <!-- AOS Animate on Scroll JS -->
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init();
+  </script>
+
+  <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script> AOS.init({ once: true, duration: 800, offset: 100, }); </script>
+
+</body>
+
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Citas Derivadas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <!-- Barra superior -->
+  <header class="bg-green-600 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20">
+    <h1 class="text-xl font-bold">Clínica y Veterinaria Puente Blanco</h1>
+    <span>Citas Derivadas</span>
+  </header>
+
+  <div class="flex flex-1">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-800 text-white flex flex-col justify-between min-h-full">
+      <div>
+        <nav class="flex flex-col p-4 space-y-4">
+          <a href="/intern/intern_dashboard.html" class="flex items-center gap-3 hover:text-blue-300">
+            <i class="fa-solid fa-table-columns"></i> Dashboard
+          </a>
+          <a href="/intern/intern_appointments.html" class="flex items-center text-blue-300 gap-3 hover:text-blue-300">
+            <i class="fa-solid fa-calendar-check"></i> Citas Derivadas
+          </a>
+          <a href="/intern/intern_attend.html" class="flex items-center gap-3 hover:text-blue-300">
+            <i class="fa-solid fa-stethoscope"></i> Atender Cita
+          </a>
+          <a href="/intern/intern_validated.html" class="flex items-center gap-3">
+            <i class="fa-solid fa-check-double"></i> Citas Validadas
+          </a>
+        </nav>
+      </div>
+      <button onclick="logout()"
+        class="m-4 flex items-center justify-center gap-2 bg-gray-100 text-red-500 px-4 py-2 rounded hover:bg-gray-200">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+      </button>
+    </aside>
+
+    <!-- Contenido -->
+    <main class="flex-1 p-8 space-y-6">
+      <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+        Citas Derivadas
+        <i class="fa-solid fa-bell fa-shake text-yellow-500"></i>
+      </h2>
+
+      <div class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gradient-to-r from-blue-100 via-blue-200 to-blue-300">
+            <tr>
+              <th class="px-6 py-3 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Mascota</th>
+              <th class="px-6 py-3 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Servicio</th>
+              <th class="px-6 py-3 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Fecha</th>
+              <th class="px-6 py-3 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Hora</th>
+              <th class="px-6 py-3 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Estado</th>
+              <th class="px-6 py-3 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Acción</th>
+            </tr>
+          </thead>
+          <tbody id="citasTable" class="divide-y divide-gray-100 text-sm text-gray-800">
+            <!-- Se llenará con JS -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      fetch("/api/intern/appointments", {
+        credentials: "include"
+      })
+        .then(res => res.json())
+        .then(citas => {
+          const table = document.getElementById("citasTable");
+
+          if (citas.length === 0) {
+            table.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-gray-500">No hay citas derivadas.</td></tr>';
+            return;
+          }
+
+          citas.forEach(cita => {
+            const row = document.createElement("tr");
+            row.className = "border-b hover:bg-gray-50";
+
+            row.innerHTML = `
+            <td class="py-2 px-4">${cita.nombreMascota}</td>
+            <td class="py-2 px-4">${cita.servicio}</td>
+            <td class="py-2 px-4">${cita.fecha}</td>
+            <td class="py-2 px-4">${cita.hora}</td>
+            <td class="py-2 px-4">${cita.estado}</td>
+            <td class="py-2 px-4">
+              <a href="/intern/intern_attend.html?citaId=${cita.citaId}" class="text-blue-600 hover:underline">Atender</a>
+            </td>
+          `;
+            table.appendChild(row);
+          });
+        })
+        .catch(err => {
+          console.error("Error al cargar citas:", err);
+          document.getElementById("citasTable").innerHTML = '<tr><td colspan="6" class="text-center py-4 text-red-500">Error al cargar citas.</td></tr>';
+        });
+    });
+
+    function logout() {
+      document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      window.location.href = "/";
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Validar Citas Evaluadas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    .sidebar-overlay {
+      transition: opacity 0.3s ease;
+      z-index: 40;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    @media (max-width: 767px) {
+      body.menu-open {
+        overflow: hidden;
+      }
+    }
+
+    #sidebar {
+      z-index: 50;
+    }
+
+    /* Estilos para tabla responsive */
+    @media (max-width: 1024px) {
+      .responsive-table thead {
+        display: none;
+      }
+      
+      .responsive-table tr {
+        display: block;
+        margin-bottom: 1.5rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        padding: 1rem;
+      }
+      
+      .responsive-table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f3f4f6;
+      }
+      
+      .responsive-table td:before {
+        content: attr(data-label);
+        font-weight: 600;
+        padding-right: 1rem;
+        color: #4b5563;
+      }
+      
+      .responsive-table td:last-child {
+        border-bottom: 0;
+        justify-content: center;
+      }
+      
+      .responsive-table .action-cell {
+        padding-top: 1rem;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <!-- Encabezado superior -->
+  <header class="bg-green-600 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20">
+    <div class="flex items-center">
+      <button id="menuToggle" class="mr-4 md:hidden">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+      <h1 class="text-lg sm:text-xl font-bold">Clínica Puente Blanco</h1>
+    </div>
+    <div class="flex items-center space-x-3 p-2 rounded-lg bg-green-700 bg-opacity-80">
+      <i class="fas fa-user-md text-lg text-green-300"></i>
+      <span class="font-medium">Veterinario/a</span>
+      <span id="vetName" class="font-medium">Cargando...</span>
+    </div>
+  </header>
+
+  <div class="flex flex-1">
+    <!-- Sidebar con menú móvil -->
+    <aside id="sidebar"
+      class="w-64 bg-gray-800 text-white flex flex-col justify-between fixed h-full md:h-auto md:sticky md:top-0 left-0 z-30 transform -translate-x-full md:transform-none transition-transform duration-300 overflow-y-auto">
+      <div class="p-4">
+        <nav class="flex flex-col space-y-3">
+          <a href="/vet/veterinarian_dashboard.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
+              class="fa-solid fa-table-columns"></i>Resumen Clínico</a>
+          <a href="/vet/veterinarian_appointments.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
+              class="fa-solid fa-calendar-days"></i> Citas Agendadas</a>
+          <a href="/vet/veterinarian_attend.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
+              class="fa-solid fa-stethoscope"></i> Atender Cita</a>
+          <a href="/vet/veterinarian_clinicalreport.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
+              class="fa-solid fa-user"></i> Historial</a>
+          <a href="/vet/veterinarian_schedule.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
+              class="fa-solid fa-clock"></i> Horario</a>
+          <a href="/vet/vet_assign.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
+              class="fa-solid fa-user"></i> Asignación</a>
+          <a href="/vet/veterinarian_validate.html" class="flex items-center gap-3 p-2 rounded bg-gray-700 text-green-300"><i
+              class="fa-solid fa-check-double"></i> Validaciones</a>
+          <a href="/vet/veterinarian_reports.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
+              class="fa-solid fa-chart-pie"></i> Reportes</a>
+        </nav>
+      </div>
+      <button onclick="logout()"
+        class="m-4 flex items-center justify-center gap-2 bg-gray-100 text-red-500 px-4 py-2 rounded-lg hover:shadow-md">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+      </button>
+    </aside>
+
+    <!-- Overlay para móvil -->
+    <div class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"></div>
+
+    <!-- Contenido principal -->
+    <main class="flex-1 p-6 md:p-8 space-y-6 transition-all duration-300">
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Citas Evaluadas Pendientes de Validación</h2>
+
+      <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="min-w-full responsive-table">
+            <thead class="bg-gray-100 text-gray-700">
+              <tr>
+                <th class="px-4 py-3 text-left">Fecha</th>
+                <th class="px-4 py-3 text-left">Hora</th>
+                <th class="px-4 py-3 text-left">Cliente</th>
+                <th class="px-4 py-3 text-left">Mascota</th>
+                <th class="px-4 py-3 text-left">Tipo</th>
+                <th class="px-4 py-3 text-left">Raza</th>
+                <th class="px-4 py-3 text-left">Practicante</th>
+                <th class="px-4 py-3 text-left">Servicio</th>
+                <th class="px-4 py-3 text-left">Acción</th>
+              </tr>
+            </thead>
+            <tbody id="tablaCitas" class="text-gray-700 divide-y divide-gray-200">
+              <tr>
+                <td colspan="9" class="text-center px-4 py-6 text-gray-500">Cargando citas...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal Detalle -->
+  <div id="modalDetalle" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 transition-opacity duration-300">
+    <div class="bg-white w-full max-w-2xl rounded-xl shadow-xl p-6 relative mx-4 transform scale-95 transition-transform duration-300">
+      <button onclick="cerrarModal()" class="absolute top-4 right-4 text-gray-500 hover:text-red-600 text-2xl">
+        &times;
+      </button>
+      <h3 class="text-xl md:text-2xl font-bold mb-4 text-gray-800">Detalles de la Atención Médica</h3>
+      <div class="space-y-4 text-gray-700">
+        <div>
+          <h4 class="font-semibold text-green-600 mb-1">Observaciones clínicas:</h4>
+          <p id="observaciones" class="bg-gray-50 p-3 rounded-lg"></p>
+        </div>
+        <div>
+          <h4 class="font-semibold text-green-600 mb-1">Diagnóstico:</h4>
+          <p id="diagnostico" class="bg-gray-50 p-3 rounded-lg"></p>
+        </div>
+        <div>
+          <h4 class="font-semibold text-green-600 mb-1">Tratamiento:</h4>
+          <p id="tratamiento" class="bg-gray-50 p-3 rounded-lg"></p>
+        </div>
+        <div>
+          <h4 class="font-semibold text-green-600 mb-1">Prescripción:</h4>
+          <p id="prescripcion" class="bg-gray-50 p-3 rounded-lg"></p>
+        </div>
+      </div>
+      <div class="mt-6 flex flex-col sm:flex-row justify-end gap-3">
+        <button onclick="rechazarCita()" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-lg transition-colors">
+          <i class="fa-solid fa-xmark mr-1"></i> Rechazar Evaluación
+        </button>
+        <button onclick="validarCita()" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg transition-colors">
+          <i class="fa-solid fa-check mr-1"></i> Validar Cita
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DateTime = luxon.DateTime;
+    let citaIdActual = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Cargar nombre del veterinario
+      fetch('/api/vet/current-vet-name', {
+        credentials: 'include'
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Error al obtener datos del veterinario');
+        return response.json();
+      })
+      .then(data => {
+        document.getElementById('vetName').textContent = data.fullName;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('vetName').textContent = 'Veterinario';
+      });
+
+      // Elementos del menú móvil
+      const menuToggle = document.getElementById('menuToggle');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.querySelector('.sidebar-overlay');
+
+      // Eventos para el menú móvil
+      menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMenu();
+      });
+
+      sidebarOverlay.addEventListener('click', toggleMenu);
+
+      // Cargar citas
+      cargarCitas();
+    });
+
+    // Función para alternar el menú
+    function toggleMenu() {
+      const isOpen = sidebar.classList.contains('-translate-x-full');
+      
+      if (isOpen) {
+        // Abrir menú
+        sidebar.classList.remove('-translate-x-full');
+        sidebarOverlay.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+      } else {
+        // Cerrar menú
+        sidebar.classList.add('-translate-x-full');
+        sidebarOverlay.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      }
+    }
+
+    function cargarCitas() {
+      fetch("/api/vet/appointments/validate?estado=EVALUADA", { credentials: 'include' })
+        .then(res => {
+          if (!res.ok) throw new Error('Error al cargar citas');
+          return res.json();
+        })
+        .then(data => {
+          const tbody = document.getElementById("tablaCitas");
+          tbody.innerHTML = "";
+
+          if (data.length === 0) {
+            tbody.innerHTML = `
+              <tr>
+                <td colspan="9" class="text-center px-4 py-6 text-gray-500">
+                  No hay citas evaluadas pendientes de validación.
+                </td>
+              </tr>`;
+            return;
+          }
+
+          data.forEach(cita => {
+            const row = document.createElement("tr");
+            row.className = "hover:bg-gray-50";
+            row.innerHTML = `
+              <td class="px-4 py-3" data-label="Fecha">${cita.fecha}</td>
+              <td class="px-4 py-3" data-label="Hora">${cita.hora}</td>
+              <td class="px-4 py-3" data-label="Cliente">${cita.nombreCliente}</td>
+              <td class="px-4 py-3" data-label="Mascota">${cita.nombreMascota}</td>
+              <td class="px-4 py-3" data-label="Tipo">${cita.tipoMascota}</td>
+              <td class="px-4 py-3" data-label="Raza">${cita.razaMascota}</td>
+              <td class="px-4 py-3" data-label="Practicante">${cita.nombrePracticante}</td>
+              <td class="px-4 py-3" data-label="Servicio">${cita.servicio}</td>
+              <td class="px-4 py-3 action-cell" data-label="Acción">
+                <button onclick="abrirModal(${cita.citaId})" 
+                        class="text-green-600 hover:text-green-800 font-medium">
+                  <i class="fas fa-eye mr-1"></i> Ver
+                </button>
+              </td>
+            `;
+            tbody.appendChild(row);
+          });
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          document.getElementById("tablaCitas").innerHTML = `
+            <tr>
+              <td colspan="9" class="text-red-500 text-center px-4 py-6">
+                Error al cargar las citas. Por favor intenta nuevamente.
+              </td>
+            </tr>`;
+        });
+    }
+
+    function abrirModal(citaId) {
+      citaIdActual = citaId;
+      fetch(`/api/vet/appointments/validate/${citaId}/detalle`, { credentials: 'include' })
+        .then(res => {
+          if (!res.ok) throw new Error('Error al cargar detalles');
+          return res.json();
+        })
+        .then(data => {
+          document.getElementById("observaciones").innerText = data.observacionesClinicas || "No registradas";
+          document.getElementById("diagnostico").innerText = data.diagnostico || "No registrado";
+          document.getElementById("tratamiento").innerText = data.tratamiento || "No registrado";
+          document.getElementById("prescripcion").innerText = data.prescripcion || "No registrada";
+          
+          const modal = document.getElementById("modalDetalle");
+          modal.classList.remove("hidden");
+          
+          setTimeout(() => {
+            modal.querySelector("div").classList.add("scale-100");
+          }, 10);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error al cargar los detalles de la cita');
+        });
+    }
+
+    function validarCita() {
+      if (!citaIdActual) return;
+      
+      fetch(`/api/vet/appointments/${citaIdActual}/estado`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ estado: "COMPLETADA" }),
+        credentials: "include"
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Error al validar cita');
+        mostrarMensajeExito('Cita validada correctamente');
+        cerrarModal();
+        cargarCitas();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error al validar la cita');
+      });
+    }
+
+    function rechazarCita() {
+      if (!citaIdActual) return;
+      
+      if (!confirm('¿Estás seguro que deseas rechazar esta evaluación?')) return;
+      
+      fetch(`/api/vet/appointments/${citaIdActual}/estado`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ estado: "PROGRAMADA" }),
+        credentials: "include"
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Error al rechazar evaluación');
+        mostrarMensajeExito('Evaluación rechazada correctamente');
+        cerrarModal();
+        cargarCitas();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error al rechazar la evaluación');
+      });
+    }
+
+    function cerrarModal() {
+      const modal = document.getElementById("modalDetalle");
+      modal.querySelector("div").classList.remove("scale-100");
+      
+      setTimeout(() => {
+        modal.classList.add("hidden");
+        citaIdActual = null;
+      }, 300);
+    }
+
+    function mostrarMensajeExito(mensaje) {
+      const alerta = document.createElement("div");
+      alerta.className = "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center animate-fade-in";
+      alerta.innerHTML = `
+        <i class="fas fa-check-circle mr-2"></i>
+        <span>${mensaje}</span>
+      `;
+      document.body.appendChild(alerta);
+      
+      setTimeout(() => {
+        alerta.classList.add("animate-fade-out");
+        setTimeout(() => alerta.remove(), 300);
+      }, 3000);
+    }
+
+    function logout() {
+      document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
+      window.location.href = "/";
+    }
+  </script>
+
+</body>
+</html>

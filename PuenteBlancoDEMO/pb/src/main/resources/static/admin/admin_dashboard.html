@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard Administrador</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <!-- Barra superior -->
+  <header class="bg-green-600 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20">
+    <h1 class="text-xl font-bold">Clínica y Veterinaria Puente Blanco</h1>
+    <span>Panel del Administrador</span>
+  </header>
+
+  <div class="flex flex-1">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-800 text-white flex flex-col justify-between min-h-full">
+      <nav class="flex flex-col p-4 space-y-4">
+        <a href="/admin/admin_dashboard.html" class="flex items-center gap-3 text-blue-300">
+          <i class="fa-solid fa-chart-line"></i> Dashboard
+        </a>
+        <a href="/admin/admin_users.html" class="flex items-center gap-3 hover:text-blue-300">
+          <i class="fa-solid fa-users"></i> Usuarios
+        </a>
+        <a href="/admin/admin_services.html" class="flex items-center gap-3 hover:text-blue-300">
+          <i class="fa-solid fa-gear"></i> Servicios
+        </a>
+        <a href="/admin/admin_appointments.html" class="flex items-center gap-3 hover:text-blue-300">
+          <i class="fa-solid fa-calendar-days"></i> Citas
+        </a>
+        <a href="/admin/admin_payments.html" class="flex items-center gap-3 hover:text-blue-300">
+          <i class="fa-solid fa-dollar-sign"></i> Pagos
+        </a>
+      </nav>
+      <button onclick="logout()" class="m-4 flex items-center justify-center gap-2 bg-gray-100 text-red-500 px-4 py-2 rounded hover:bg-gray-200">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+      </button>
+    </aside>
+
+    <!-- Contenido -->
+    <main class="flex-1 p-8 space-y-8">
+      <h2 class="text-2xl font-bold text-gray-800">Resumen General</h2>
+
+      <!-- Tarjetas resumen -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow-md flex items-center gap-4">
+          <i class="fa-solid fa-calendar-day text-3xl text-blue-600"></i>
+          <div>
+            <p class="text-sm text-gray-500">Citas Hoy</p>
+            <p id="countToday" class="text-2xl font-bold text-gray-800">--</p>
+          </div>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md flex items-center gap-4">
+          <i class="fa-solid fa-dollar-sign text-3xl text-green-600"></i>
+          <div>
+            <p class="text-sm text-gray-500">Ingresos Esta Semana</p>
+            <p id="revenueWeek" class="text-2xl font-bold text-gray-800">--</p>
+          </div>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md flex items-center gap-4">
+          <i class="fa-solid fa-circle-xmark text-3xl text-red-600"></i>
+          <div>
+            <p class="text-sm text-gray-500">Cancelaciones Esta Semana</p>
+            <p id="cancelWeek" class="text-2xl font-bold text-gray-800">--</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gráfico + Alertas -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Gráfico -->
+        <section class="lg:col-span-2 bg-white rounded-lg shadow p-6">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Ingresos Mensuales</h3>
+          <canvas id="monthlyRevenueChart" height="100"></canvas>
+        </section>
+
+        <!-- Alertas -->
+        <section class="bg-white rounded-lg shadow p-6">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Alertas Recientes</h3>
+          <div id="alertsContainer" class="space-y-2">
+            <p class="text-gray-500">Cargando alertas...</p>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+<script>
+  let chartInstance = null; // para evitar duplicados
+
+  function logout() {
+    document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    window.location.href = "/";
+  }
+
+  async function cargarDashboardAdmin() {
+    const [resCitas, resIngresos, resCancelaciones, resMensual, resAlertas] = await Promise.all([
+      fetch("/api/admin/dashboard/appointments/today", { credentials: 'include' }),
+      fetch("/api/admin/dashboard/revenue/week", { credentials: 'include' }),
+      fetch("/api/admin/dashboard/cancellations/week", { credentials: 'include' }),
+      fetch("/api/admin/dashboard/revenue/monthly", { credentials: 'include' }),
+      fetch("/api/admin/dashboard/alerts", { credentials: 'include' })
+    ]);
+
+    const countToday = await resCitas.json();
+    const revenueWeek = await resIngresos.json();
+    const cancelWeek = await resCancelaciones.json();
+    const revenueData = await resMensual.json();
+    const alerts = await resAlertas.json();
+
+    document.getElementById("countToday").textContent = countToday;
+    document.getElementById("revenueWeek").textContent = `S/ ${parseFloat(revenueWeek).toFixed(2)}`;
+    document.getElementById("cancelWeek").textContent = cancelWeek;
+
+    renderChart(revenueData);
+    renderAlerts(alerts);
+  }
+
+  function renderChart(data) {
+    const ctx = document.getElementById("monthlyRevenueChart").getContext("2d");
+    const labels = data.map(d => d.mes); // Ej: ["May", "Jun"]
+    const values = data.map(d => parseFloat(d.monto)); // asegúrate de que sea número
+
+    if (chartInstance) chartInstance.destroy(); // evita duplicados
+
+    chartInstance = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Ingresos',
+          data: values,
+          borderColor: '#22c55e',
+          backgroundColor: 'rgba(34, 197, 94, 0.2)',
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#22c55e'
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  }
+
+  function renderAlerts(alerts) {
+    const container = document.getElementById("alertsContainer");
+    container.innerHTML = "";
+    if (alerts.length === 0) {
+      container.innerHTML = "<p class='text-gray-500'>No hay alertas recientes.</p>";
+      return;
+    }
+    alerts.forEach(alert => {
+      const div = document.createElement("div");
+      div.className = "bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-3 rounded";
+      div.innerHTML = `<strong>${alert.titulo}</strong><p class="text-sm">${alert.descripcion}</p>`;
+      container.appendChild(div);
+    });
+  }
+
+  cargarDashboardAdmin();
+</script>
+</body>
+</html>

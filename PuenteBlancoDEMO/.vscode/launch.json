@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-PbApplication<pb>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.puenteblanco.pb.PbApplication",
+            "projectName": "pb",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

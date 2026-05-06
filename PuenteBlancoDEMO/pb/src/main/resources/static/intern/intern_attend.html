@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Atención Médica - Practicante</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <!-- Barra superior -->
+  <header class="bg-green-600 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20">
+    <h1 class="text-xl font-bold">Clínica y Veterinaria Puente Blanco</h1>
+    <span>Atención Médica (Practicante)</span>
+  </header>
+
+  <div class="flex flex-1">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-800 text-white flex flex-col justify-between min-h-full">
+      <div>
+        <nav class="flex flex-col p-4 space-y-4">
+          <a href="/intern/intern_dashboard.html" class="flex items-center gap-3 hover:text-blue-300">
+            <i class="fa-solid fa-table-columns"></i> Dashboard
+          </a>
+          <a href="/intern/intern_appointments.html" class="flex items-center gap-3 hover:text-blue-300">
+            <i class="fa-solid fa-calendar-check"></i> Citas Derivadas
+          </a>
+          <a href="/intern/intern_attend.html" class="flex items-center gap-3 text-blue-300 ">
+            <i class="fa-solid fa-stethoscope"></i> Atender Cita
+          </a>
+          <a href="/intern/intern_validated.html" class="flex items-center gap-3 ">
+            <i class="fa-solid fa-check-double"></i> Citas Validadas
+          </a>
+        </nav>
+      </div>
+      <button onclick="logout()"
+        class="m-4 flex items-center justify-center gap-2 bg-gray-100 text-red-500 px-4 py-2 rounded hover:bg-gray-200">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+      </button>
+    </aside>
+
+    <!-- Contenido -->
+    <main class="flex-1 p-8 space-y-10 bg-gray-50 min-h-screen">
+
+      <!-- Información de la Mascota -->
+      <section>
+        <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2 mb-4">
+          <i class="fa-solid fa-dog text-blue-600"></i>
+          Información de la Mascota
+        </h2>
+
+        <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 space-y-4 text-gray-800" id="infoPaciente">
+          <p id="mensajeNoCita" class="text-center text-gray-500 hidden">No hay citas derivadas pendientes para hoy.</p>
+
+          <div id="datosCita" class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 hidden">
+            <p><strong>🐾 Cliente:</strong> <span id="clienteNombre"></span></p>
+            <p><strong>🧑‍⚕️ Veterinario:</strong> <span id="VeterinarioACargo"></span></p>
+            <p><strong>🐶 Mascota:</strong> <span id="nombreMascota"></span></p>
+            <p><strong>📋 Tipo:</strong> <span id="tipoMascota"></span></p>
+            <p><strong>🐕 Raza:</strong> <span id="razaMascota"></span></p>
+            <p><strong>📆 Edad:</strong> <span id="edadMascota"></span></p>
+            <p><strong>🩺 Servicio:</strong> <span id="servicio"></span></p>
+            <p><strong>📅 Fecha:</strong> <span id="fecha"></span></p>
+            <p><strong>⏰ Hora:</strong> <span id="hora"></span></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Registrar Atención Médica -->
+      <section>
+        <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2 mb-4">
+          <i class="fa-solid fa-notes-medical text-blue-600"></i>
+          Registrar Atención Médica
+        </h2>
+
+        <form id="attendForm" class="bg-white rounded-xl shadow-md border border-gray-200 p-6 space-y-5 hidden">
+          <textarea id="observacionesClinicas" placeholder="📝 Observaciones clínicas"
+            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-400 outline-none resize-y placeholder-opacity-30"></textarea>
+
+          <textarea id="diagnostico" placeholder="🔍 Diagnóstico"
+            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-400 outline-none resize-y placeholder-opacity-30"></textarea>
+
+          <textarea id="tratamiento" placeholder="💊 Tratamiento"
+            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-400 outline-none resize-y placeholder-opacity-30"></textarea>
+
+          <textarea id="prescripcion" placeholder="📄 Prescripción"
+            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-400 outline-none resize-y placeholder-opacity-30"></textarea>
+
+
+
+          <div class="text-right">
+            <button type="submit"
+              class="bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition duration-200">
+              <i class="fa-solid fa-paper-plane mr-2"></i>Solicitar Evaluación
+            </button>
+          </div>
+        </form>
+      </section>
+
+    </main>
+
+  </div>
+
+  <script>
+    const DateTime = luxon.DateTime;
+    let citaId = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const today = DateTime.now().toISODate();
+
+      fetch(`/api/intern/appointments`, {
+        credentials: 'include'
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (!data || data.length === 0) {
+            document.getElementById("mensajeNoCita").classList.remove("hidden");
+            return;
+          }
+
+          const cita = data[0]; // Selecciona la primera cita derivada
+          citaId = cita.citaId;
+
+          const traduccionesTipo = {
+            "Dog": "Perro",
+            "Cat": "Gato",
+            "Bird": "Ave",
+            "Rabbit": "Conejo",
+            "Other": "Otro"
+          };
+
+          const tipoTraducido = traduccionesTipo[cita.tipoMascota] || cita.tipoMascota || "---";
+
+          document.getElementById("clienteNombre").textContent = cita.nombreCliente ?? "---";
+          document.getElementById("VeterinarioACargo").textContent = cita.veterinarioACargo ?? "---";
+          document.getElementById("nombreMascota").textContent = cita.nombreMascota;
+          document.getElementById("tipoMascota").textContent = tipoTraducido;
+          document.getElementById("razaMascota").textContent = cita.razaMascota ?? "---";
+          document.getElementById("edadMascota").textContent = cita.edadMascota ? cita.edadMascota + " años" : "---";
+          document.getElementById("servicio").textContent = cita.servicio;
+          document.getElementById("fecha").textContent = cita.fecha;
+          document.getElementById("hora").textContent = cita.hora;
+
+          document.getElementById("datosCita").classList.remove("hidden");
+          document.getElementById("attendForm").classList.remove("hidden");
+        })
+        .catch(err => {
+          console.error("Error al obtener la cita derivada:", err);
+          document.getElementById("mensajeNoCita").textContent = "Error al cargar la cita derivada.";
+          document.getElementById("mensajeNoCita").classList.remove("hidden");
+        });
+    });
+
+    document.getElementById("attendForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      if (!citaId) {
+        alert("No se puede registrar atención sin cita válida.");
+        return;
+      }
+
+      const dto = {
+        observacionesClinicas: document.getElementById("observacionesClinicas").value,
+        diagnostico: document.getElementById("diagnostico").value,
+        tratamiento: document.getElementById("tratamiento").value,
+        prescripcion: document.getElementById("prescripcion").value
+      };
+
+      fetch(`/api/intern/appointments/${citaId}/attend`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: 'include',
+        body: JSON.stringify(dto)
+      })
+        .then(res => {
+          if (res.ok) {
+            alert("Evaluación médica registrada correctamente.");
+            window.location.href = "/intern/intern_dashboard.html";
+          } else {
+            alert("Error al guardar la evaluación.");
+          }
+        });
+    });
+
+    function logout() {
+      document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      window.location.href = "/";
+    }
+  </script>
+</body>
+
+</html>
