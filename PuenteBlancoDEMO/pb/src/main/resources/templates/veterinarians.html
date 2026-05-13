@@ -50,25 +50,36 @@
 
     <div class="flex w-full">
         <aside id="sidebar" class="fixed top-16 left-0 w-64 h-[calc(100vh-64px)] bg-[#111827] text-gray-300 flex flex-col justify-between z-40
-              transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl">
-            <div class="py-8 flex flex-col px-4 space-y-2">
-                <p class="text-[10px] uppercase tracking-[2px] text-gray-500 font-bold px-4 mb-4">Menú Principal</p>
-                <a th:href="@{/dashboard}" class="flex items-center gap-4 p-3.5 rounded-xl hover:bg-white/5 transition-all group">
-                    <i class="fa-solid fa-table-columns w-6 text-center group-hover:text-clifarAccent"></i> <span>Dashboard</span>
+              transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out">
+            
+            <div class="py-6 flex flex-col px-3 space-y-2">
+                <p class="text-[11px] uppercase tracking-widest text-gray-500 font-extrabold px-3 mb-3">Menú Principal</p>
+                
+                <a th:href="@{/dashboard}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-all">
+                    <i class="fa-solid fa-table-columns w-5 text-center text-xl"></i>
+                    <span class="font-medium">Dashboard</span>
                 </a>
-                <a th:href="@{/appointments}" class="flex items-center gap-4 p-3.5 rounded-xl hover:bg-white/5 transition-all group">
-                    <i class="fa-solid fa-calendar-check w-6 text-center group-hover:text-clifarAccent"></i> <span>Mis Citas</span>
+
+                <a th:href="@{/appointments}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-all">
+                    <i class="fa-solid fa-calendar-plus w-5 text-center text-xl font-bold"></i>
+                    <span class="font-bold">Agendar Cita</span>
                 </a>
-                <a href="#" class="flex items-center gap-4 p-3.5 rounded-xl text-clifarAccent bg-clifarBase/20 border-l-4 border-clifarAccent shadow-lg">
-                    <i class="fa-solid fa-user-doctor w-6 text-center font-bold"></i> <span class="font-bold">Veterinarios</span>
+
+                <a th:href="@{/appointments}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-all">
+                    <i class="fa-solid fa-clock w-5 text-center text-xl"></i>
+                    <span class="font-medium">Ver Citas</span>
                 </a>
-                <a th:href="@{/vaccination}" class="flex items-center gap-4 p-3.5 rounded-xl hover:bg-white/5 transition-all group">
-                    <i class="fa-solid fa-syringe w-6 text-center group-hover:text-clifarAccent"></i> <span>Vacunación</span>
+
+                <a th:href="@{/book-appointment}" class="flex items-center gap-3 p-3 rounded-lg text-clifarAccent bg-clifarBase/30 border-l-4 border-clifarAccent transition-all shadow-inner">
+                    <i class="fa-solid fa-user-doctor w-5 text-center text-xl"></i>
+                    <span class="font-medium">Veterinarios</span>
                 </a>
             </div>
-            <div class="p-6 border-t border-gray-800">
-                <button onclick="logout()" class="w-full flex items-center justify-center gap-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-3 rounded-xl transition-all font-bold text-xs uppercase tracking-widest">
-                    <i class="fa-solid fa-power-off"></i> Salir
+
+            <div class="p-4 border-t border-gray-700/50">
+                <button onclick="logout()" class="w-full flex items-center justify-center gap-2.5 bg-gray-700/60 text-red-400 hover:bg-red-500 hover:text-white px-4 py-3 rounded-xl transition-all duration-200">
+                    <i class="fa-solid fa-power-off text-lg"></i> 
+                    <span class="font-semibold">Cerrar Sesión</span>
                 </button>
             </div>
         </aside>
