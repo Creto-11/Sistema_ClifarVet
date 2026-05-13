@@ -79,11 +79,6 @@
                     <i class="fa-solid fa-user-doctor w-5 text-center text-xl"></i>
                     <span class="font-medium">Veterinarios</span>
                 </a>
-
-                <a th:href="@{/vaccination}" class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all">
-                    <i class="fa-solid fa-syringe w-5 text-center text-xl"></i>
-                    <span class="font-medium">Vacunación</span>
-                </a>
             </div>
 
             <div class="p-4 border-t border-gray-700/50">
@@ -95,6 +90,7 @@
         </aside>
 
         <main class="flex-1 p-4 md:p-8 ml-0 md:ml-64 transition-all duration-300">
+
             <div class="mb-8 p-6 bg-white rounded-2xl shadow-sm border-l-4 border-clifarBase">
                 <h2 class="text-3xl md:text-4xl font-extrabold text-clifarDark tracking-tight">Panel Principal</h2>
                 <p class="text-textSec text-base flex items-center gap-2.5 mt-2">
@@ -195,8 +191,7 @@
                 borderRadius: '16px'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Simulación de fetch, descomenta en producción
-                    /*
+                   
                     fetch(`/pets/${petId}`, { method: "DELETE", credentials: "include" })
                         .then(res => {
                             if (res.ok) {
@@ -204,7 +199,6 @@
                                 .then(() => location.reload());
                             }
                         });
-                    */
                     // Solo para simular en el frontend
                     Swal.fire({ icon: 'success', title: '¡Mascota eliminada del panel!', confirmButtonColor: '#1C8C7A', borderRadius: '16px' });
                 }
