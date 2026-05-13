@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>CLIFARVET | Calendario de Citas</title>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        clifarBase: '#1C8C7A',    
+                        clifarDark: '#0F5E52',    
+                        clifarLight: '#6FC3B2',   
+                        clifarAccent: '#F6B44B',  
+                        clifarBg: '#F2F4F3',      
+                        textMain: '#1F2933',      
+                        textSec: '#6B7280',       
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Personalización de FullCalendar para que combine con el sistema */
+        #calendar {
+            background-color: white;
+            padding: 25px;
+            border-radius: 20px;
+            border: none;
+        }
+        .fc-header-toolbar {
+            margin-bottom: 2em !important;
+            padding: 5px;
+        }
+        .fc-toolbar-title {
+            font-size: 1.5rem !important;
+            font-weight: 800 !important;
+            color: #0F5E52; /* clifarDark */
+        }
+        .fc-button-primary {
+            background-color: #1C8C7A !important; /* clifarBase */
+            border-color: #1C8C7A !important;
+            font-weight: bold !important;
+            text-transform: capitalize !important;
+            border-radius: 10px !important;
+        }
+        .fc-button-primary:hover {
+            background-color: #0F5E52 !important;
+        }
+        .fc-button-active {
+            background-color: #F6B44B !important; /* clifarAccent */
+            border-color: #F6B44B !important;
+            color: #1F2933 !important;
+        }
+        .fc-event {
+            border-radius: 6px !important;
+            border: none !important;
+            padding: 2px 5px !important;
+            font-weight: 600 !important;
+            background-color: #1C8C7A !important;
+        }
+        .fc-v-event {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .fc-day-today {
+            background-color: rgba(246, 180, 75, 0.05) !important;
+        }
+    </style>
+</head>
+
+<body class="bg-clifarBg font-sans antialiased text-textMain min-h-screen">
+
+    <header class="h-16 bg-clifarDark text-white px-6 flex justify-between items-center w-full fixed top-0 z-30 shadow-md">
+        <div class="flex items-center gap-4">
+            <button onclick="toggleSidebar()" class="md:hidden text-white focus:outline-none p-1">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-paw text-2xl text-clifarAccent"></i>
+                <h1 class="text-xl font-bold tracking-tight">CLIFARVET <span class="font-light hidden sm:inline">| Puente Blanco</span></h1>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+             <span th:text="'Bienvenido, ' + ${dashboard.fullName}" class="hidden sm:block text-sm font-medium opacity-90">Usuario</span>
+             <div class="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center border border-white/20">
+                <i class="fa-solid fa-user text-sm"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex w-full">
+        <aside id="sidebar" class="fixed top-16 left-0 w-64 h-[calc(100vh-64px)] bg-[#111827] text-gray-300 flex flex-col justify-between z-40
+              transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out">
+            
+            <div class="py-6 flex flex-col px-3 space-y-2">
+                <p class="text-[11px] uppercase tracking-widest text-gray-500 font-extrabold px-3 mb-3">Menú Principal</p>
+                
+                <a th:href="@{/dashboard}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-all">
+                    <i class="fa-solid fa-table-columns w-5 text-center text-xl"></i>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+
+                <a th:href="@{/book-appointment}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-all">
+                    <i class="fa-solid fa-calendar-plus w-5 text-center text-xl"></i>
+                    <span class="font-medium">Agendar Cita</span>
+                </a>
+
+                <a th:href="@{/appointments}" class="flex items-center gap-3 p-3 rounded-lg text-clifarAccent bg-clifarBase/30 border-l-4 border-clifarAccent transition-all shadow-inner">
+                    <i class="fa-solid fa-clock w-5 text-center text-xl font-bold"></i>
+                    <span class="font-bold">Ver Citas</span>
+                </a>
+
+                <a th:href="@{/veterinarians}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-all">
+                    <i class="fa-solid fa-user-doctor w-5 text-center text-xl"></i>
+                    <span class="font-medium">Veterinarios</span>
+                </a>
+                
+                <a th:href="@{/vaccination}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-all">
+                    <i class="fa-solid fa-syringe w-5 text-center text-xl"></i>
+                    <span class="font-medium">Vacunación</span>
+                </a>
+            </div>
+
+            <div class="p-4 border-t border-gray-700/50">
+                <button onclick="logout()" class="w-full flex items-center justify-center gap-2.5 bg-gray-700/60 text-red-400 hover:bg-red-500 hover:text-white px-4 py-3 rounded-xl transition-all duration-200">
+                    <i class="fa-solid fa-power-off text-lg"></i> 
+                    <span class="font-semibold">Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 p-4 md:p-8 pt-24 md:ml-64 transition-all">
+            
+            <div class="mb-8 p-6 bg-white rounded-2xl shadow-sm border-l-4 border-clifarBase max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <h2 class="text-3xl font-extrabold text-clifarDark tracking-tight">Mi Agenda</h2>
+                    <p class="text-textSec text-base flex items-center gap-2.5 mt-2">
+                        <i class="fa-solid fa-calendar-check text-clifarAccent"></i> 
+                        Visualice y gestione sus citas programadas
+                    </p>
+                </div>
+                <a th:href="@{/book-appointment}" class="bg-clifarCTA text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-clifarCTA/90 transition-all shadow-lg flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Nueva Cita
+                </a>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden max-w-6xl mx-auto border border-gray-100">
+                <div id="calendar"></div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales-all.global.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
+
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                locale: "es",
+                initialView: 'timeGridWeek',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                buttonText: {
+                    today: 'Hoy',
+                    month: 'Mes',
+                    week: 'Semana',
+                    day: 'Día'
+                },
+                slotMinTime: "08:00:00",
+                slotMaxTime: "18:00:00",
+                allDaySlot: false,
+                slotLabelFormat: {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    omitZeroMinute: false,
+                    meridiem: 'short'
+                },
+                events: {
+                    url: "/api/client/appointments/calendar",
+                    method: "GET",
+                    failure: function () {
+                        console.error("Error al cargar citas");
+                    },
+                    credentials: "include"
+                },
+                eventDidMount: function(info) {
+                    // Tooltip rápido opcional
+                    info.el.title = info.event.title;
+                }
+            });
+
+            calendar.render();
+        });
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        }
+
+        function logout() {
+            document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+            window.location.href = "/";
+        }
+    </script>
+</body>
+</html>

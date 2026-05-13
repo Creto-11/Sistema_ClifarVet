@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Citas Agendadas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      .sidebar-overlay {
+        transition: opacity 0.3s ease;
+        z-index: 40;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+
+      @media (max-width: 767px) {
+        body.menu-open {
+          overflow: hidden;
+        }
+      }
+
+      #sidebar {
+        z-index: 50;
+      }
+
+      .main-content {
+        margin-left: 200px;
+      }
+
+      /* Estilos para tabla responsive */
+      @media (max-width: 640px) {
+        .table-responsive table {
+          display: block;
+          width: 100%;
+        }
+
+        .table-responsive thead,
+        .table-responsive tbody,
+        .table-responsive th,
+        .table-responsive td,
+        .table-responsive tr {
+          display: block;
+        }
+
+        .table-responsive thead tr {
+          position: absolute;
+          top: -9999px;
+          left: -9999px;
+        }
+
+        .table-responsive tr {
+          border: 1px solid #e2e8f0;
+          margin-bottom: 1rem;
+          border-radius: 0.375rem;
+          overflow: hidden;
+        }
+
+        .table-responsive td {
+          border: none;
+          border-bottom: 1px solid #e2e8f0;
+          position: relative;
+          padding-left: 50%;
+          white-space: normal;
+          text-align: left;
+          display: flex;
+          align-items: center;
+          min-height: 2.5rem;
+        }
+
+        .table-responsive td:before {
+          content: attr(data-label);
+          position: absolute;
+          left: 1rem;
+          width: 45%;
+          padding-right: 10px;
+          font-weight: 600;
+          text-align: left;
+        }
+
+        .table-responsive td:last-child {
+          border-bottom: 0;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-100 min-h-screen flex flex-col">
+    <!-- Encabezado superior modificado como el primer dashboard -->
+    <header
+      class="bg-green-600 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20"
+    >
+      <div class="flex items-center">
+        <button id="menuToggle" class="mr-4 md:hidden">
+          <i class="fas fa-bars text-xl"></i>
+        </button>
+        <h1 class="text-lg sm:text-xl font-bold">Clínica Puente Blanco</h1>
+      </div>
+      <div
+        class="flex items-center space-x-3 p-2 rounded-lg bg-green-700 bg-opacity-80"
+      >
+        <i class="fas fa-user-md text-lg text-green-300"></i>
+        <span class="font-medium">Veterinario/a</span>
+        <span id="vetName" class="font-medium">Cargando...</span>
+      </div>
+    </header>
+
+    <div class="flex flex-1">
+      <!-- Sidebar con menú móvil -->
+      <aside
+        id="sidebar"
+        class="w-64 bg-gray-800 text-white flex flex-col justify-between fixed h-full md:h-auto md:sticky md:top-0 left-0 z-30 transform -translate-x-full md:transform-none transition-transform duration-300 overflow-y-auto"
+      >
+        <div class="p-4">
+          <nav class="flex flex-col space-y-3">
+            <a
+              href="/vet/veterinarian_dashboard.html"
+              class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"
+              ><i class="fa-solid fa-table-columns"></i>Resumen Clínico
+              Veterinario</a
+            >
+            <a
+              href="/vet/veterinarian_appointments.html"
+              class="flex items-center text-green-400 bg-gray-700 gap-3 p-2 rounded hover:bg-gray-700"
+              ><i class="fa-solid fa-calendar-days"></i> Citas Agendadas</a
+            >
+            <a
+              href="/vet/veterinarian_attend.html"
+              class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"
+              ><i class="fa-solid fa-stethoscope"></i> Atender Cita</a
+            >
+            <a
+              href="/vet/veterinarian_clinicalreport.html"
+              class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"
+              ><i class="fa-solid fa-user"></i> Historial del Paciente</a
+            >
+            <a
+              href="/vet/veterinarian_schedule.html"
+              class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"
+              ><i class="fa-solid fa-clock"></i> Horario</a
+            >
+            <a
+              href="/vet/vet_assign.html"
+              class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"
+              ><i class="fa-solid fa-user"></i> Asignación</a
+            >
+            <a
+              href="/vet/veterinarian_validate.html"
+              class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"
+              ><i class="fa-solid fa-check-double"></i> Validar Evaluaciones</a
+            >
+            <a
+              href="/vet/veterinarian_reports.html"
+              class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"
+              ><i class="fa-solid fa-chart-pie"></i> Reportes</a
+            >
+            <button
+              onclick="logout()"
+              class="m-4 flex items-center justify-center gap-2 bg-gray-100 text-red-500 px-4 py-2 rounded-lg hover:shadow-md"
+            >
+              <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+            </button>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Overlay para móvil -->
+      <div
+        class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"
+      ></div>
+
+      <!-- Main content -->
+      <main class="flex-1 p-8 space-y-6 transition-all duration-300">
+        <h1 class="text-3xl font-bold text-gray-800">Citas Agendadas</h1>
+
+        <!-- Filtros -->
+        <div class="flex flex-col md:flex-row gap-4 items-center">
+          <input
+            type="date"
+            id="appointmentDate"
+            class="border border-gray-300 rounded px-3 py-2"
+          />
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Buscar cliente o mascota..."
+            class="border border-gray-300 rounded px-3 py-2 w-full md:w-80"
+          />
+        </div>
+
+        <!-- Tabla de citas -->
+        <div class="bg-white p-6 rounded shadow">
+          <h2 class="text-xl font-semibold mb-4" id="dateHeading">
+            Appointments for ...
+          </h2>
+
+          <div class="overflow-x-auto table-responsive">
+            <table class="min-w-full text-sm text-gray-700">
+              <thead>
+                <tr class="bg-gray-100 text-left">
+                  <th class="py-2 px-4">Hora</th>
+                  <th class="py-2 px-4">Cliente</th>
+                  <th class="py-2 px-4">Mascota</th>
+                  <th class="py-2 px-4">Servicio</th>
+                  <th class="py-2 px-4">Síntomas</th>
+                  <th class="py-2 px-4">Prioridad</th>
+                  <th class="py-2 px-4">Comentarios</th>
+                  <th class="py-2 px-4">Estado</th>
+                  <th class="py-2 px-4">Acción</th>
+                </tr>
+              </thead>
+              <tbody id="appointmentTableBody">
+                <tr>
+                  <td colspan="9" class="text-center py-4 text-gray-500">
+                    No se encontraron citas para esta fecha.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const DateTime = luxon.DateTime;
+
+      // Función para alternar el menú - versión corregida
+      function toggleMenu() {
+        const isOpen = sidebar.classList.contains("-translate-x-full");
+
+        if (isOpen) {
+          // Abrir menú
+          sidebar.classList.remove("-translate-x-full");
+          sidebarOverlay.classList.remove("hidden");
+          document.body.classList.add("overflow-hidden");
+        } else {
+          // Cerrar menú
+          sidebar.classList.add("-translate-x-full");
+          sidebarOverlay.classList.add("hidden");
+          document.body.classList.remove("overflow-hidden");
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // Cargar nombre del veterinario
+        fetch("/api/vet/current-vet-name", {
+          credentials: "include",
+        })
+          .then((response) => {
+            if (!response.ok)
+              throw new Error("Error al obtener datos del veterinario");
+            return response.json();
+          })
+          .then((data) => {
+            document.getElementById("vetName").textContent = data.fullName;
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            document.getElementById("vetName").textContent = "Veterinario";
+          });
+
+        // Elementos del menú móvil
+        const menuToggle = document.getElementById("menuToggle");
+        const sidebar = document.getElementById("sidebar");
+        const sidebarOverlay = document.querySelector(".sidebar-overlay");
+
+        // Eventos para el menú móvil
+        menuToggle.addEventListener("click", (e) => {
+          e.stopPropagation();
+          toggleMenu();
+        });
+
+        sidebarOverlay.addEventListener("click", toggleMenu);
+
+        // Cerrar menú al cambiar a vista desktop
+        window.addEventListener("resize", () => {
+          if (window.innerWidth >= 768) {
+            sidebar.classList.remove("-translate-x-full");
+            sidebarOverlay.classList.add("hidden");
+            document.body.classList.remove("overflow-hidden");
+          }
+        });
+
+        // Código original de la página
+        const dateInput = document.getElementById("appointmentDate");
+        const today = DateTime.now().toISODate();
+        dateInput.value = today;
+        loadAppointments(today);
+
+        dateInput.addEventListener("change", () => {
+          loadAppointments(dateInput.value);
+        });
+
+        document.getElementById("searchInput").addEventListener("input", () => {
+          filterAppointments();
+        });
+      });
+
+      function loadAppointments(date) {
+        document.getElementById("dateHeading").textContent =
+          `Citas para el ${DateTime.fromISO(date).toLocaleString(DateTime.DATE_FULL)}`;
+
+        fetch(`/api/vet/appointments?date=${date}`, { credentials: "include" })
+          .then((res) => res.json())
+          .then((data) => renderTable(data))
+          .catch((err) => {
+            console.error("Error loading appointments:", err);
+            renderTable([]);
+          });
+      }
+
+      function renderTable(appointments) {
+        const tbody = document.getElementById("appointmentTableBody");
+        tbody.innerHTML = "";
+
+        if (appointments.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-gray-500">No se encontraron citas para esta fecha.</td></tr>`;
+          return;
+        }
+
+        appointments.forEach((app) => {
+          const row = document.createElement("tr");
+          let prioridadColor = "bg-green-100 text-green-700";
+
+          if (app.prioridad === "MEDIA") {
+            prioridadColor = "bg-yellow-100 text-yellow-700";
+          }
+
+          if (app.prioridad === "ALTA") {
+            prioridadColor = "bg-red-100 text-red-700";
+          }
+
+          row.innerHTML = `
+<td class="px-4 py-2">${app.hora}</td>
+<td class="px-4 py-2">${app.cliente}</td>
+<td class="px-4 py-2">${app.mascota}</td>
+<td class="px-4 py-2">${app.servicio}</td>
+
+<td class="px-4 py-2 text-xs text-gray-600">
+${app.sintomas ?? "Consulta general"}
+</td>
+
+<td class="px-4 py-2">
+<span class="px-2 py-1 rounded text-xs font-semibold ${prioridadColor}">
+${app.prioridad ?? "BAJA"}
+</span>
+</td>
+
+<td class="px-4 py-2">${app.comentarios ?? ""}</td>
+<td class="px-4 py-2">${app.estado}</td>
+
+<td class="px-4 py-2">
+<button onclick="atenderCita()" class="text-blue-600 hover:underline text-sm">
+Atender
+</button>
+</td>
+`;
+          tbody.appendChild(row);
+        });
+      }
+
+      function filterAppointments() {
+        const input = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const rows = document.querySelectorAll("#appointmentTableBody tr");
+
+        rows.forEach((row) => {
+          const text = row.textContent.toLowerCase();
+          row.style.display = text.includes(input) ? "" : "none";
+        });
+      }
+
+      function atenderCita() {
+        window.location.href = "/vet/veterinarian_attend.html";
+      }
+
+      function logout() {
+        document.cookie =
+          "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
+        window.location.href = "/";
+      }
+    </script>
+  </body>
+</html>

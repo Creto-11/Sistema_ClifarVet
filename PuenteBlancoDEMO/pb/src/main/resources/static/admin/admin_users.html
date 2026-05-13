@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión de Usuarios</title>
+  <link rel="icon" href="/img/logo.jpeg" type="image/jpeg">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+  <!-- Barra superior -->
+  <header class="bg-green-600 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20">
+    <h1 class="text-xl font-bold">Clínica y Veterinaria Puente Blanco</h1>
+    <span>Gestión de Usuarios</span>
+  </header>
+
+  <div class="flex flex-1">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-800 text-white flex flex-col justify-between min-h-full">
+      <nav class="flex flex-col p-4 space-y-4">
+        <a href="/admin/admin_dashboard.html" class="flex items-center gap-3 hover:text-blue-300">
+          <i class="fa-solid fa-chart-line"></i> Dashboard
+        </a>
+        <a href="/admin/admin_users.html" class="flex items-center gap-3 text-blue-300 hover:text-blue-300">
+          <i class="fa-solid fa-users"></i> Usuarios
+        </a>
+        <a href="/admin/admin_services.html" class="flex items-center gap-3 hover:text-blue-300">
+          <i class="fa-solid fa-gear"></i> Servicios
+        </a>
+        <a href="/admin/admin_appointments.html" class="flex items-center gap-3">
+          <i class="fa-solid fa-calendar-days"></i> Citas
+        </a>
+        <a href="/admin/admin_payments.html" class="flex items-center gap-3 hover:text-blue-300">
+          <i class="fa-solid fa-dollar-sign"></i> Pagos
+        </a>
+      </nav>
+      <button onclick="logout()" class="m-4 flex items-center justify-center gap-2 bg-gray-100 text-red-500 px-4 py-2 rounded hover:bg-gray-200">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+      </button>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="flex-1 p-6">
+      <div class="container mx-auto">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold">Gestión de Usuarios</h2>
+          <button id="addUserBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Nuevo
+            Usuario</button>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+          <div id="roleTabs" class="flex gap-2 flex-wrap">
+            <button data-role="ALL" class="tab-btn px-3 py-1 rounded bg-blue-100 text-blue-600">Todos</button>
+            <button data-role="VETERINARIAN" class="tab-btn px-3 py-1 rounded">Veterinarios</button>
+            <button data-role="CLIENT" class="tab-btn px-3 py-1 rounded">Clientes</button>
+            <button data-role="INTERN" class="tab-btn px-3 py-1 rounded">Internos</button>
+            <button data-role="ADMIN" class="tab-btn px-3 py-1 rounded">Administradores</button>
+          </div>
+          <div class="relative">
+            <input id="searchInput" type="text" placeholder="Buscar usuarios..."
+              class="pl-8 pr-4 py-2 border rounded w-64">
+            <svg class="absolute left-2 top-2.5 h-4 w-4 text-gray-500" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path d="M21 21l-4.35-4.35M16.65 16.65A7.5 7.5 0 1 0 3 10.5a7.5 7.5 0 0 0 13.65 6.15z" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="bg-white rounded shadow overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-200">
+              <tr>
+                <th class="p-3 text-left">Nombre</th>
+                <th class="p-3 text-left">Correo</th>
+                <th class="p-3 text-left">Rol</th>
+                <th class="p-3 text-left">Estado</th>
+                <th class="p-3 text-left">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div id="userModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md mx-auto">
+      <h2 class="text-xl font-bold mb-4" id="modalTitle">Agregar Nuevo Usuario</h2>
+      <form id="userForm" class="space-y-4">
+        <input type="hidden" id="editUserId">
+        <div>
+          <label class="block text-sm font-medium">Nombre</label>
+          <input type="text" id="userName" required class="w-full border rounded px-3 py-2 mt-1">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Correo Electrónico</label>
+          <input type="email" id="userEmail" required class="w-full border rounded px-3 py-2 mt-1">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Rol</label>
+          <select id="userRole" required class="w-full border rounded px-3 py-2 mt-1">
+            <option value="3">Veterinario</option>
+            <option value="1">Cliente</option>
+            <option value="4">Interno</option>
+            <option value="2">Administrador</option>
+          </select>
+        </div>
+        <div class="flex justify-end gap-2">
+          <button type="button" id="cancelModal" class="px-4 py-2 border rounded">Cancelar</button>
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="addUserModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg p-6 w-full max-w-2xl mx-auto overflow-y-auto max-h-[90vh]">
+      <h2 class="text-xl font-bold mb-4">Agregar Nuevo Usuario</h2>
+      <form id="addUserForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium">Tipo de Documento</label>
+          <select id="tipoDocumento" required class="w-full border rounded px-3 py-2 mt-1">
+            <option value="1">DNI</option>
+            <option value="2">Carnet de Extranjería</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Número de Documento</label>
+          <input type="text" id="numeroIdentidad" required class="w-full border rounded px-3 py-2 mt-1">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Teléfono</label>
+          <input type="text" id="telefono" required class="w-full border rounded px-3 py-2 mt-1">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Nombres</label>
+          <input type="text" id="nombres" required class="w-full border rounded px-3 py-2 mt-1">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Apellido Paterno</label>
+          <input type="text" id="apellidoPaterno" required class="w-full border rounded px-3 py-2 mt-1">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Apellido Materno</label>
+          <input type="text" id="apellidoMaterno" required class="w-full border rounded px-3 py-2 mt-1">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Correo Electrónico</label>
+          <input type="email" id="correo" required class="w-full border rounded px-3 py-2 mt-1">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Dirección</label>
+          <input type="text" id="direccion" required class="w-full border rounded px-3 py-2 mt-1">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Sexo</label>
+          <div class="mt-1">
+            <label class="mr-4"><input type="radio" name="sexo" value="M" required> M</label>
+            <label class="mr-4"><input type="radio" name="sexo" value="F"> F</label>
+            <label><input type="radio" name="sexo" value="NB"> NB</label>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Fecha de Nacimiento</label>
+          <input type="date" id="fechaNacimiento" required class="w-full border rounded px-3 py-2 mt-1">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Contraseña</label>
+          <input type="password" id="contrasena" required class="w-full border rounded px-3 py-2 mt-1">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Rol</label>
+          <select id="rolRegistro" required class="w-full border rounded px-3 py-2 mt-1">
+            <option value="3">Veterinario</option>
+            <option value="1">Cliente</option>
+            <option value="4">Interno</option>
+            <option value="2">Administrador</option>
+          </select>
+        </div>
+        <div class="col-span-1 md:col-span-2 flex justify-end gap-2 pt-4">
+          <button type="button" id="cancelAddUserModal" class="px-4 py-2 border rounded">Cancelar</button>
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de Motivo de Desactivación -->
+  <div id="motivoModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md mx-auto">
+      <h2 class="text-xl font-bold mb-4">Motivo de Desactivación</h2>
+      <form id="motivoForm" class="space-y-4">
+        <input type="hidden" id="userIdToDisable">
+        <div>
+          <label class="block text-sm font-medium">Motivo</label>
+          <textarea id="motivoTexto" rows="4" required class="w-full border rounded px-3 py-2 mt-1"></textarea>
+        </div>
+        <div class="flex justify-end gap-2">
+          <button type="button" id="cancelMotivo" class="px-4 py-2 border rounded">Cancelar</button>
+          <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Desactivar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<!-- Modal de Vista de Usuario -->
+<div id="verUsuarioModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+  <div class="bg-white rounded-lg p-6 w-full max-w-md mx-auto space-y-4">
+    <h2 class="text-xl font-bold mb-4">Detalle del Usuario</h2>
+    <div><strong>Nombre completo:</strong> <span id="verNombre"></span></div>
+    <div><strong>Correo:</strong> <span id="verCorreo"></span></div>
+    <div><strong>Rol:</strong> <span id="verRol"></span></div>
+    <div><strong>Estado:</strong> <span id="verEstado"></span></div>
+    <div id="verMotivoContainer" class="hidden">
+      <strong>Motivo de desactivación:</strong>
+      <p id="verMotivo" class="text-red-600 mt-1 whitespace-pre-line"></p>
+    </div>
+    <div class="flex justify-end pt-4">
+      <button onclick="cerrarVerUsuario()" class="px-4 py-2 border rounded hover:bg-gray-100">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+
+ <script>
+  const apiBase = '/api/admin/users';
+
+  let currentRoleFilter = 'ALL';
+  let allUsers = [];
+  let roles = [];
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const usersTableBody = document.getElementById('usersTableBody');
+    const addUserBtn = document.getElementById('addUserBtn');
+    const modal = document.getElementById('userModal');
+    const cancelModal = document.getElementById('cancelModal');
+    const userForm = document.getElementById('userForm');
+    const editUserId = document.getElementById('editUserId');
+    const searchInput = document.getElementById('searchInput');
+    const roleTabs = document.getElementById('roleTabs');
+    const userRoleSelect = document.getElementById('userRole');
+
+    const addUserModal = document.getElementById("addUserModal");
+    const addUserForm = document.getElementById("addUserForm");
+    const cancelAddUserModal = document.getElementById("cancelAddUserModal");
+
+    // NUEVO: manejo del modal de motivo
+    const motivoModal = document.getElementById("motivoModal");
+    const motivoForm = document.getElementById("motivoForm");
+    const cancelMotivo = document.getElementById("cancelMotivo");
+    const userIdToDisable = document.getElementById("userIdToDisable");
+    const motivoTexto = document.getElementById("motivoTexto");
+
+    cancelMotivo.addEventListener("click", () => {
+      motivoModal.classList.add("hidden");
+      motivoForm.reset();
+    });
+
+    motivoForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const motivo = motivoTexto.value.trim();
+      const userId = userIdToDisable.value;
+
+      if (!motivo || !userId) return;
+
+      fetch(`${apiBase}/${userId}/estado`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ motivo })
+      })
+        .then(() => {
+          motivoModal.classList.add("hidden");
+          motivoForm.reset();
+          loadUsers();
+        })
+        .catch(err => {
+          alert("Error al desactivar usuario: " + err.message);
+        });
+    });
+
+    cancelModal.addEventListener('click', () => {
+      toggleModal(false);
+    });
+
+    function toggleModal(show) {
+      modal.classList.toggle('hidden', !show);
+      if (!show) userForm.reset();
+      editUserId.value = '';
+    }
+
+    function renderUsers(users) {
+      usersTableBody.innerHTML = '';
+      users.forEach(user => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="p-3">${user.nombreCompleto}</td>
+          <td class="p-3">${user.correo}</td>
+          <td class="p-3">${user.rol}</td>
+          <td class="p-3">${user.estado ? 'Activo' : 'Inactivo'}</td>
+          <td class="p-3 space-x-2">
+            <button onclick="toggleEstado(${user.id})" class="text-blue-600 hover:underline">${user.estado ? 'Desactivar' : 'Activar'}</button>
+<button onclick="verUsuario(${user.id})" class="text-green-600 hover:underline">Ver</button>
+          </td>
+        `;
+        usersTableBody.appendChild(tr);
+      });
+    }
+
+    function loadUsers() {
+      fetch(apiBase + (currentRoleFilter !== 'ALL' ? `?rol=${currentRoleFilter}` : ''))
+        .then(res => res.json())
+        .then(users => {
+          allUsers = users;
+          applyFilters();
+        });
+    }
+
+    function loadRoles() {
+      fetch('/api/roles')
+        .then(res => res.json())
+        .then(data => {
+          roles = data;
+          userRoleSelect.innerHTML = '<option value="">Seleccionar rol</option>';
+          roles.forEach(role => {
+            const option = document.createElement('option');
+            option.value = role.id;
+            option.textContent = role.nombre;
+            userRoleSelect.appendChild(option);
+          });
+        });
+    }
+
+    function applyFilters() {
+      let filtered = [...allUsers];
+      const search = searchInput.value.toLowerCase().trim();
+      if (search) {
+        filtered = filtered.filter(u =>
+          u.nombreCompleto.toLowerCase().includes(search) ||
+          u.correo.toLowerCase().includes(search)
+        );
+      }
+      renderUsers(filtered);
+    }
+
+    window.toggleEstado = function (id) {
+      const user = allUsers.find(u => u.id === id);
+      if (!user) return;
+
+      if (user.estado) {
+        userIdToDisable.value = id;
+        motivoModal.classList.remove("hidden");
+      } else {
+        fetch(`${apiBase}/${id}/estado`, { method: 'PATCH' })
+          .then(() => loadUsers());
+      }
+    };
+
+    window.editUser = function (id) {
+      const user = allUsers.find(u => u.id === id);
+      if (!user) return;
+
+      toggleModal(true);
+      document.getElementById('modalTitle').textContent = 'Editar Usuario';
+      document.getElementById('userName').value = user.nombreCompleto;
+      document.getElementById('userEmail').value = user.correo;
+      userRoleSelect.value = user.rolId;
+      editUserId.value = user.id;
+    };
+
+    userForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nombre = document.getElementById('userName').value.trim();
+      const roleId = document.getElementById('userRole').value;
+      const id = editUserId.value;
+
+      if (!nombre || !roleId) return;
+
+      const data = {
+        nombre,
+        roleId: Number(roleId)
+      };
+
+      const method = id ? 'PUT' : 'POST';
+      const url = id ? `${apiBase}/${id}` : apiBase;
+
+      fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).then(() => {
+        toggleModal(false);
+        loadUsers();
+      });
+    });
+
+    addUserBtn.addEventListener("click", () => {
+      addUserModal.classList.remove("hidden");
+    });
+
+    cancelAddUserModal.addEventListener("click", () => {
+      addUserModal.classList.add("hidden");
+      addUserForm.reset();
+    });
+
+    addUserForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const sexoRadio = document.querySelector('input[name="sexo"]:checked');
+
+      const payload = {
+        tipoDocumentoId: document.getElementById("tipoDocumento").value,
+        numeroIdentidad: document.getElementById("numeroIdentidad").value.trim(),
+        telefono: document.getElementById("telefono").value.trim(),
+        nombres: document.getElementById("nombres").value.trim(),
+        apellidoPaterno: document.getElementById("apellidoPaterno").value.trim(),
+        apellidoMaterno: document.getElementById("apellidoMaterno").value.trim(),
+        correo: document.getElementById("correo").value.trim(),
+        direccion: document.getElementById("direccion").value.trim(),
+        sexo: sexoRadio ? sexoRadio.value : "",
+        fechaNacimiento: document.getElementById("fechaNacimiento").value,
+        contrasena: document.getElementById("contrasena").value,
+        roleId: document.getElementById("rolRegistro").value
+      };
+
+      fetch(apiBase, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+        .then(async res => {
+          if (!res.ok) {
+            const text = await res.text();
+            throw new Error(text || "Error al registrar usuario");
+          }
+          return res.json().catch(() => ({}));
+        })
+        .then(() => {
+          addUserModal.classList.add("hidden");
+          addUserForm.reset();
+          loadUsers();
+        })
+        .catch(err => {
+          alert("Error: " + err.message);
+        });
+    });
+
+    roleTabs.addEventListener('click', e => {
+      if (e.target.matches('.tab-btn')) {
+        currentRoleFilter = e.target.dataset.role;
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+          btn.classList.remove('bg-blue-100', 'text-blue-600');
+        });
+        e.target.classList.add('bg-blue-100', 'text-blue-600');
+        loadUsers();
+      }
+    });
+
+    searchInput.addEventListener('input', applyFilters);
+
+    loadRoles();
+    loadUsers();
+  });
+</script>
+<script>
+  function logout() {
+    document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    window.location.href = "/";
+  }
+
+
+  window.verUsuario = function(id) {
+  const user = allUsers.find(u => u.id === id);
+  if (!user) return;
+
+  document.getElementById("verNombre").textContent = user.nombreCompleto;
+  document.getElementById("verCorreo").textContent = user.correo;
+  document.getElementById("verRol").textContent = user.rol;
+  document.getElementById("verEstado").textContent = user.estado ? "Activo" : "Inactivo";
+
+  if (!user.estado && user.motivoDesactivacion) {
+    document.getElementById("verMotivo").textContent = user.motivoDesactivacion;
+    document.getElementById("verMotivoContainer").classList.remove("hidden");
+  } else {
+    document.getElementById("verMotivoContainer").classList.add("hidden");
+  }
+
+  document.getElementById("verUsuarioModal").classList.remove("hidden");
+};
+
+function cerrarVerUsuario() {
+  document.getElementById("verUsuarioModal").classList.add("hidden");
+}
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>CLIFARVET | Centro de Pagos</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        clifarBase: '#1C8C7A',    
+                        clifarDark: '#0F5E52',    
+                        clifarAccent: '#F6B44B',  
+                        clifarBg: '#F2F4F3',      
+                        textMain: '#1F2933',      
+                        textSec: '#6B7280',
+                        stripePurple: '#635BFF'       
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .card-shadow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); }
+        .payment-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .payment-card:hover { transform: translateY(-3px); }
+        
+        /* Estilo para el input de Stripe */
+        #card-element {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #E5E7EB;
+            background: white;
+        }
+    </style>
+</head>
+
+<body class="bg-clifarBg font-sans antialiased text-textMain min-h-screen">
+
+    <header class="h-16 bg-clifarDark text-white px-8 flex justify-between items-center w-full fixed top-0 z-30 shadow-md">
+        <div class="flex items-center gap-4">
+            <button onclick="toggleSidebar()" class="md:hidden text-white p-1">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-paw text-2xl text-clifarAccent"></i>
+                <h1 class="text-xl font-bold tracking-tight">CLIFARVET</h1>
+            </div>
+        </div>
+        <span th:text="'Bienvenido, ' + ${dashboard?.fullName}" class="hidden md:block text-sm font-medium opacity-90"></span>
+    </header>
+
+    <div class="flex w-full">
+        <aside id="sidebar" class="fixed top-16 left-0 w-64 h-[calc(100vh-64px)] bg-[#111827] text-gray-300 flex flex-col justify-between z-40
+              transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out">
+            <div class="py-8 flex flex-col px-4 space-y-2">
+                <p class="text-[10px] uppercase tracking-[2px] text-gray-500 font-bold px-4 mb-4">Gestión</p>
+                <a th:href="@{/dashboard}" class="flex items-center gap-4 p-3.5 rounded-xl hover:bg-white/5 transition-all">
+                    <i class="fa-solid fa-table-columns w-6 text-center"></i> <span>Dashboard</span>
+                </a>
+                <a th:href="@{/book-appointment}" class="flex items-center gap-4 p-3.5 rounded-xl hover:bg-white/5 transition-all">
+                    <i class="fa-solid fa-calendar-plus w-6 text-center"></i> <span>Agendar Cita</span>
+                </a>
+                <a href="#" class="flex items-center gap-4 p-3.5 rounded-xl text-clifarAccent bg-clifarBase/20 border-l-4 border-clifarAccent shadow-lg">
+                    <i class="fa-solid fa-credit-card w-6 text-center font-bold"></i> <span class="font-bold">Pagos</span>
+                </a>
+                <a th:href="@{/appointments}" class="flex items-center gap-4 p-3.5 rounded-xl hover:bg-white/5 transition-all">
+                    <i class="fa-solid fa-clock w-6 text-center text-xl"></i> <span>Ver Citas</span>
+                </a>
+            </div>
+            <div class="p-6">
+                <button onclick="logout()" class="w-full flex items-center justify-center gap-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-3 rounded-xl transition-all font-bold text-xs uppercase tracking-widest">
+                    <i class="fa-solid fa-power-off"></i> Salir
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 p-6 md:p-12 pt-24 md:ml-64 transition-all">
+            <div class="max-w-6xl mx-auto">
+                
+                <div class="mb-10">
+                    <h2 class="text-4xl font-black text-clifarDark tracking-tight">Centro de Pagos</h2>
+                    <p class="text-textSec mt-2">Gestiona tus abonos y revisa el historial de servicios de tus mascotas.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                    
+                    <div class="lg:col-span-2 space-y-12">
+                        
+                        <section>
+                            <div class="flex items-center gap-3 mb-6">
+                                <span class="bg-orange-100 text-orange-600 w-10 h-10 rounded-full flex items-center justify-center shadow-sm">
+                                    <i class="fa-solid fa-hourglass-half"></i>
+                                </span>
+                                <h3 class="text-xl font-bold text-gray-800 uppercase tracking-tight">Pendientes por Pagar</h3>
+                            </div>
+                            <div id="pending-payments" class="grid gap-4 sm:grid-cols-1">
+                                </div>
+                        </section>
+
+                        <section>
+                            <div class="flex items-center gap-3 mb-6">
+                                <span class="bg-green-100 text-green-600 w-10 h-10 rounded-full flex items-center justify-center shadow-sm">
+                                    <i class="fa-solid fa-check-double"></i>
+                                </span>
+                                <h3 class="text-xl font-bold text-gray-800 uppercase tracking-tight">Historial de Pagos</h3>
+                            </div>
+                            <div id="paid-payments" class="grid gap-4 sm:grid-cols-1">
+                                </div>
+                        </section>
+                    </div>
+
+                    <div class="lg:sticky lg:top-28">
+                        <section class="bg-white p-8 rounded-[2rem] shadow-2xl border border-gray-100 ring-1 ring-black/5">
+                            <div class="flex items-center gap-3 mb-8">
+                                <i class="fa-solid fa-shield-halved text-clifarBase text-2xl"></i>
+                                <h3 class="text-xl font-extrabold text-clifarDark tracking-tight">Pagar Servicio</h3>
+                            </div>
+                            
+                            <form id="payment-form" class="space-y-6">
+                                <div>
+                                    <label class="block text-[11px] uppercase tracking-widest font-black text-gray-400 mb-2 px-1">Cita a Liquidar</label>
+                                    <select id="selected-payment"
+                                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-clifarBase focus:border-clifarBase transition-all outline-none font-medium text-gray-700">
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-[11px] uppercase tracking-widest font-black text-gray-400 mb-2 px-1">Detalles del Pago</label>
+                                    <div id="card-element" class="shadow-inner bg-gray-50 border border-gray-200 transition-all"></div>
+                                </div>
+
+                                <div class="bg-blue-50 border-l-4 border-clifarBase p-4 rounded-xl flex gap-3">
+                                    <i class="fa-solid fa-lock text-clifarBase mt-0.5"></i>
+                                    <p class="text-[12px] text-clifarDark font-medium leading-tight">
+                                        Procesamiento seguro via <b>Stripe</b>. No almacenamos los datos de tu tarjeta.
+                                    </p>
+                                </div>
+
+                                <button id="submit-button"
+                                    class="w-full bg-clifarBase hover:bg-clifarDark text-white font-black py-4 rounded-2xl shadow-xl shadow-clifarBase/20 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 uppercase tracking-widest text-sm">
+                                    Finalizar Pago <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+
+                                <p id="payment-status" class="text-center text-xs font-bold uppercase tracking-wider"></p>
+                            </form>
+                        </section>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const stripe = Stripe("pk_test_51RalEZRoNCO7cM0RzhlBfpNSCY3xvpl9MVsWBHSe4KE98iAtBeZ91f8JCPyL7K7Ti5xsDLDL5XGM7bcz5401VQGo00iBzXiRoV");
+        const elements = stripe.elements();
+        const card = elements.create("card", {
+            style: {
+                base: { fontSize: '16px', color: '#1F2933', '::placeholder': { color: '#9CA3AF' } }
+            }
+        });
+        card.mount("#card-element");
+
+        let selectedCitas = [];
+
+        async function fetchScheduledAppointments() {
+            const res = await fetch("/api/client/appointments/scheduled", { credentials: "include" });
+            const citas = await res.json();
+            const container = document.getElementById("pending-payments");
+            const select = document.getElementById("selected-payment");
+
+            container.innerHTML = "";
+            select.innerHTML = "";
+            selectedCitas = citas;
+
+            if(citas.length === 0) {
+                container.innerHTML = `<div class="p-8 text-center bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 text-gray-400 font-medium">No tienes pagos pendientes actualmente ✨</div>`;
+                return;
+            }
+
+            citas.forEach(cita => {
+                const cardHtml = `
+                <div class="bg-white border border-gray-100 card-shadow rounded-2xl p-6 payment-card flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="flex items-center gap-5 w-full">
+                        <div class="w-14 h-14 bg-orange-50 text-orange-500 rounded-2xl flex items-center justify-center text-2xl shadow-sm">
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                        </div>
+                        <div>
+                            <p class="font-black text-clifarDark text-lg tracking-tight">${cita.tipoServicio}</p>
+                            <div class="flex flex-wrap gap-x-4 gap-y-1 mt-1">
+                                <span class="text-sm text-textSec"><i class="fa-solid fa-dog mr-1"></i> ${cita.nombreMascota}</span>
+                                <span class="text-sm text-textSec"><i class="fa-solid fa-calendar mr-1 text-clifarBase"></i> ${cita.fechaCita}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex md:flex-col items-center md:items-end justify-between w-full md:w-auto border-t md:border-t-0 md:border-l border-gray-100 pt-4 md:pt-0 md:pl-6">
+                        <p class="text-2xl font-black text-orange-600 tracking-tighter">S/ ${(cita.monto).toFixed(2)}</p>
+                        <span class="bg-orange-100 text-orange-600 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest mt-1">Pendiente</span>
+                    </div>
+                </div>`;
+                container.innerHTML += cardHtml;
+
+                const opt = document.createElement("option");
+                opt.value = cita.citaId;
+                opt.textContent = `${cita.tipoServicio}: ${cita.nombreMascota} - S/ ${(cita.monto).toFixed(2)}`;
+                select.appendChild(opt);
+            });
+        }
+
+        async function fetchPaidAppointments() {
+            const res = await fetch("/api/client/appointments/pagadas", { credentials: "include" });
+            const citas = await res.json();
+            const container = document.getElementById("paid-payments");
+            container.innerHTML = "";
+
+            citas.forEach(cita => {
+                const cardHtml = `
+                <div class="bg-white border border-gray-100 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center opacity-80 gap-4">
+                    <div class="flex items-center gap-5 w-full">
+                        <div class="w-12 h-12 bg-green-50 text-green-500 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-700">${cita.tipoServicio}</p>
+                            <p class="text-xs text-textSec uppercase tracking-wider font-semibold">Mascota: ${cita.nombreMascota} | ${cita.fechaCita}</p>
+                        </div>
+                    </div>
+                    <div class="text-right w-full md:w-auto">
+                        <p class="text-lg font-black text-green-600">S/ ${(cita.monto).toFixed(2)}</p>
+                        <span class="text-[10px] font-bold text-green-500 uppercase tracking-tighter">Pagado Exitosamente</span>
+                    </div>
+                </div>`;
+                container.innerHTML += cardHtml;
+            });
+        }
+
+        fetchScheduledAppointments();
+        fetchPaidAppointments();
+
+        const form = document.getElementById("payment-form");
+        const status = document.getElementById("payment-status");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById("submit-button");
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Procesando...`;
+
+            const citaId = document.getElementById("selected-payment").value;
+            const cita = selectedCitas.find(c => c.citaId == citaId);
+
+            if (!cita) {
+                Swal.fire('Error', 'Selecciona una cita válida', 'error');
+                btn.disabled = false;
+                btn.innerHTML = `Finalizar Pago <i class="fa-solid fa-arrow-right"></i>`;
+                return;
+            }
+
+            const { error, paymentMethod } = await stripe.createPaymentMethod({ type: "card", card: card });
+
+            if (error) {
+                status.className = "text-red-500 mt-4 font-bold text-center";
+                status.textContent = "❌ " + error.message;
+                btn.disabled = false;
+                btn.innerHTML = `Finalizar Pago <i class="fa-solid fa-arrow-right"></i>`;
+                return;
+            }
+
+            try {
+                const res = await fetch("/api/payments/create", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        paymentMethodId: paymentMethod.id,
+                        amount: cita.monto,
+                        currency: "pen",
+                        description: `${cita.tipoServicio} - ${cita.nombreMascota}`,
+                        citaId: cita.citaId
+                    })
+                });
+
+                if (res.ok) {
+                    Swal.fire({
+                        title: '¡Pago Exitoso!',
+                        text: 'El servicio ha sido liquidado correctamente.',
+                        icon: 'success',
+                        confirmButtonColor: '#1C8C7A'
+                    });
+                    card.clear();
+                    await fetchScheduledAppointments();
+                    await fetchPaidAppointments();
+                } else {
+                    const errMsg = await res.text();
+                    Swal.fire('Error de Pago', errMsg, 'error');
+                }
+            } catch (err) {
+                Swal.fire('Error', 'Hubo un problema de conexión', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `Finalizar Pago <i class="fa-solid fa-arrow-right"></i>`;
+                status.textContent = "";
+            }
+        });
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        }
+
+        function logout() {
+            document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+            window.location.href = "/";
+        }
+    </script>
+</body>
+</html>

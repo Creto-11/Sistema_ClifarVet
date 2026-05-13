@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>CLIFARVET | Nuestros Veterinarios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        clifarBase: '#1C8C7A',
+                        clifarDark: '#0F5E52',
+                        clifarAccent: '#F6B44B',
+                        clifarBg: '#F2F4F3',
+                        textMain: '#1F2933',
+                        textSec: '#6B7280',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up { animation: fade-in-up 0.6s ease-out both; }
+    </style>
+</head>
+
+<body class="bg-clifarBg font-sans antialiased text-textMain min-h-screen">
+
+    <header class="h-16 bg-clifarDark text-white px-8 flex justify-between items-center w-full fixed top-0 z-30 shadow-md">
+        <div class="flex items-center gap-4">
+            <button onclick="toggleSidebar()" class="md:hidden text-white p-1">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-paw text-2xl text-clifarAccent"></i>
+                <h1 class="text-xl font-bold tracking-tight uppercase">CLIFARVET</h1>
+            </div>
+        </div>
+        <span th:text="'Bienvenido, ' + ${dashboard.fullName}" class="hidden md:block text-sm font-medium opacity-90"></span>
+    </header>
+
+    <div class="flex w-full">
+        <aside id="sidebar" class="fixed top-16 left-0 w-64 h-[calc(100vh-64px)] bg-[#111827] text-gray-300 flex flex-col justify-between z-40
+              transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl">
+            <div class="py-8 flex flex-col px-4 space-y-2">
+                <p class="text-[10px] uppercase tracking-[2px] text-gray-500 font-bold px-4 mb-4">Menú Principal</p>
+                <a th:href="@{/dashboard}" class="flex items-center gap-4 p-3.5 rounded-xl hover:bg-white/5 transition-all group">
+                    <i class="fa-solid fa-table-columns w-6 text-center group-hover:text-clifarAccent"></i> <span>Dashboard</span>
+                </a>
+                <a th:href="@{/appointments}" class="flex items-center gap-4 p-3.5 rounded-xl hover:bg-white/5 transition-all group">
+                    <i class="fa-solid fa-calendar-check w-6 text-center group-hover:text-clifarAccent"></i> <span>Mis Citas</span>
+                </a>
+                <a href="#" class="flex items-center gap-4 p-3.5 rounded-xl text-clifarAccent bg-clifarBase/20 border-l-4 border-clifarAccent shadow-lg">
+                    <i class="fa-solid fa-user-doctor w-6 text-center font-bold"></i> <span class="font-bold">Veterinarios</span>
+                </a>
+                <a th:href="@{/vaccination}" class="flex items-center gap-4 p-3.5 rounded-xl hover:bg-white/5 transition-all group">
+                    <i class="fa-solid fa-syringe w-6 text-center group-hover:text-clifarAccent"></i> <span>Vacunación</span>
+                </a>
+            </div>
+            <div class="p-6 border-t border-gray-800">
+                <button onclick="logout()" class="w-full flex items-center justify-center gap-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-3 rounded-xl transition-all font-bold text-xs uppercase tracking-widest">
+                    <i class="fa-solid fa-power-off"></i> Salir
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 p-6 md:p-12 pt-24 md:ml-64 transition-all">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-12 animate-fade-in-up">
+                    <h2 class="text-4xl font-black text-clifarDark tracking-tight">Nuestros Especialistas</h2>
+                    <div class="w-20 h-1.5 bg-clifarAccent mx-auto mt-4 rounded-full"></div>
+                    <p class="text-textSec mt-4 font-medium max-w-lg mx-auto">Conoce al equipo de profesionales dedicados a la salud y bienestar de tus mascotas.</p>
+                </div>
+
+                <div id="veterinariosContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        }
+
+        // Cargar Veterinarios
+        fetch("/api/client/veterinarians", { credentials: "include" })
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById("veterinariosContainer");
+                data.forEach((vet, index) => {
+                    const card = document.createElement("div");
+                    // Retraso escalonado para la animación
+                    card.style.animationDelay = `${index * 0.1}s`;
+                    card.className = "bg-white rounded-[2rem] shadow-xl border border-gray-100 p-8 flex flex-col items-center text-center animate-fade-in-up hover:scale-[1.03] transition-all duration-300 group";
+
+                    card.innerHTML = `
+                        <div class="relative mb-6">
+                            <div class="absolute inset-0 bg-clifarAccent rounded-full blur-lg opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                            <img src="img/vetgato.jpg" alt="Veterinario" class="relative w-32 h-32 object-cover rounded-full border-4 border-white shadow-lg" />
+                        </div>
+                        <h3 class="text-xl font-black text-clifarDark mb-1">Dr. ${vet.nombreCompleto}</h3>
+                        <span class="inline-block bg-clifarBase/10 text-clifarBase px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-full mb-4 border border-clifarBase/20">
+                            ${vet.especialidad}
+                        </span>
+                        <p class="text-sm text-textSec font-medium leading-relaxed">
+                            Comprometido con la excelencia médica y el trato humano para el cuidado integral de cada paciente.
+                        </p>
+                        <div class="mt-6 flex gap-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-clifarBase hover:bg-clifarBase hover:text-white transition-colors cursor-pointer border border-gray-100">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-clifarBase hover:bg-clifarBase hover:text-white transition-colors cursor-pointer border border-gray-100">
+                                <i class="fa-solid fa-calendar-plus"></i>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            });
+
+        function logout() {
+            document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+            window.location.href = "/";
+        }
+    </script>
+</body>
+</html>

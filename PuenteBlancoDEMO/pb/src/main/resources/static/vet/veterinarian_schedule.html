@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Horarios</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    .sidebar-overlay {
+      transition: opacity 0.3s ease;
+      z-index: 40;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    @media (max-width: 767px) {
+      body.menu-open {
+        overflow: hidden;
+      }
+    }
+
+    #sidebar {
+      z-index: 50;
+    }
+
+    /* Estilos para formulario responsive */
+    @media (max-width: 640px) {
+      .form-container {
+        padding: 1rem;
+      }
+      
+      .dias-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .horas-container {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <!-- Encabezado superior -->
+  <header class="bg-green-600 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20">
+    <div class="flex items-center">
+      <button id="menuToggle" class="mr-4 md:hidden">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+      <h1 class="text-lg sm:text-xl font-bold">Clínica Puente Blanco</h1>
+    </div>
+    <div class="flex items-center space-x-3 p-2 rounded-lg bg-green-700 bg-opacity-80">
+      <i class="fas fa-user-md text-lg text-green-300"></i>
+      <span class="font-medium">Veterinario/a</span>
+      <span id="vetName" class="font-medium">Cargando...</span>
+    </div>
+  </header>
+
+  <div class="flex flex-1">
+    <!-- Sidebar con menú móvil -->
+    <aside id="sidebar"
+      class="w-64 bg-gray-800 text-white flex flex-col justify-between fixed h-full md:h-auto md:sticky md:top-0 left-0 z-30 transform -translate-x-full md:transform-none transition-transform duration-300 overflow-y-auto">
+      <div class="p-4">
+        <nav class="flex flex-col space-y-3">
+          <a href="/vet/veterinarian_dashboard.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
+              class="fa-solid fa-table-columns"></i>Resumen Clínico</a>
+          <a href="/vet/veterinarian_appointments.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
+              class="fa-solid fa-calendar-days"></i> Citas Agendadas</a>
+          <a href="/vet/veterinarian_attend.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
+              class="fa-solid fa-stethoscope"></i> Atender Cita</a>
+          <a href="/vet/veterinarian_clinicalreport.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
+              class="fa-solid fa-user"></i> Historial del paciente</a>
+          <a href="/vet/veterinarian_schedule.html" class="flex items-center gap-3 p-2 rounded bg-gray-700 text-green-300"><i
+              class="fa-solid fa-clock"></i> Horario</a>
+          <a href="/vet/vet_assign.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
+              class="fa-solid fa-user"></i> Asignación</a>
+          <a href="/vet/veterinarian_validate.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
+              class="fa-solid fa-check-double"></i> Validaciones</a>
+          <a href="/vet/veterinarian_reports.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
+              class="fa-solid fa-chart-pie"></i> Reportes</a>
+        </nav>
+      </div>
+      <button onclick="logout()"
+        class="m-4 flex items-center justify-center gap-2 bg-gray-100 text-red-500 px-4 py-2 rounded-lg hover:shadow-md">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+      </button>
+    </aside>
+
+    <!-- Overlay para móvil -->
+    <div class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"></div>
+
+    <!-- Contenido principal -->
+    <main class="flex-1 p-6 md:p-8 space-y-6 transition-all duration-300">
+      <h2 class="text-2xl font-bold text-gray-800">Gestionar Horario</h2>
+
+      <div class="bg-white rounded-lg shadow-md p-6 max-w-2xl mx-auto form-container">
+        <form id="scheduleForm" class="space-y-6">
+          <div>
+            <label class="block font-medium text-gray-700 mb-3">Selecciona los días:</label>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 dias-grid">
+              <label class="flex items-center space-x-2 p-2 rounded hover:bg-gray-50">
+                <input type="checkbox" name="dias" value="Lunes" class="rounded text-green-600 focus:ring-green-500">
+                <span>Lunes</span>
+              </label>
+              <label class="flex items-center space-x-2 p-2 rounded hover:bg-gray-50">
+                <input type="checkbox" name="dias" value="Martes" class="rounded text-green-600 focus:ring-green-500">
+                <span>Martes</span>
+              </label>
+              <label class="flex items-center space-x-2 p-2 rounded hover:bg-gray-50">
+                <input type="checkbox" name="dias" value="Miércoles" class="rounded text-green-600 focus:ring-green-500">
+                <span>Miércoles</span>
+              </label>
+              <label class="flex items-center space-x-2 p-2 rounded hover:bg-gray-50">
+                <input type="checkbox" name="dias" value="Jueves" class="rounded text-green-600 focus:ring-green-500">
+                <span>Jueves</span>
+              </label>
+              <label class="flex items-center space-x-2 p-2 rounded hover:bg-gray-50">
+                <input type="checkbox" name="dias" value="Viernes" class="rounded text-green-600 focus:ring-green-500">
+                <span>Viernes</span>
+              </label>
+              <label class="flex items-center space-x-2 p-2 rounded hover:bg-gray-50">
+                <input type="checkbox" name="dias" value="Sábado" class="rounded text-green-600 focus:ring-green-500">
+                <span>Sábado</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="flex gap-4 horas-container">
+            <div class="flex-1">
+              <label for="horaInicio" class="block text-sm font-medium text-gray-700 mb-1">Hora de Inicio</label>
+              <input type="time" id="horaInicio" name="horaInicio" required 
+                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border">
+            </div>
+            <div class="flex-1">
+              <label for="horaFin" class="block text-sm font-medium text-gray-700 mb-1">Hora de Fin</label>
+              <input type="time" id="horaFin" name="horaFin" required 
+                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border">
+            </div>
+          </div>
+
+          <div class="pt-2">
+            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition duration-200">
+              <i class="fas fa-calendar-check mr-2"></i> Solicitar Horario
+            </button>
+            <p id="responseMsg" class="text-green-600 text-sm mt-3 text-center hidden">
+              <i class="fas fa-check-circle mr-1"></i> Horario solicitado correctamente.
+            </p>
+            <p id="errorMsg" class="text-red-600 text-sm mt-3 text-center hidden">
+              <i class="fas fa-exclamation-circle mr-1"></i> Error al solicitar el horario.
+            </p>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Función para alternar el menú
+    function toggleMenu() {
+      const isOpen = sidebar.classList.contains('-translate-x-full');
+      
+      if (isOpen) {
+        // Abrir menú
+        sidebar.classList.remove('-translate-x-full');
+        sidebarOverlay.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+      } else {
+        // Cerrar menú
+        sidebar.classList.add('-translate-x-full');
+        sidebarOverlay.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Cargar nombre del veterinario
+      fetch('/api/vet/current-vet-name', {
+        credentials: 'include'
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Error al obtener datos del veterinario');
+        return response.json();
+      })
+      .then(data => {
+        document.getElementById('vetName').textContent = data.fullName;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('vetName').textContent = 'Veterinario';
+      });
+
+      // Elementos del menú móvil
+      const menuToggle = document.getElementById('menuToggle');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.querySelector('.sidebar-overlay');
+
+      // Eventos para el menú móvil
+      menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMenu();
+      });
+
+      sidebarOverlay.addEventListener('click', toggleMenu);
+
+      // Cerrar menú al cambiar a vista desktop
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) {
+          sidebar.classList.remove('-translate-x-full');
+          sidebarOverlay.classList.add('hidden');
+          document.body.classList.remove('overflow-hidden');
+        }
+      });
+    });
+
+    function logout() {
+      document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
+      window.location.href = "/";
+    }
+
+    document.getElementById("scheduleForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const diasSeleccionados = Array.from(document.querySelectorAll("input[name='dias']:checked"))
+                                     .map(cb => cb.value);
+      const horaInicio = document.getElementById("horaInicio").value;
+      const horaFin = document.getElementById("horaFin").value;
+
+      const payload = diasSeleccionados.map(dia => ({
+        diaSemana: dia,
+        horaComienzo: horaInicio,
+        horaFin: horaFin
+      }));
+
+      const responseMsg = document.getElementById("responseMsg");
+      const errorMsg = document.getElementById("errorMsg");
+
+      responseMsg.classList.add("hidden");
+      errorMsg.classList.add("hidden");
+
+      try {
+        const res = await fetch("/api/vet/schedule/update", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          credentials: "include",
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          responseMsg.classList.remove("hidden");
+          // Limpiar formulario después de éxito
+          document.querySelectorAll("input[name='dias']").forEach(cb => cb.checked = false);
+          document.getElementById("horaInicio").value = "";
+          document.getElementById("horaFin").value = "";
+        } else {
+          errorMsg.classList.remove("hidden");
+        }
+      } catch (err) {
+        errorMsg.classList.remove("hidden");
+      }
+    });
+  </script>
+</body>
+</html>

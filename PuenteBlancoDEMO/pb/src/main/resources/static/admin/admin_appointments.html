@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Gestión de Citas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <!-- Barra superior -->
+  <header class="bg-green-600 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20">
+    <h1 class="text-xl font-bold">Clínica y Veterinaria Puente Blanco</h1>
+    <span>Gestión de Citas</span>
+  </header>
+
+  <div class="flex flex-1">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-800 text-white flex flex-col justify-between min-h-full">
+      <nav class="flex flex-col p-4 space-y-4">
+        <a href="/admin/admin_dashboard.html" class="flex items-center gap-3 hover:text-blue-300">
+          <i class="fa-solid fa-chart-line"></i> Dashboard
+        </a>
+        <a href="/admin/admin_users.html" class="flex items-center gap-3 hover:text-blue-300">
+          <i class="fa-solid fa-users"></i> Usuarios
+        </a>
+        <a href="/admin/admin_services.html" class="flex items-center gap-3 hover:text-blue-300">
+          <i class="fa-solid fa-gear"></i> Servicios
+        </a>
+        <a href="/admin/admin_appointments.html" class="flex items-center gap-3 text-blue-300">
+          <i class="fa-solid fa-calendar-days"></i> Citas
+        </a>
+        <a href="/admin/admin_payments.html" class="flex items-center gap-3 hover:text-blue-300">
+          <i class="fa-solid fa-dollar-sign"></i> Pagos
+        </a>
+      </nav>
+      <button onclick="logout()"
+        class="m-4 flex items-center justify-center gap-2 bg-gray-100 text-red-500 px-4 py-2 rounded hover:bg-gray-200">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+      </button>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="flex-1 p-6">
+      <h2 class="text-2xl font-semibold mb-4">Gestión de Citas</h2>
+
+      <!-- Filtros -->
+      <div class="flex flex-wrap gap-4 mb-6">
+        <input type="date" id="filtroFecha" class="border rounded px-3 py-2" />
+        <select id="filtroEstado" class="border rounded px-3 py-2">
+          <option value="">Todos los estados</option>
+          <option value="PROGRAMADA">Programada</option>
+          <option value="COMPLETADA">Completada</option>
+          <option value="CANCELADA">Cancelada</option>
+          <option value="DERIVADA">Derivada</option>
+          <option value="VALIDADA">Validada</option>
+          <option value="PAGADA">Pagada</option>
+        </select>
+        <input type="text" id="filtroDoctor" placeholder="Buscar doctor..." class="border rounded px-3 py-2" />
+        <input type="text" id="filtroClienteMascota" placeholder="Buscar cliente o mascota..."
+          class="border rounded px-3 py-2" />
+      </div>
+
+      <h2 class="text-xl font-semibold mb-4">Lista de Citas Programadas</h2>
+
+      <div class="bg-white shadow-md rounded overflow-x-auto">
+        <!-- Fragmento de la tabla modificado -->
+        <table class="w-full text-sm">
+          <thead class="bg-gray-100 text-left">
+            <tr>
+              <th class="p-3">Fecha</th>
+              <th class="p-3">Hora</th>
+              <th class="p-3">Cliente</th>
+              <th class="p-3">Mascota</th>
+              <th class="p-3">Servicio</th>
+              <th class="p-3">Profesional</th>
+              <th class="p-3">Estado</th>
+            </tr>
+          </thead>
+          <tbody id="appointmentsTableBody">
+            <!-- Citas dinámicas -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal edición solo veterinario y servicio -->
+  <div id="editModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
+      <h3 class="text-xl font-bold mb-4">Editar Cita</h3>
+      <form id="editForm" class="space-y-4">
+        <input type="hidden" id="editId">
+
+        <!-- Veterinario -->
+        <div>
+          <label class="block text-sm font-semibold mb-1">Nuevo Veterinario</label>
+          <select id="editProfesional" class="w-full border rounded px-3 py-2" required>
+            <option value="1">Dr. Luis Perez Gutierrez</option>
+            <option value="2">Dra. Carla Mendoza Ramirez</option>
+            <option value="2">Dra. Kiara Monzon Ramirez</option>
+
+            <!-- Agrega más dinámicamente si lo deseas -->
+          </select>
+        </div>
+
+        <!-- Servicio -->
+        <div>
+          <label class="block text-sm font-semibold mb-1">Nuevo Servicio</label>
+          <select id="editService" class="w-full border rounded px-3 py-2" required>
+            <option value="1">Consulta médica general para revisión de mascotas</option>
+            <option value="2">Aplicación de vacuna antirrábica</option>
+            <option value="3">Desparasitación interna y externa </option>
+            <option value="4">Limpieza de oídos y corte de uñas </option>
+            <option value="5">Evaluación prequirúrgica especializada </option>
+
+            <!-- Agrega más servicios si deseas -->
+          </select>
+        </div>
+
+        <!-- Botones -->
+        <div class="flex justify-end gap-2 pt-4">
+          <button type="button" id="cancelEdit"
+            class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded">Cancelar</button>
+          <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Guardar
+            Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Script con filtros y edición -->
+  <script>
+    const apiUrl = "/api/admin/appointments";
+    let todasLasCitas = [];
+
+    function cargarCitas() {
+      fetch(apiUrl)
+        .then(res => res.json())
+        .then(citas => {
+          todasLasCitas = citas;
+          mostrarCitasFiltradas();
+        });
+    }
+
+   // Código JS modificado para no incluir columna de acciones
+function mostrarCitasFiltradas() {
+  const fecha = document.getElementById("filtroFecha").value;
+  const estado = document.getElementById("filtroEstado").value.toLowerCase();
+  const doctor = document.getElementById("filtroDoctor").value.toLowerCase();
+  const clienteMascota = document.getElementById("filtroClienteMascota").value.toLowerCase();
+
+  const tbody = document.getElementById("appointmentsTableBody");
+  tbody.innerHTML = "";
+
+  todasLasCitas
+    .sort((a, b) => new Date(b.fecha + 'T' + b.hora) - new Date(a.fecha + 'T' + a.hora))
+    .filter(cita => {
+      const coincideFecha = !fecha || cita.fecha === fecha;
+      const coincideEstado = !estado || cita.estadoCita.toLowerCase() === estado;
+      const coincideDoctor = !doctor || cita.doctor.toLowerCase().includes(doctor);
+      const coincideClienteMascota = !clienteMascota ||
+        cita.cliente.toLowerCase().includes(clienteMascota) ||
+        cita.mascota.toLowerCase().includes(clienteMascota);
+      return coincideFecha && coincideEstado && coincideDoctor && coincideClienteMascota;
+    })
+    .forEach(cita => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="p-2">${cita.fecha}</td>
+        <td class="p-2">${cita.hora}</td>
+        <td class="p-2">${cita.cliente}</td>
+        <td class="p-2">${cita.mascota}</td>
+        <td class="p-2">${cita.servicio}</td>
+        <td class="p-2">${cita.doctor}</td>
+        <td class="p-2">${cita.estadoCita}</td>`;
+      tbody.appendChild(tr);
+    });
+}
+
+
+    function editarCita(cita) {
+      document.getElementById("editId").value = cita.id;
+      document.getElementById("editProfesional").value = cita.idProfesional;
+      document.getElementById("editService").value = cita.idServicio;
+      document.getElementById("editModal").classList.remove("hidden");
+    }
+
+
+    document.getElementById("cancelEdit").addEventListener("click", () => {
+      document.getElementById("editModal").classList.add("hidden");
+    });
+
+    document.getElementById("editForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const id = document.getElementById("editId").value;
+      const dto = {
+        veterinarioId: Number(document.getElementById("editProfesional").value),
+        servicioId: Number(document.getElementById("editService").value),
+      };
+
+      console.log("Enviando DTO:", dto);
+
+      fetch(`${apiUrl}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dto),
+      })
+        .then(res => {
+          if (!res.ok) throw new Error("Error al guardar");
+          return res.text(); // como el backend devuelve 204 No Content
+        })
+        .then(() => {
+          document.getElementById("editModal").classList.add("hidden");
+          cargarCitas();
+        })
+        .catch(err => {
+          alert("Hubo un error al actualizar la cita.");
+          console.error(err);
+        });
+    });
+
+
+
+
+    ["filtroFecha", "filtroEstado", "filtroDoctor", "filtroClienteMascota"].forEach(id => {
+      document.getElementById(id).addEventListener("input", mostrarCitasFiltradas);
+    });
+
+    document.addEventListener("DOMContentLoaded", cargarCitas);
+
+    function logout() {
+      document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      window.location.href = "/";
+    }
+  </script>
+
+</body>
+
+</html>
