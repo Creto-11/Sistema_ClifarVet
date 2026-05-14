@@ -35,20 +35,21 @@
 
 <body class="bg-clifarBg font-sans antialiased text-textMain min-h-screen">
 
-    <header class="h-16 bg-clifarDark text-white px-8 flex justify-between items-center w-full fixed top-0 z-30 shadow-md">
-        <div class="flex items-center gap-4">
-            <button onclick="toggleSidebar()" class="md:hidden text-white p-1">
+    <header class="h-16 bg-clifarDark text-white px-4 md:px-6 flex justify-between items-center w-full fixed top-0 z-30 shadow-md">
+        <div class="flex items-center gap-3">
+            <button onclick="toggleSidebar()" class="md:hidden text-white focus:outline-none hover:bg-white/10 p-1 rounded-md transition">
                 <i class="fa-solid fa-bars text-xl"></i>
             </button>
+
             <div class="flex items-center gap-2">
                 <i class="fa-solid fa-paw text-2xl text-clifarAccent"></i>
-                <h1 class="text-xl font-bold tracking-tight uppercase">CLIFARVET</h1>
+                <h1 class="text-xl font-bold tracking-tight">CLIFARVET <span class="font-light hidden sm:inline">|
+                        Puente Blanco</span></h1>
             </div>
         </div>
-        <span th:text="'Bienvenido, ' + ${dashboard.fullName}" class="hidden md:block text-sm font-medium opacity-90"></span>
     </header>
 
-    <div class="flex w-full">
+    <div class="flex w-full pt-16">
         <aside id="sidebar" class="fixed top-16 left-0 w-64 h-[calc(100vh-64px)] bg-[#111827] text-gray-300 flex flex-col justify-between z-40
               transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out">
             
@@ -60,11 +61,10 @@
                     <span class="font-medium">Dashboard</span>
                 </a>
 
-                <a th:href="@{/appointments}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-all">
-                    <i class="fa-solid fa-calendar-plus w-5 text-center text-xl font-bold"></i>
-                    <span class="font-bold">Agendar Cita</span>
+                <a th:href="@{/book-appointment}" class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all">
+                    <i class="fa-solid fa-calendar-plus w-5 text-center text-xl"></i>
+                    <span class="font-medium">Agendar Cita</span>
                 </a>
-
                 <a th:href="@{/appointments}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-all">
                     <i class="fa-solid fa-clock w-5 text-center text-xl"></i>
                     <span class="font-medium">Ver Citas</span>
@@ -84,7 +84,7 @@
             </div>
         </aside>
 
-        <main class="flex-1 p-6 md:p-12 pt-24 md:ml-64 transition-all">
+        <main class="flex-1 p-4 md:p-8 ml-0 md:ml-64 transition-all duration-300">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-12 animate-fade-in-up">
                     <h2 class="text-4xl font-black text-clifarDark tracking-tight">Nuestros Especialistas</h2>
