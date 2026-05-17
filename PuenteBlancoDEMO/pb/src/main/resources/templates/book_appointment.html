@@ -283,37 +283,6 @@
                 });
         }
 
-        document.addEventListener("change", (e) => {
-            if (e.target.classList.contains("sintoma")) {
-                const sintomas = document.querySelectorAll('.sintoma:checked');
-                const prioridadSelect = document.getElementById("prioridad");
-                const submitBtn = document.getElementById("submitBtn");
-                let nivel = "BAJA";
-
-                sintomas.forEach(s => {
-                    if (s.value === "emergencia") nivel = "ALTA";
-                    else if (nivel !== "ALTA") nivel = "MEDIA";
-                });
-
-                prioridadSelect.value = nivel;
-                
-                if (nivel === "ALTA") {
-                    submitBtn.disabled = true;
-                    submitBtn.classList.replace('bg-clifarCTA', 'bg-gray-400');
-                    submitBtn.innerHTML = "🚨 EMERGENCIA: ACUDA A CLÍNICA";
-                    Swal.fire({
-                        icon: 'warning',
-                        title: '¡Alerta de Emergencia!',
-                        text: 'Los síntomas indican un estado crítico. No reserve cita, diríjase de inmediato a urgencias.',
-                        confirmButtonColor: '#F26A4B'
-                    });
-                } else {
-                    submitBtn.disabled = false;
-                    submitBtn.classList.replace('bg-gray-400', 'bg-clifarCTA');
-                    submitBtn.innerHTML = '<i class="fa-solid fa-credit-card text-xl"></i> Proceder al Pago';
-                }
-            }
-        });
 
 // ENVIAR FORMULARIO Y ENRUTAR AL PAGO
 document.getElementById('appointmentForm').addEventListener('submit', async (e) => {
@@ -364,7 +333,7 @@ document.getElementById('appointmentForm').addEventListener('submit', async (e) 
 
         Swal.fire({
             icon: 'success',
-            title: '¡Cita Reservada!',
+            title: '¡Cita Registrada!',
             text: 'Redirigiendo a la pasarela de pago para asegurar tu cupo...',
             confirmButtonColor: '#1C8C7A',
             timer: 1800,
