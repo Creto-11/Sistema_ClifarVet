@@ -41,59 +41,60 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers(
-            "/css/**",
-            "/js/**",
-            "/images/**",
-            "/favicon.ico",
-            "/webjars/**",
-            "/vet/**",
-            "/vet/veterinarian_dashboard.html"
-        );
+                "/css/**",
+                "/js/**",
+                "/images/**",
+                "/favicon.ico",
+                "/webjars/**",
+                "/vet/**",
+                "/vet/veterinarian_dashboard.html");
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/", "/index.html",
-                    "/css/**", "/js/**", "/img/**",
-                    "/api/auth/**",
-                    "/api/reniec/**",
-                    "/api/recovery/**",
-                    "/vet/veterinarian_dashboard.html"
-                ).permitAll()
-                .requestMatchers(
-                    "/dashboard",
-                    "/calendar",
-                    "/book-appointment",
-                    "/cancel-appointment",
-                    "/appointments/**",
-                    "/logout",
-                    "/pets/**",
-                    "/api/payments/**",
-                    "/payment-form",
-                    "/api/client/**"
-                ).hasRole("CLIENT")
-                .requestMatchers(
-                    "/vet/**",
-                    "/api/vet/**",
-                    "/api/vet/reports/**"
-                ).hasRole("VETERINARIAN")
-                .requestMatchers(
-                    "/intern/**",
-                    "/api/intern/**"
-                ).hasRole("INTERN")
-                .requestMatchers(
-                    "/admin/**",
-                    "/api/admin/**",
-                    "/api/roles"
-                ).hasRole("ADMIN")
-                .anyRequest().authenticated())
-            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-            .build();
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/", "/index.html",
+                                "/css/**", "/js/**", "/img/**",
+                                "/api/auth/**",
+                                "/api/reniec/**",
+                                "/api/recovery/**",
+                                "/api/ai/public/**",
+                                "/vet/veterinarian_dashboard.html")
+                        .permitAll()
+                        .requestMatchers(
+                                "/dashboard",
+                                "/calendar",
+                                "/book-appointment",
+                                "/cancel-appointment",
+                                "/appointments/**",
+                                "/logout",
+                                "/pets/**",
+                                "/api/payments/**",
+                                "/payment-form",
+                                "/api/client/**")
+                        .hasRole("CLIENT")
+                        .requestMatchers(
+                                "/vet/**",
+                                "/api/vet/**",
+                                "/api/vet/reports/**")
+                        .hasRole("VETERINARIAN")
+                        .requestMatchers("/api/ai/**").hasAnyRole("CLIENT", "VETERINARIAN")
+                        .requestMatchers(
+                                "/intern/**",
+                                "/api/intern/**")
+                        .hasRole("INTERN")
+                        .requestMatchers(
+                                "/admin/**",
+                                "/api/admin/**",
+                                "/api/roles")
+                        .hasRole("ADMIN")
+                        .anyRequest().authenticated())
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 
     @Bean
@@ -105,13 +106,13 @@ public class SecurityConfig implements WebMvcConfigurer {
     // Se agregó @NonNull para solucionar el warning de WebMvcConfigurer
     public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/css/**")
-            .addResourceLocations("classpath:/static/css/")
-            .setCachePeriod(0);
-        
+                .addResourceLocations("classpath:/static/css/")
+                .setCachePeriod(0);
+
         registry.addResourceHandler("/js/**")
-            .addResourceLocations("classpath:/static/js/");
-        
+                .addResourceLocations("classpath:/static/js/");
+
         registry.addResourceHandler("/images/**")
-            .addResourceLocations("classpath:/static/images/");
+                .addResourceLocations("classpath:/static/images/");
     }
 }
