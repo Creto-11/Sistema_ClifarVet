@@ -10,5 +10,4 @@ public class AppointmentRequestDto {
     private String hora; // formato: "HH:mm"
     private Long petId;
     private String email;
-    private String prioridad;
 }

@@ -55,10 +55,8 @@ public class VetAppointmentServiceImpl implements VetAppointmentService {
                     nombreMascota,
                     razaMascota,
                     nombreServicio,
-                    cita.getMotivoConsulta(),
                     comentarios,
-                    cita.getEstado(),
-                    cita.getPrioridad());
+                    cita.getEstado());
         }).collect(Collectors.toList());
     }
 
