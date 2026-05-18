@@ -32,11 +32,14 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void registerClient(RegisterUserDto dto) {
+
+        String numero = dto.getNumeroIdentidad().trim();
+
         if (userRepository.existsByCorreo(dto.getCorreo())) {
             throw new RuntimeException("Correo ya registrado.");
         }
 
-        if (userRepository.existsByNumeroIdentidad(dto.getNumeroIdentidad())) {
+        if (userRepository.existsByNumeroIdentidad(numero)) {
             throw new RuntimeException("Documento ya registrado.");
         }
 
@@ -44,7 +47,6 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new RuntimeException("Tipo de documento no encontrado."));
 
         String tipo = tipoDoc.getNombre().trim().toUpperCase();
-        String numero = dto.getNumeroIdentidad().trim();
 
         switch (tipo) {
             case "DNI":
