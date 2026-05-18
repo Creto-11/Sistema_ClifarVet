@@ -43,6 +43,32 @@ public class AuthServiceImpl implements AuthService {
         TipoDocumento tipoDoc = tipoDocumentoRepository.findById(dto.getTipoDocumentoId())
                 .orElseThrow(() -> new RuntimeException("Tipo de documento no encontrado."));
 
+        String tipo = tipoDoc.getNombre().trim().toUpperCase();
+        String numero = dto.getNumeroIdentidad().trim();
+
+        switch (tipo) {
+            case "DNI":
+                if (!numero.matches("\\d{8}")) {
+                    throw new RuntimeException("El DNI debe contener 8 dígitos numéricos.");
+                }
+                break;
+
+            case "RUC":
+                if (!numero.matches("\\d{11}")) {
+                    throw new RuntimeException("El RUC debe contener 11 dígitos numéricos.");
+                }
+                break;
+
+            case "PASAPORTE":
+                if (!numero.matches("[A-Za-z0-9]{6,12}")) {
+                    throw new RuntimeException("El pasaporte debe contener entre 6 y 12 caracteres alfanuméricos.");
+                }
+                break;
+
+            default:
+                throw new RuntimeException("Tipo de documento inválido.");
+        }
+
         Role role = roleRepository.findByNombre("CLIENT")
                 .orElseThrow(() -> new RuntimeException("Rol CLIENT no encontrado."));
 
@@ -51,7 +77,7 @@ public class AuthServiceImpl implements AuthService {
                 .apellidoPaterno(dto.getApellidoPaterno())
                 .apellidoMaterno(dto.getApellidoMaterno())
                 .contrasena(passwordEncoder.encode(dto.getContrasena()))
-                .numeroIdentidad(dto.getNumeroIdentidad())
+                .numeroIdentidad(numero)
                 .sexo(dto.getSexo())
                 .telefono(dto.getTelefono())
                 .fechaNacimiento(dto.getFechaNacimiento())
@@ -66,84 +92,83 @@ public class AuthServiceImpl implements AuthService {
     }
 
     public void registerVeterinarian(RegisterVeterinarianDto dto) {
-    if (userRepository.existsByCorreo(dto.getCorreo())) {
-        throw new RuntimeException("Correo ya registrado");
+        if (userRepository.existsByCorreo(dto.getCorreo())) {
+            throw new RuntimeException("Correo ya registrado");
+        }
+
+        // Crear y guardar el usuario
+        User user = User.builder()
+                .nombres(dto.getNombres())
+                .apellidoPaterno(dto.getApellidoPaterno())
+                .apellidoMaterno(dto.getApellidoMaterno())
+                .contrasena(passwordEncoder.encode(dto.getContrasena()))
+                .numeroIdentidad(dto.getNumeroIdentidad())
+                .sexo(dto.getSexo())
+                .telefono(dto.getTelefono())
+                .fechaNacimiento(dto.getFechaNacimiento())
+                .correo(dto.getCorreo())
+                .direccion(dto.getDireccion())
+                .estado(true)
+                .role(roleRepository.findByNombre("VETERINARIAN").orElseThrow())
+                .tipoDocumento(tipoDocumentoRepository.findById(dto.getTipoDocumentoId()).orElseThrow())
+                .build();
+
+        userRepository.save(user);
+
+        // Crear y guardar el veterinario
+        Veterinario vet = Veterinario.builder()
+                .especialidad(dto.getEspecialidad())
+                .estado(true)
+                .usuario(user)
+                .build();
+
+        veterinarioRepository.save(vet);
     }
 
-    // Crear y guardar el usuario
-    User user = User.builder()
-            .nombres(dto.getNombres())
-            .apellidoPaterno(dto.getApellidoPaterno())
-            .apellidoMaterno(dto.getApellidoMaterno())
-            .contrasena(passwordEncoder.encode(dto.getContrasena()))
-            .numeroIdentidad(dto.getNumeroIdentidad())
-            .sexo(dto.getSexo())
-            .telefono(dto.getTelefono())
-            .fechaNacimiento(dto.getFechaNacimiento())
-            .correo(dto.getCorreo())
-            .direccion(dto.getDireccion())
-            .estado(true)
-            .role(roleRepository.findByNombre("VETERINARIAN").orElseThrow())
-            .tipoDocumento(tipoDocumentoRepository.findById(dto.getTipoDocumentoId()).orElseThrow())
-            .build();
+    @Override
+    public void registerIntern(RegisterInternDto dto) {
+        if (userRepository.existsByCorreo(dto.getCorreo())) {
+            throw new RuntimeException("Correo ya registrado");
+        }
 
-    userRepository.save(user);
+        User user = User.builder()
+                .nombres(dto.getNombres())
+                .apellidoPaterno(dto.getApellidoPaterno())
+                .apellidoMaterno(dto.getApellidoMaterno())
+                .contrasena(passwordEncoder.encode(dto.getContrasena()))
+                .numeroIdentidad(dto.getNumeroIdentidad())
+                .sexo(dto.getSexo())
+                .telefono(dto.getTelefono())
+                .fechaNacimiento(dto.getFechaNacimiento())
+                .correo(dto.getCorreo())
+                .direccion(dto.getDireccion())
+                .estado(true)
+                .role(roleRepository.findByNombre("INTERN").orElseThrow())
+                .tipoDocumento(tipoDocumentoRepository.findById(dto.getTipoDocumentoId()).orElseThrow())
+                .build();
 
-    // Crear y guardar el veterinario
-    Veterinario vet = Veterinario.builder()
-            .especialidad(dto.getEspecialidad())
-            .estado(true)
-            .usuario(user)
-            .build();
-
-    veterinarioRepository.save(vet);
-}
-
-@Override
-public void registerIntern(RegisterInternDto dto) {
-    if (userRepository.existsByCorreo(dto.getCorreo())) {
-        throw new RuntimeException("Correo ya registrado");
+        userRepository.save(user);
     }
 
-    User user = User.builder()
-            .nombres(dto.getNombres())
-            .apellidoPaterno(dto.getApellidoPaterno())
-            .apellidoMaterno(dto.getApellidoMaterno())
-            .contrasena(passwordEncoder.encode(dto.getContrasena()))
-            .numeroIdentidad(dto.getNumeroIdentidad())
-            .sexo(dto.getSexo())
-            .telefono(dto.getTelefono())
-            .fechaNacimiento(dto.getFechaNacimiento())
-            .correo(dto.getCorreo())
-            .direccion(dto.getDireccion())
-            .estado(true)
-            .role(roleRepository.findByNombre("INTERN").orElseThrow())
-            .tipoDocumento(tipoDocumentoRepository.findById(dto.getTipoDocumentoId()).orElseThrow())
-            .build();
+    @Override
+    public LoginResponseDto login(LoginRequestDto dto) {
+        User user = userRepository.findByCorreo(dto.getCorreo())
+                .orElseThrow(() -> new RuntimeException("Credenciales inválidas."));
 
-    userRepository.save(user);
-}
+        if (!Boolean.TRUE.equals(user.getEstado())) {
+            throw new RuntimeException("Tu cuenta está desactivada. Contacta con el administrador.");
+        }
 
-@Override
-public LoginResponseDto login(LoginRequestDto dto) {
-    User user = userRepository.findByCorreo(dto.getCorreo())
-            .orElseThrow(() -> new RuntimeException("Credenciales inválidas."));
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(dto.getCorreo(), dto.getPassword()));
 
-    if (!Boolean.TRUE.equals(user.getEstado())) {
-        throw new RuntimeException("Tu cuenta está desactivada. Contacta con el administrador.");
+        String token = jwtUtils.generateToken(user);
+
+        return LoginResponseDto.builder()
+                .token(token)
+                .nombreCompleto(user.getNombres() + " " + user.getApellidoPaterno() + " " + user.getApellidoMaterno())
+                .rol(user.getRole().getNombre())
+                .build();
     }
-
-    authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(dto.getCorreo(), dto.getPassword())
-    );
-
-    String token = jwtUtils.generateToken(user);
-
-    return LoginResponseDto.builder()
-            .token(token)
-            .nombreCompleto(user.getNombres() + " " + user.getApellidoPaterno() + " " + user.getApellidoMaterno())
-            .rol(user.getRole().getNombre())
-            .build();
-}
 
 }
