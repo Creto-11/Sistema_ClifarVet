@@ -31,12 +31,6 @@ public class Cita extends AudityEntity {
     @Column(nullable = false)
     private String estado;
 
-    @Column(name = "prioridad")
-    private String prioridad;
-
-    @Column(name = "motivo_consulta", length = 255)
-    private String motivoConsulta;
-
     @Column(name = "precio_cobrado")
     private BigDecimal precioCobrado;
 

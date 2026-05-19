@@ -36,8 +36,6 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
 
         List<Cita> findByFechaBetween(LocalDate startDate, LocalDate endDate); // REPORTES
 
-        List<Cita> findByEstadoAndFechaBetween(String estado, LocalDate inicio, LocalDate fin);
-
         List<Cita> findByIntern_IdAndEstado(Long internId, String estado); // Para interno
 
         @Query("SELECT c FROM Cita c WHERE c.intern.id = :internId AND (c.estado = 'COMPLETADA' OR c.estado = 'PAGADA')")
