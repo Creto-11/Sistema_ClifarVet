@@ -39,8 +39,7 @@ public class ReportServiceImpl implements ReportService {
                 cita.getVeterinario().getUsuario().getNombres(),
                 cita.getFecha(),
                 cita.getHora(),
-                cita.getEstado()
-        )).collect(Collectors.toList());
+                cita.getEstado())).collect(Collectors.toList());
     }
 
     @Override
@@ -52,14 +51,15 @@ public class ReportServiceImpl implements ReportService {
 
     // --- Citas canceladas ---
     @Override
-    public void exportCitasCanceladasReport(OutputStream outputStream, String startDate, String endDate, String emitidoPor) {
+    public void exportCitasCanceladasReport(OutputStream outputStream, String startDate, String endDate,
+            String emitidoPor) {
         LocalDate start = LocalDate.parse(startDate);
         LocalDate end = LocalDate.parse(endDate);
 
         List<Cita> citas = citaRepository.findByFechaBetween(start, end);
 
         List<CitaCanceladaDTO> datos = citas.stream()
-                .filter(c -> "CANCELADA".equalsIgnoreCase(c.getEstado()))
+                .filter(c -> c.getCantidadReprogramaciones() != null && c.getCantidadReprogramaciones() > 0)
                 .map(cita -> new CitaCanceladaDTO(
                         cita.getId(),
                         cita.getUsuario().getNombres(),
@@ -68,81 +68,81 @@ public class ReportServiceImpl implements ReportService {
                         cita.getVeterinario().getUsuario().getNombres(),
                         cita.getFecha(),
                         cita.getHora(),
-                        cita.getMotivoCancelacion()
-                ))
+                        cita.getMotivoReprogramacion()))
                 .collect(Collectors.toList());
 
         pdfReportService.generarPdfCitasCanceladas(start, end, outputStream, datos, emitidoPor);
     }
 
     @Override
-public List<CitaPorFechaDTO> obtenerCitasPorFechaFiltrado(LocalDate startDate, LocalDate endDate, String tipoServicio) {
-    List<Cita> citas = citaRepository.findByFechaBetween(startDate, endDate);
+    public List<CitaPorFechaDTO> obtenerCitasPorFechaFiltrado(LocalDate startDate, LocalDate endDate,
+            String tipoServicio) {
+        List<Cita> citas = citaRepository.findByFechaBetween(startDate, endDate);
 
-    return citas.stream()
-            .filter(cita -> {
-                if (tipoServicio == null || tipoServicio.isBlank()) return true;
-                String nombreTipo = cita.getServicio().getTipoServicio().getNombre();
-                return nombreTipo.equalsIgnoreCase(tipoServicio);
-            })
-            .map(cita -> new CitaPorFechaDTO(
-                    cita.getId(),
-                    cita.getUsuario().getNombres(),
-                    cita.getPet().getName(),
-                    cita.getServicio().getDescripcion(),
-                    cita.getVeterinario().getUsuario().getNombres(),
-                    cita.getFecha(),
-                    cita.getHora(),
-                    cita.getEstado()
-            ))
-            .collect(Collectors.toList());
-}
-
-@Override
-public List<CitaPorMascotaDTO> obtenerCitasPorMascotaFiltrado(
-    LocalDate startDate,
-    LocalDate endDate,
-    String tipoMascota,
-    String cliente
-) {
-    List<Cita> citas = citaRepository.findByFechaBetween(startDate, endDate);
-
-    return citas.stream()
-        .filter(c -> "COMPLETADA".equalsIgnoreCase(c.getEstado()))
-        .filter(c -> tipoMascota == null || tipoMascota.isBlank() || 
-                     c.getPet().getType().equalsIgnoreCase(tipoMascota))
-        .filter(c -> cliente == null || cliente.isBlank() || 
-                     c.getUsuario().getCorreo().equalsIgnoreCase(cliente))
-        .map(cita -> new CitaPorMascotaDTO(
-            cita.getPet().getName(),
-            cita.getPet().getType(),
-            cita.getPet().getBreed(),
-            cita.getServicio().getDescripcion(),
-            cita.getUsuario().getNombres() + " " + cita.getUsuario().getApellidoPaterno(),
-            cita.getFecha(),
-            cita.getHora(),
-            cita.getEstado()
-        ))
-        .toList();
-}
-
-@Override
-public void generarPdfCitasPorMascota(LocalDate startDate, LocalDate endDate, OutputStream outputStream, String tipoMascota, String cliente, String emitidoPor) {
-    List<CitaPorMascotaDTO> datos = obtenerCitasPorMascotaFiltrado(startDate, endDate, tipoMascota, cliente);
-    pdfReportService.generarPdfCitasPorMascota(startDate, endDate, outputStream, datos, emitidoPor);
-}
-
-@Override
-public void generarPdfCitasPorFecha(LocalDate startDate, LocalDate endDate, OutputStream outputStream, String emitidoPor, String tipoServicio) {
-    List<CitaPorFechaDTO> datos;
-
-    if (tipoServicio != null && !tipoServicio.isBlank()) {
-        datos = obtenerCitasPorFechaFiltrado(startDate, endDate, tipoServicio);
-    } else {
-        datos = obtenerCitasPorFecha(startDate, endDate);
+        return citas.stream()
+                .filter(cita -> {
+                    if (tipoServicio == null || tipoServicio.isBlank())
+                        return true;
+                    String nombreTipo = cita.getServicio().getTipoServicio().getNombre();
+                    return nombreTipo.equalsIgnoreCase(tipoServicio);
+                })
+                .map(cita -> new CitaPorFechaDTO(
+                        cita.getId(),
+                        cita.getUsuario().getNombres(),
+                        cita.getPet().getName(),
+                        cita.getServicio().getDescripcion(),
+                        cita.getVeterinario().getUsuario().getNombres(),
+                        cita.getFecha(),
+                        cita.getHora(),
+                        cita.getEstado()))
+                .collect(Collectors.toList());
     }
 
-    pdfReportService.generarPdfCitasPorFecha(startDate, endDate, outputStream, datos, emitidoPor, tipoServicio);
-}
-    
+    @Override
+    public List<CitaPorMascotaDTO> obtenerCitasPorMascotaFiltrado(
+            LocalDate startDate,
+            LocalDate endDate,
+            String tipoMascota,
+            String cliente) {
+        List<Cita> citas = citaRepository.findByFechaBetween(startDate, endDate);
+
+        return citas.stream()
+                .filter(c -> "COMPLETADA".equalsIgnoreCase(c.getEstado()))
+                .filter(c -> tipoMascota == null || tipoMascota.isBlank() ||
+                        c.getPet().getType().equalsIgnoreCase(tipoMascota))
+                .filter(c -> cliente == null || cliente.isBlank() ||
+                        c.getUsuario().getCorreo().equalsIgnoreCase(cliente))
+                .map(cita -> new CitaPorMascotaDTO(
+                        cita.getPet().getName(),
+                        cita.getPet().getType(),
+                        cita.getPet().getBreed(),
+                        cita.getServicio().getDescripcion(),
+                        cita.getUsuario().getNombres() + " " + cita.getUsuario().getApellidoPaterno(),
+                        cita.getFecha(),
+                        cita.getHora(),
+                        cita.getEstado()))
+                .toList();
+    }
+
+    @Override
+    public void generarPdfCitasPorMascota(LocalDate startDate, LocalDate endDate, OutputStream outputStream,
+            String tipoMascota, String cliente, String emitidoPor) {
+        List<CitaPorMascotaDTO> datos = obtenerCitasPorMascotaFiltrado(startDate, endDate, tipoMascota, cliente);
+        pdfReportService.generarPdfCitasPorMascota(startDate, endDate, outputStream, datos, emitidoPor);
+    }
+
+    @Override
+    public void generarPdfCitasPorFecha(LocalDate startDate, LocalDate endDate, OutputStream outputStream,
+            String emitidoPor, String tipoServicio) {
+        List<CitaPorFechaDTO> datos;
+
+        if (tipoServicio != null && !tipoServicio.isBlank()) {
+            datos = obtenerCitasPorFechaFiltrado(startDate, endDate, tipoServicio);
+        } else {
+            datos = obtenerCitasPorFecha(startDate, endDate);
+        }
+
+        pdfReportService.generarPdfCitasPorFecha(startDate, endDate, outputStream, datos, emitidoPor, tipoServicio);
+    }
+
 }

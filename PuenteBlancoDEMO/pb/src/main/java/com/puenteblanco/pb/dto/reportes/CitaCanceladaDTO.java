@@ -16,5 +16,5 @@ public class CitaCanceladaDTO {
     private String veterinario;
     private LocalDate fecha;
     private LocalTime hora;
-    private String motivoCancelacion;
+    private String motivoReprogramacion;
 }
