@@ -66,8 +66,18 @@ public class Cita extends AudityEntity {
     @JoinColumn(name = "intern_id")
     private User intern;
 
-    @Column(name = "motivo_cancelacion", length = 255)
-    private String motivoCancelacion;
+    @Column(name = "motivo_reprogramacion", length = 255)
+    private String motivoReprogramacion;
+
+    @Column(name = "fecha_original")
+    private LocalDate fechaOriginal;
+
+    @Column(name = "hora_original")
+    private LocalTime horaOriginal;
+
+    @Builder.Default
+    @Column(name = "cantidad_reprogramaciones")
+    private Integer cantidadReprogramaciones = 0;
 
     @Column(name = "visto_interno")
     private Boolean vistoInterno;

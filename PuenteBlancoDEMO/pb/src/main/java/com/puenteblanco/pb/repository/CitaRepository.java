@@ -76,4 +76,20 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
         @Query("SELECT c FROM Cita c WHERE c.intern = :intern AND c.estado = :estado AND (c.vistoInterno = false OR c.vistoInterno IS NULL)")
         List<Cita> findDerivadasNoVistas(@Param("intern") User intern, @Param("estado") String estado);
 
+        // Método de reprogramación de citas que evita que sea en un horario ocupado
+        @Query("""
+                            SELECT COUNT(c)
+                            FROM Cita c
+                            WHERE c.veterinario.id = :veterinarioId
+                            AND c.fecha = :fecha
+                            AND c.hora = :hora
+                            AND UPPER(c.estado) IN ('PROGRAMADA', 'PAGADA')
+                            AND c.id <> :citaId
+                        """)
+        long countActiveAppointmentsAtSameSlot(
+                        @Param("veterinarioId") Long veterinarioId,
+                        @Param("fecha") LocalDate fecha,
+                        @Param("hora") LocalTime hora,
+                        @Param("citaId") Long citaId);
+
 }

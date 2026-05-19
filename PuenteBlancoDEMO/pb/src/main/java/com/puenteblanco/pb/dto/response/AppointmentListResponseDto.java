@@ -11,8 +11,8 @@ public class AppointmentListResponseDto {
     private String servicio;
     private String veterinario;
     private String mascota;
-    private String fecha; 
-    private String hora;  
+    private String fecha;
+    private String hora;
     private String estado;
-    private String motivoCancelacion; 
+    private String motivoReprogramacion;
 }
