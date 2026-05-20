@@ -8,7 +8,7 @@ import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
-public class CitaCanceladaDTO {
+public class CitaReprogramadaDTO {
     private Long citaId;
     private String cliente;
     private String mascota;

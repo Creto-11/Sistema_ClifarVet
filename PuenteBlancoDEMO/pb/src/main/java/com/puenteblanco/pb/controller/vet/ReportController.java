@@ -25,77 +25,71 @@ public class ReportController {
     @GetMapping("/citas-por-fecha")
     public List<CitaPorFechaDTO> getCitasPorFecha(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
-    ) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         return reportService.obtenerCitasPorFecha(startDate, endDate);
     }
 
     @GetMapping("/citas-por-fecha/download")
-public void descargarReporteCitasPorFecha(
-        @RequestParam String startDate,
-        @RequestParam String endDate,
-        @RequestParam(required = false) String tipoServicio,
-        @AuthenticationPrincipal UserDetails user,
-        HttpServletResponse response) {
+    public void descargarReporteCitasPorFecha(
+            @RequestParam String startDate,
+            @RequestParam String endDate,
+            @RequestParam(required = false) String tipoServicio,
+            @AuthenticationPrincipal UserDetails user,
+            HttpServletResponse response) {
 
-    try {
-        response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=reporte_citas_fecha.pdf");
+        try {
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=reporte_citas_fecha.pdf");
 
-        reportService.generarPdfCitasPorFecha(
-                LocalDate.parse(startDate),
-                LocalDate.parse(endDate),
-                response.getOutputStream(),
-                user.getUsername(),
-                tipoServicio
-        );
-    } catch (Exception e) {
-        throw new RuntimeException("Error al descargar el reporte de citas por fecha", e);
+            reportService.generarPdfCitasPorFecha(
+                    LocalDate.parse(startDate),
+                    LocalDate.parse(endDate),
+                    response.getOutputStream(),
+                    user.getUsername(),
+                    tipoServicio);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al descargar el reporte de citas por fecha", e);
+        }
     }
-}
 
     @GetMapping("/citas-por-mascota/download")
-public void downloadCitasPorMascotaPdf(
-        @RequestParam String startDate,
-        @RequestParam String endDate,
-        @RequestParam(required = false) String tipoMascota,
-        @RequestParam(required = false) String cliente,
-        @AuthenticationPrincipal UserDetails userDetails,
-        HttpServletResponse response
-) throws IOException {
-    String correo = userDetails.getUsername();
-    String emitidoPor = reportService.obtenerNombreVeterinarioPorCorreo(correo);
+    public void downloadCitasPorMascotaPdf(
+            @RequestParam String startDate,
+            @RequestParam String endDate,
+            @RequestParam(required = false) String tipoMascota,
+            @RequestParam(required = false) String cliente,
+            @AuthenticationPrincipal UserDetails userDetails,
+            HttpServletResponse response) throws IOException {
+        String correo = userDetails.getUsername();
+        String emitidoPor = reportService.obtenerNombreVeterinarioPorCorreo(correo);
 
-    LocalDate start = LocalDate.parse(startDate);
-    LocalDate end = LocalDate.parse(endDate);
+        LocalDate start = LocalDate.parse(startDate);
+        LocalDate end = LocalDate.parse(endDate);
 
-    response.setContentType("application/pdf");
-    response.setHeader("Content-Disposition", "attachment; filename=citas-por-mascota.pdf");
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=citas-por-mascota.pdf");
 
-    reportService.generarPdfCitasPorMascota(
-            start,
-            end,
-            response.getOutputStream(),
-            tipoMascota,
-            cliente,
-            emitidoPor
-    );
-}
+        reportService.generarPdfCitasPorMascota(
+                start,
+                end,
+                response.getOutputStream(),
+                tipoMascota,
+                cliente,
+                emitidoPor);
+    }
 
-
-    @GetMapping("/citas-canceladas/download")
-    public void downloadCitasCanceladasPdf(
+    @GetMapping("/citas-reprogramadas/download")
+    public void downloadCitasReprogramadasPdf(
             @RequestParam String startDate,
             @RequestParam String endDate,
             @AuthenticationPrincipal UserDetails userDetails,
-            HttpServletResponse response
-    ) throws IOException {
+            HttpServletResponse response) throws IOException {
         String correo = userDetails.getUsername();
         String emitidoPor = reportService.obtenerNombreVeterinarioPorCorreo(correo);
 
         response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=citas-canceladas.pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=citas-reprogramadas.pdf");
 
-        reportService.exportCitasCanceladasReport(response.getOutputStream(), startDate, endDate, emitidoPor);
+        reportService.exportCitasReprogramadasReport(response.getOutputStream(), startDate, endDate, emitidoPor);
     }
 }

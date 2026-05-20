@@ -1,4 +1,5 @@
 package com.puenteblanco.pb.controller.client.view;
+
 import com.puenteblanco.pb.dto.dashboard.DashboardClientResponseDto;
 import com.puenteblanco.pb.services.interfaces.DashboardService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ public class CancelBookingViewController {
 
     private final DashboardService dashboardService;
 
-    @GetMapping("/cancel-appointment")
+    @GetMapping({ "/cancel-appointment", "/reschedule-appointment" })
     public String showCancelPage(Authentication authentication, Model model) {
         DashboardClientResponseDto dashboard = dashboardService.getClientDashboard(authentication);
         model.addAttribute("dashboard", dashboard);
