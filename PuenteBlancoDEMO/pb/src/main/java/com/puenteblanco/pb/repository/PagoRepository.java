@@ -17,29 +17,25 @@ public interface PagoRepository extends JpaRepository<Pago, Long> {
     double getTotalPagadoEntreFechas(@Param("inicio") LocalDateTime inicio, @Param("fin") LocalDateTime fin);
 
     @Query("SELECT MONTH(p.fechaPago) AS mes, COALESCE(SUM(p.monto), 0) AS total " +
-       "FROM Pago p " +
-       "WHERE YEAR(p.fechaPago) = :anio " +
-       "GROUP BY MONTH(p.fechaPago) " +
-       "ORDER BY mes")
+            "FROM Pago p " +
+            "WHERE YEAR(p.fechaPago) = :anio " +
+            "GROUP BY MONTH(p.fechaPago) " +
+            "ORDER BY mes")
     List<Object[]> getIngresosPorMes(@Param("anio") int anio);
 
     @Query("""
-        SELECT new com.puenteblanco.pb.dto.response.AdminPaymentResponseDto(
-            c.fecha,
-            CONCAT(u.nombres, ' ', u.apellidoPaterno),
-            s.descripcion,
-            s.precioBase,
-            'Tarjeta de crédito',
-            CASE 
-                WHEN c.estado = 'PAGADA' THEN 'COMPLETADO'
-                ELSE 'PENDIENTE'
-            END
-        )
-        FROM Cita c
-        JOIN c.usuario u
-        JOIN c.servicio s
-        JOIN Pago p ON p.cita.id = c.id
-        WHERE c.estado IN ('COMPLETADA', 'PAGADA')
-    """)
+                SELECT new com.puenteblanco.pb.dto.response.AdminPaymentResponseDto(
+                    c.fecha,
+                    CONCAT(u.nombres, ' ', u.apellidoPaterno),
+                    s.descripcion,
+                    s.precioBase,
+                    'Tarjeta de crédito',
+                    COALESCE(p.estado, 'COMPLETADO')
+                )
+                FROM Pago p
+                JOIN p.cita c
+                JOIN c.usuario u
+                JOIN c.servicio s
+            """)
     List<AdminPaymentResponseDto> findAllPaymentsForAdmin();
 }

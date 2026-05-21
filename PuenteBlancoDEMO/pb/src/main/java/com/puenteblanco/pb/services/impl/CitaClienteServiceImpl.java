@@ -20,10 +20,25 @@ public class CitaClienteServiceImpl implements CitaClienteService {
 
     @Override
     public List<AppointmentScheduledResponseDto> obtenerCitasProgramadasPorUsuario(String correoUsuario) {
-        List<Cita> citas = citaRepository.findByUsuarioCorreoAndEstadoIgnoreCase(correoUsuario, "COMPLETADA");
+        List<Cita> citas = citaRepository.findByUsuarioCorreoAndEstadoIgnoreCase(correoUsuario, "PENDIENTE_PAGO");
 
-        return citas.stream().map(cita ->
-                AppointmentScheduledResponseDto.builder()
+        return citas.stream().map(cita -> AppointmentScheduledResponseDto.builder()
+                .citaId(cita.getId())
+                .nombreMascota(cita.getPet().getName())
+                .razaMascota(cita.getPet().getBreed())
+                .tipoServicio(cita.getServicio().getDescripcion())
+                .monto(cita.getPrecioCobrado())
+                .fechaCita(cita.getFecha().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                .estado(cita.getEstado())
+                .build()).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AppointmentPaidResponseDto> obtenerCitasPagadasPorUsuario(String correo) {
+        List<Cita> citas = citaRepository.findByUsuarioCorreoAndEstadoIgnoreCase(correo, "PROGRAMADA");
+
+        return citas.stream()
+                .map(cita -> AppointmentPaidResponseDto.builder()
                         .citaId(cita.getId())
                         .nombreMascota(cita.getPet().getName())
                         .razaMascota(cita.getPet().getBreed())
@@ -31,24 +46,7 @@ public class CitaClienteServiceImpl implements CitaClienteService {
                         .monto(cita.getPrecioCobrado())
                         .fechaCita(cita.getFecha().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
                         .estado(cita.getEstado())
-                        .build()
-        ).collect(Collectors.toList());
+                        .build())
+                .collect(Collectors.toList());
     }
-
-    @Override
-public List<AppointmentPaidResponseDto> obtenerCitasPagadasPorUsuario(String correo) {
-    List<Cita> citas = citaRepository.findAllByUsuarioCorreoAndEstado(correo, "pagada");
-
-    return citas.stream()
-            .map(cita -> AppointmentPaidResponseDto.builder()
-                    .citaId(cita.getId())
-                    .nombreMascota(cita.getPet().getName())
-                    .razaMascota(cita.getPet().getBreed())
-                    .tipoServicio(cita.getServicio().getDescripcion())
-                    .monto(cita.getPrecioCobrado())
-                    .fechaCita(cita.getFecha().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-                    .estado(cita.getEstado())
-                    .build())
-            .collect(Collectors.toList());
-}
 }

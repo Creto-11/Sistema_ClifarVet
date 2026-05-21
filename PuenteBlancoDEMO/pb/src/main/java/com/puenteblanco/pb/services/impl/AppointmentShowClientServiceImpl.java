@@ -28,6 +28,7 @@ public class AppointmentShowClientServiceImpl implements AppointmentShowClientSe
 
                 return citaRepository.findByUsuario(user).stream()
                                 .map(c -> new AppointmentListResponseDto(
+                                                c.getId(),
                                                 c.getServicio().getDescripcion(),
                                                 c.getVeterinario().getUsuario().getNombres(),
                                                 c.getPet().getName(),

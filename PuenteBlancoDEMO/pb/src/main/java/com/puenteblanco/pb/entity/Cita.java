@@ -22,11 +22,11 @@ public class Cita extends AudityEntity {
 
     /**
      * Estados posibles:
+     * - PENDIENTE_PAGO
      * - PROGRAMADA
      * - DERIVADA
      * - VALIDADA
      * - COMPLETADA
-     * - PAGADA
      */
     @Column(nullable = false)
     private String estado;

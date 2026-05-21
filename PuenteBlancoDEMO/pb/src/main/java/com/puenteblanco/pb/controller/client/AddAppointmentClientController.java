@@ -1,6 +1,7 @@
 package com.puenteblanco.pb.controller.client;
 
 import com.puenteblanco.pb.dto.request.AppointmentRequestDto;
+import com.puenteblanco.pb.dto.response.AppointmentBookingResponseDto;
 import com.puenteblanco.pb.services.interfaces.AppointmentClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +16,10 @@ public class AddAppointmentClientController {
     private final AppointmentClientService appointmentClientService;
 
     @PostMapping
-    public ResponseEntity<String> bookAppointment(@RequestBody AppointmentRequestDto dto, Authentication authentication) {
-        // Llamar al servicio para reservar la cita y enviar el correo
-        appointmentClientService.bookAppointment(authentication, dto);
-
-        // Confirmar que la cita fue registrada y el correo enviado
-        return ResponseEntity.ok("Cita registrada exitosamente. Un correo de recordatorio ha sido enviado.");
+    public ResponseEntity<AppointmentBookingResponseDto> bookAppointment(
+            @RequestBody AppointmentRequestDto dto,
+            Authentication authentication) {
+        AppointmentBookingResponseDto response = appointmentClientService.bookAppointment(authentication, dto);
+        return ResponseEntity.ok(response);
     }
 }

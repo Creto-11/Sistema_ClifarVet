@@ -255,6 +255,77 @@
           Entendido
         </button>
       </div>
+
+      <div
+        id="rescheduleModal"
+        class="hidden fixed inset-0 bg-clifarDark/60 backdrop-blur-sm flex items-center justify-center z-50 p-6"
+      >
+        <div
+          class="bg-white p-8 rounded-[2rem] shadow-2xl w-full max-w-md fade-in"
+        >
+          <h2
+            class="text-xl font-black text-clifarDark mb-4 uppercase tracking-tight"
+          >
+            Reprogramar Cita
+          </h2>
+
+          <form id="rescheduleForm" class="space-y-4">
+            <div>
+              <label class="block text-sm font-bold text-gray-600 mb-1"
+                >Nueva fecha</label
+              >
+              <input
+                type="date"
+                id="newDate"
+                required
+                class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-clifarBase outline-none"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-bold text-gray-600 mb-1"
+                >Nueva hora</label
+              >
+              <input
+                type="time"
+                id="newTime"
+                required
+                class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-clifarBase outline-none"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-bold text-gray-600 mb-1"
+                >Motivo de reprogramación</label
+              >
+              <textarea
+                id="rescheduleReason"
+                rows="3"
+                required
+                placeholder="Escribe el motivo..."
+                class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-clifarBase outline-none resize-none"
+              ></textarea>
+            </div>
+
+            <div class="flex gap-3 pt-2">
+              <button
+                type="button"
+                onclick="closeRescheduleModal()"
+                class="w-1/2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 rounded-xl transition-all"
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="submit"
+                class="w-1/2 bg-clifarBase hover:bg-clifarDark text-white font-bold py-3 rounded-xl transition-all"
+              >
+                Guardar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
 
     <script>
@@ -345,12 +416,34 @@
                         <td class="px-8 py-5 text-sm text-textSec font-medium">${cita.veterinario}</td>
                         <td class="px-8 py-5">${renderStatusBadge(cita.estado)}</td>
                         <td class="px-8 py-5 text-center">
+                          <div class="flex flex-col items-center gap-2">
                             ${
-                              cita.motivoReprogramacion
-                                ? `<button onclick="showReason('${cita.motivoReprogramacion.replace(/'/g, "\\'")}')" class="text-clifarBase hover:text-clifarDark transition-colors"><i class="fa-solid fa-eye mr-1"></i>Motivo de reprogramación</button>`
-                                : `<span class="text-gray-300">-</span>`
+                              ["PROGRAMADA", "PAGADA"].includes(
+                                (cita.estado || "").toUpperCase(),
+                              )
+                                ? `<button onclick="openRescheduleModal(${cita.id})" class="text-clifarBase hover:text-clifarDark font-bold transition-colors">
+                                    <i class="fa-solid fa-calendar-days mr-1"></i>Reprogramar
+                                  </button>`
+                                : ""
                             }
-                        </td>
+
+                            ${
+                              ["PROGRAMADA", "PAGADA"].includes(
+                                (cita.estado || "").toUpperCase(),
+                              )
+                                ? `<button onclick="openRescheduleModal(${cita.id})" class="w-full text-center py-2 text-xs font-bold text-white bg-clifarBase rounded-xl uppercase tracking-widest">
+         Reprogramar cita
+       </button>`
+                                : ""
+                            }
+
+${
+  cita.motivoReprogramacion
+    ? `<button onclick="showReason('${cita.motivoReprogramacion.replace(/'/g, "\\'")}')" class="w-full text-center py-2 text-xs font-bold text-clifarBase underline uppercase tracking-widest">Ver motivo de reprogramación</button>`
+    : ""
+}
+                          </div>
+                
                     `;
             tbody.appendChild(tr);
           });
@@ -431,6 +524,60 @@
           "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
         window.location.href = "/";
       }
+
+      let selectedAppointmentId = null;
+
+      function openRescheduleModal(id) {
+        selectedAppointmentId = id;
+        document.getElementById("newDate").value = "";
+        document.getElementById("newTime").value = "";
+        document.getElementById("rescheduleReason").value = "";
+        document.getElementById("rescheduleModal").classList.remove("hidden");
+      }
+
+      function closeRescheduleModal() {
+        selectedAppointmentId = null;
+        document.getElementById("rescheduleModal").classList.add("hidden");
+      }
+
+      document
+        .getElementById("rescheduleForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const nuevaFecha = document.getElementById("newDate").value;
+          const nuevaHora = document.getElementById("newTime").value;
+          const motivo = document
+            .getElementById("rescheduleReason")
+            .value.trim();
+
+          if (!selectedAppointmentId || !nuevaFecha || !nuevaHora || !motivo) {
+            alert("Completa la nueva fecha, nueva hora y motivo.");
+            return;
+          }
+
+          const response = await fetch(
+            `/api/client/reschedule-appointments/${selectedAppointmentId}/reschedule`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({
+                fecha: nuevaFecha,
+                hora: nuevaHora,
+                motivoReprogramacion: motivo,
+              }),
+            },
+          );
+
+          if (response.ok) {
+            alert("Cita reprogramada correctamente.");
+            window.location.reload();
+          } else {
+            const errorText = await response.text();
+            alert(errorText || "No se pudo reprogramar la cita.");
+          }
+        });
     </script>
   </body>
 </html>

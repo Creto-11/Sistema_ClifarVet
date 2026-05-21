@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppointmentListResponseDto {
+    private Long id;
     private String servicio;
     private String veterinario;
     private String mascota;

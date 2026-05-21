@@ -41,8 +41,8 @@ public class PagoServiceImpl implements PagoService {
         Cita cita = citaRepository.findById(request.getCitaId())
                 .orElseThrow(() -> new IllegalArgumentException("Cita no encontrada con ID: " + request.getCitaId()));
 
-        if (!"completada".equalsIgnoreCase(cita.getEstado())) {
-            throw new IllegalStateException("Solo se pueden pagar citas con estado 'completada'.");
+        if (!"PENDIENTE_PAGO".equalsIgnoreCase(cita.getEstado())) {
+            throw new IllegalStateException("Solo se pueden pagar citas pendientes de pago.");
         }
 
         if (pagoRepository.existsByCitaId(cita.getId())) {
@@ -50,8 +50,12 @@ public class PagoServiceImpl implements PagoService {
         }
 
         // Crear intento de pago en Stripe
+        long montoCentavos = cita.getPrecioCobrado()
+                .multiply(BigDecimal.valueOf(100))
+                .longValue();
+
         PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-                .setAmount(cita.getPrecioCobrado().multiply(BigDecimal.valueOf(100)).longValue())
+                .setAmount(montoCentavos)
                 .setCurrency(request.getCurrency())
                 .setDescription(request.getDescription())
                 .setPaymentMethod(request.getPaymentMethodId())
@@ -59,27 +63,27 @@ public class PagoServiceImpl implements PagoService {
                 .setAutomaticPaymentMethods(
                         PaymentIntentCreateParams.AutomaticPaymentMethods.builder()
                                 .setEnabled(true)
-                                .setAllowRedirects(PaymentIntentCreateParams.AutomaticPaymentMethods.AllowRedirects.NEVER)
-                                .build()
-                )
+                                .setAllowRedirects(
+                                        PaymentIntentCreateParams.AutomaticPaymentMethods.AllowRedirects.NEVER)
+                                .build())
                 .build();
 
         PaymentIntent paymentIntent = PaymentIntent.create(params);
 
         // Guardar en base de datos
         Pago pago = Pago.builder()
-        .stripePaymentIntentId(paymentIntent.getId())
-        .descripcion(request.getDescription())
-        .monto(request.getAmount())
-        .moneda("PEN")
-        .fechaPago(LocalDateTime.now())
-        .cita(cita)
-        .build();
-
+                .stripePaymentIntentId(paymentIntent.getId())
+                .descripcion(request.getDescription())
+                .monto(montoCentavos)
+                .moneda("PEN")
+                .estado("COMPLETADO")
+                .fechaPago(LocalDateTime.now())
+                .cita(cita)
+                .build();
         pagoRepository.save(pago);
 
         // Actualizar cita
-        cita.setEstado("PAGADA");
+        cita.setEstado("PROGRAMADA");
         citaRepository.save(cita);
 
         return paymentIntent;
