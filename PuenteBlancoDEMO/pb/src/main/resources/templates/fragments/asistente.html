@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<body>
+
+    <div th:fragment="ia-asistente(modo)">
+
+        <button onclick="toggleChatWindow()" id="chat-widget-button"
+            class="fixed bottom-6 right-6 w-24 h-24 bg-teal-700 hover:bg-teal-800 text-white rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 z-50 hover:scale-105 active:scale-95 group border-4 border-white overflow-hidden">
+            
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-600 opacity-40"></span>
+            
+            <img th:src="@{/img/robot-medico.png}" alt="ClifarBot" 
+                 class="w-full h-full object-cover group-hover:opacity-0 transition-opacity duration-300 relative z-10">
+            
+            <i class="fa-solid fa-chevron-down absolute text-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></i>
+        </button>
+
+        <div id="chat-widget-window"
+            class="fixed bottom-32 right-6 w-[92vw] sm:w-[380px] h-[520px] bg-white rounded-2xl shadow-2xl border border-gray-200 z-50 flex flex-col overflow-hidden transition-all duration-300 ease-in-out transform translate-y-4 opacity-0 pointer-events-none">
+
+            <div class="bg-teal-800 p-4 flex items-center justify-between shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl overflow-hidden border-2 border-white/20 relative">
+                        <img th:src="@{/img/robot-medico.png}" alt="ClifarBot" class="w-full h-full object-cover">
+                        <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-teal-800"></span>
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-bold text-white">ClifarBot</h3>
+                        <p class="text-[10px] text-teal-100 font-medium" 
+                           th:text="${modo == 'publico' ? 'Consultas Básicas y Emergencias' : 'Tu Asistente Virtual Veterinario'}">
+                        </p>
+                    </div>
+                </div>
+                <button onclick="toggleChatWindow()" class="text-white/70 hover:text-white transition p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div id="modulo-chat-messages" class="flex-1 p-4 overflow-y-auto space-y-4 bg-gray-50/50">
+                <div class="flex items-start gap-2.5 max-w-[85%]">
+                    <div class="w-8 h-8 rounded-full overflow-hidden shrink-0 border-2 border-teal-700 shadow-sm">
+                        <img th:src="@{/img/robot-medico.png}" alt="ClifarBot" class="w-full h-full object-cover">
+                    </div>
+                    <div class="bg-white p-3 rounded-xl rounded-tl-none shadow-sm border border-gray-100">
+                        <p class="text-xs text-gray-800 leading-relaxed" th:if="${modo == 'publico'}">
+                            ¡Hola! 🐾 Bienvenido a <strong>CLIFARVET</strong>. Puedo ayudarte con consultas básicas o activar un protocolo de emergencia.
+                        </p>
+                        <p class="text-xs text-gray-800 leading-relaxed" th:if="${modo == 'privado'}">
+                            ¡Hola! Soy ClifarBot. 🐾 ¿Tienes dudas sobre vacunas, alimentación o síntomas de tu mascota? ¡Pregúntame lo que quieras!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-3 bg-white border-t border-gray-100 flex items-center gap-2">
+                <input type="text" id="modulo-chat-input" placeholder="Escribe tu consulta..." 
+                       onkeydown="if(event.key === 'Enter') enviarMensajeModulo()"
+                       class="flex-1 px-3 py-2 bg-gray-50 text-xs rounded-xl border border-gray-200 focus:border-teal-700 outline-none transition-all text-gray-700 font-medium" />
+                <button onclick="enviarMensajeModulo()"
+                    class="bg-teal-700 hover:bg-teal-800 text-white p-2.5 rounded-xl shadow-md transition-all flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                </button>
+            </div>
+        </div>
+
+        <script th:inline="javascript">
+            const CHAT_MODO = /*[[${modo}]]*/ 'privado'; 
+
+            function toggleChatWindow() {
+                const chatWindow = document.getElementById('chat-widget-window');
+                const isHidden = chatWindow.classList.contains('pointer-events-none');
+                if (isHidden) {
+                    chatWindow.classList.remove('pointer-events-none', 'opacity-0', 'translate-y-4');
+                    chatWindow.classList.add('pointer-events-auto', 'opacity-100', 'translate-y-0');
+                    document.getElementById('modulo-chat-input').focus();
+                } else {
+                    chatWindow.classList.add('pointer-events-none', 'opacity-0', 'translate-y-4');
+                    chatWindow.classList.remove('pointer-events-auto', 'opacity-100', 'translate-y-0');
+                }
+            }
+
+            function enviarMensajeModulo() {
+                const input = document.getElementById('modulo-chat-input');
+                const text = input.value.trim();
+                if (!text) return;
+
+                const container = document.getElementById('modulo-chat-messages');
+                container.innerHTML += '<div class="flex items-start gap-2 max-w-[85%] ml-auto justify-end">' +
+                                       '<div class="bg-teal-700 text-white p-2.5 rounded-xl rounded-tr-none shadow-sm text-xs font-medium">' +
+                                       '<p>' + text + '</p></div></div>';
+                input.value = "";
+                container.scrollTop = container.scrollHeight;
+            }
+        </script>
+    </div>
+
+</body>
+</html>

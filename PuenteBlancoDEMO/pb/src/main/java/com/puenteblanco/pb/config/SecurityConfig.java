@@ -1,11 +1,10 @@
 package com.puenteblanco.pb.config;
 
 import com.puenteblanco.pb.security.JwtAuthenticationFilter;
-// Se eliminó el import de CustomUserDetailsService porque no se usa aquí
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.NonNull; // Nuevo import para el aviso de nulidad
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,7 +25,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SecurityConfig implements WebMvcConfigurer {
 
     private final JwtAuthenticationFilter jwtFilter;
-    // Se eliminó la variable userDetailsService que marcaba aviso
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
@@ -44,10 +42,10 @@ public class SecurityConfig implements WebMvcConfigurer {
             "/css/**",
             "/js/**",
             "/images/**",
+            "/img/**",
             "/favicon.ico",
             "/webjars/**",
-            "/vet/**",
-            "/vet/veterinarian_dashboard.html"
+            "/.well-known/**"
         );
     }
 
@@ -58,11 +56,12 @@ public class SecurityConfig implements WebMvcConfigurer {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/", "/index.html",
-                    "/css/**", "/js/**", "/img/**",
+                    "/css/**", "/js/**", "/img/**", "/images/**",
                     "/api/auth/**",
                     "/api/reniec/**",
                     "/api/recovery/**",
-                    "/vet/veterinarian_dashboard.html"
+                    "/vet/veterinarian_dashboard.html",
+                    "/.well-known/**"
                 ).permitAll()
                 .requestMatchers(
                     "/dashboard",
@@ -102,16 +101,10 @@ public class SecurityConfig implements WebMvcConfigurer {
     }
 
     @Override
-    // Se agregó @NonNull para solucionar el warning de WebMvcConfigurer
     public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/css/**")
-            .addResourceLocations("classpath:/static/css/")
-            .setCachePeriod(0);
-        
-        registry.addResourceHandler("/js/**")
-            .addResourceLocations("classpath:/static/js/");
-        
-        registry.addResourceHandler("/images/**")
-            .addResourceLocations("classpath:/static/images/");
+        registry.addResourceHandler("/css/**").addResourceLocations("classpath:/static/css/");
+        registry.addResourceHandler("/js/**").addResourceLocations("classpath:/static/js/");
+        registry.addResourceHandler("/images/**").addResourceLocations("classpath:/static/images/");
+        registry.addResourceHandler("/img/**").addResourceLocations("classpath:/static/img/");
     }
 }
