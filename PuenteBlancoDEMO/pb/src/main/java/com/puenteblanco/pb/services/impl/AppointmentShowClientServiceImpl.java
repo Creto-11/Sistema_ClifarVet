@@ -30,6 +30,7 @@ public class AppointmentShowClientServiceImpl implements AppointmentShowClientSe
                                 .map(c -> new AppointmentListResponseDto(
                                                 c.getId(),
                                                 c.getServicio().getDescripcion(),
+                                                c.getVeterinario().getId(),
                                                 c.getVeterinario().getUsuario().getNombres(),
                                                 c.getPet().getName(),
                                                 c.getFecha().toString(),

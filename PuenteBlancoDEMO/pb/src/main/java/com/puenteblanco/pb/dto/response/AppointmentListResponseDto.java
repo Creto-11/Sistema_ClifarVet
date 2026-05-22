@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class AppointmentListResponseDto {
     private Long id;
     private String servicio;
+    private Long veterinarioId;
     private String veterinario;
     private String mascota;
     private String fecha;

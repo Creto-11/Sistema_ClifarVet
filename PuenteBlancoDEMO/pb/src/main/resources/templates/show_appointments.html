@@ -81,7 +81,9 @@
         class="fixed top-16 left-0 w-64 h-[calc(100vh-64px)] bg-[#111827] text-gray-300 flex flex-col justify-between z-40 transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none"
       >
         <div class="py-6 flex flex-col px-3 space-y-2">
-          <p class="text-[11px] uppercase tracking-widest text-gray-500 font-extrabold px-3 mb-3">
+          <p
+            class="text-[11px] uppercase tracking-widest text-gray-500 font-extrabold px-3 mb-3"
+          >
             Menú Principal
           </p>
 
@@ -133,8 +135,12 @@
       <main class="flex-1 p-6 md:p-8 ml-0 md:ml-64 transition-all duration-300">
         <div class="w-full">
           <!-- Header Card -->
-          <div class="mb-8 p-6 bg-white rounded-2xl shadow-sm border-l-4 border-clifarBase">
-            <h2 class="text-3xl md:text-4xl font-extrabold text-clifarDark tracking-tight">
+          <div
+            class="mb-8 p-6 bg-white rounded-2xl shadow-sm border-l-4 border-clifarBase"
+          >
+            <h2
+              class="text-3xl md:text-4xl font-extrabold text-clifarDark tracking-tight"
+            >
               📋 Historial de Citas
             </h2>
             <p class="text-textSec mt-2 font-medium">
@@ -143,9 +149,13 @@
           </div>
 
           <!-- Filters Form Layout -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 bg-white p-6 rounded-3xl shadow-sm border border-gray-100"
+          >
             <div class="relative">
-              <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-gray-400"></i>
+              <i
+                class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-gray-400"
+              ></i>
               <input
                 type="text"
                 id="searchInput"
@@ -173,32 +183,49 @@
           </div>
 
           <!-- Desktop View (Table) -->
-          <div class="hidden md:block overflow-hidden bg-white rounded-[2rem] shadow-xl border border-gray-100">
+          <div
+            class="hidden md:block overflow-hidden bg-white rounded-[2rem] shadow-xl border border-gray-100"
+          >
             <div class="table-container overflow-x-auto">
               <table class="min-w-full text-left">
                 <thead>
                   <tr class="bg-gray-50 border-b border-gray-100">
-                    <th class="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400">
+                    <th
+                      class="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400"
+                    >
                       Fecha y hora
                     </th>
-                    <th class="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400">
+                    <th
+                      class="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400"
+                    >
                       Mascota
                     </th>
-                    <th class="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400">
+                    <th
+                      class="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400"
+                    >
                       Servicio
                     </th>
-                    <th class="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400">
+                    <th
+                      class="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400"
+                    >
                       Veterinario
                     </th>
-                    <th class="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400">
+                    <th
+                      class="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400"
+                    >
                       Estado
                     </th>
-                    <th class="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center">
+                    <th
+                      class="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center"
+                    >
                       Acción
                     </th>
                   </tr>
                 </thead>
-                <tbody id="appointmentTableBody" class="divide-y divide-gray-50">
+                <tbody
+                  id="appointmentTableBody"
+                  class="divide-y divide-gray-50"
+                >
                   <!-- JS Injection -->
                 </tbody>
               </table>
@@ -220,11 +247,17 @@
         id="reasonModal"
         class="hidden fixed inset-0 bg-clifarDark/60 backdrop-blur-sm flex items-center justify-center z-50 p-6"
       >
-        <div class="bg-white p-8 rounded-[2rem] shadow-2xl w-full max-w-sm text-center fade-in">
-          <div class="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+        <div
+          class="bg-white p-8 rounded-[2rem] shadow-2xl w-full max-w-sm text-center fade-in"
+        >
+          <div
+            class="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"
+          >
             <i class="fa-solid fa-circle-info"></i>
           </div>
-          <h2 class="text-xl font-black text-clifarDark mb-2 uppercase tracking-tight">
+          <h2
+            class="text-xl font-black text-clifarDark mb-2 uppercase tracking-tight"
+          >
             Motivo de Reprogramación
           </h2>
           <p id="modalReasonText" class="mb-6 text-textSec leading-relaxed"></p>
@@ -242,16 +275,25 @@
         id="rescheduleModal"
         class="hidden fixed inset-0 bg-clifarDark/60 backdrop-blur-sm flex items-center justify-center z-50 p-6"
       >
-        <div class="bg-white p-8 rounded-[2rem] shadow-2xl w-full max-w-md fade-in max-h-[90vh] overflow-y-auto">
-          <h2 class="text-xl font-black text-clifarDark mb-4 uppercase tracking-tight">
+        <div
+          class="bg-white p-8 rounded-[2rem] shadow-2xl w-full max-w-md fade-in max-h-[90vh] overflow-y-auto"
+        >
+          <h2
+            class="text-xl font-black text-clifarDark mb-4 uppercase tracking-tight"
+          >
             Reprogramar Cita
           </h2>
 
           <!-- Información fija del veterinario asignado -->
-          <div class="mb-4 p-3 bg-gray-50 rounded-xl border border-gray-100 text-xs text-textSec flex items-center gap-2">
+          <div
+            class="mb-4 p-3 bg-gray-50 rounded-xl border border-gray-100 text-xs text-textSec flex items-center gap-2"
+          >
             <i class="fa-solid fa-user-doctor text-clifarBase text-sm"></i>
             <div>
-              <span class="block uppercase tracking-widest font-black text-[9px] text-gray-400">Veterinario Asignado</span>
+              <span
+                class="block uppercase tracking-widest font-black text-[9px] text-gray-400"
+                >Veterinario Asignado</span
+              >
               <b class="text-clifarDark text-sm" id="rescheduleVetName">-</b>
             </div>
           </div>
@@ -259,7 +301,10 @@
           <form id="rescheduleForm" class="space-y-4">
             <!-- Selección de Fecha -->
             <div class="flex flex-col gap-2">
-              <label class="text-xs uppercase tracking-widest font-black text-textSec">Nueva Fecha</label>
+              <label
+                class="text-xs uppercase tracking-widest font-black text-textSec"
+                >Nueva Fecha</label
+              >
               <input
                 type="date"
                 id="newDate"
@@ -270,16 +315,22 @@
 
             <!-- Contenedor de Horarios en Botones (Grid de 3 columnas) -->
             <div id="horaContainer" class="hidden flex flex-col gap-2">
-              <label class="text-xs uppercase tracking-widest font-black text-textSec mb-1 block">Horarios Disponibles</label>
+              <label
+                class="text-xs uppercase tracking-widest font-black text-textSec mb-1 block"
+                >Horarios Disponibles</label
+              >
               <div id="slots" class="grid grid-cols-3 gap-2"></div>
-              
+
               <!-- Campo oculto donde se guardará la hora que el usuario presione -->
               <input type="hidden" id="newTime" required />
             </div>
 
             <!-- Motivo de Reprogramación -->
             <div class="flex flex-col gap-2">
-              <label class="text-xs uppercase tracking-widest font-black text-textSec">Motivo de reprogramación</label>
+              <label
+                class="text-xs uppercase tracking-widest font-black text-textSec"
+                >Motivo de reprogramación</label
+              >
               <textarea
                 id="rescheduleReason"
                 rows="3"
@@ -313,8 +364,8 @@
     <!-- Core Logics and API integrations -->
     <script>
       let selectedAppointmentId = null;
-      let currentAssignedVetId = null; 
-      let allAppointments = []; 
+      let currentAssignedVetId = null;
+      let allAppointments = [];
 
       function getCookie(name) {
         const value = `; ${document.cookie}`;
@@ -326,7 +377,8 @@
 
       // Renderización de Badges de Estado
       function renderStatusBadge(status) {
-        const baseClass = "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter inline-block";
+        const baseClass =
+          "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter inline-block";
         switch (status) {
           case "REGISTRADA":
             return `<span class="${baseClass} bg-blue-100 text-blue-600">Registrada</span>`;
@@ -347,12 +399,16 @@
 
         data.forEach((cita) => {
           const card = document.createElement("div");
-          card.className = "mobile-card bg-white p-6 rounded-3xl shadow-sm border border-gray-100 fade-in";
-          
+          card.className =
+            "mobile-card bg-white p-6 rounded-3xl shadow-sm border border-gray-100 fade-in";
+
           card.setAttribute("data-mascota", cita.mascota.toLowerCase());
           card.setAttribute("data-veterinario", cita.veterinario.toLowerCase());
           card.setAttribute("data-fecha", cita.fecha);
-          card.setAttribute("data-search-pool", `${cita.servicio} ${cita.veterinario}`.toLowerCase());
+          card.setAttribute(
+            "data-search-pool",
+            `${cita.servicio} ${cita.veterinario}`.toLowerCase(),
+          );
 
           card.innerHTML = `
             <div class="flex justify-between items-start mb-4">
@@ -368,7 +424,9 @@
             </div>
             <div class="flex flex-col gap-2">
               ${
-                ["PROGRAMADA", "PAGADA", "REGISTRADA"].includes((cita.estado || "").toUpperCase())
+                ["PROGRAMADA", "PAGADA", "REGISTRADA"].includes(
+                  (cita.estado || "").toUpperCase(),
+                )
                   ? `<button onclick="openRescheduleModal(${cita.id})" class="w-full text-center py-2.5 text-xs font-bold text-white bg-clifarBase hover:bg-clifarDark rounded-xl uppercase tracking-widest transition-all">
                       <i class="fa-solid fa-calendar-days mr-1"></i> Reprogramar cita
                      </button>`
@@ -389,7 +447,7 @@
       fetch("/api/client/appointments", { credentials: "include" })
         .then((res) => res.json())
         .then((data) => {
-          allAppointments = data; 
+          allAppointments = data;
           const tbody = document.getElementById("appointmentTableBody");
           const mascotaSelect = document.getElementById("filterMascota");
           const vetSelect = document.getElementById("filterVeterinario");
@@ -420,7 +478,9 @@
               <td class="px-8 py-5 text-center">
                 <div class="flex flex-col items-center gap-1">
                   ${
-                    ["PROGRAMADA", "PAGADA", "REGISTRADA"].includes((cita.estado || "").toUpperCase())
+                    ["PROGRAMADA", "PAGADA", "REGISTRADA"].includes(
+                      (cita.estado || "").toUpperCase(),
+                    )
                       ? `<button onclick="openRescheduleModal(${cita.id})" class="text-clifarBase hover:text-clifarDark font-bold text-xs transition-colors py-1 px-2 border border-clifarBase/20 rounded-lg hover:bg-clifarBase/5">
                           <i class="fa-solid fa-calendar-days mr-1"></i>Reprogramar
                          </button>`
@@ -439,20 +499,30 @@
 
           // Llenado de filtros dinámicos
           mascotasSet.forEach((m) => {
-            const opt = document.createElement("option"); opt.value = m; opt.textContent = m;
+            const opt = document.createElement("option");
+            opt.value = m;
+            opt.textContent = m;
             mascotaSelect.appendChild(opt);
           });
           veterinariosSet.forEach((v) => {
-            const opt = document.createElement("option"); opt.value = v; opt.textContent = v;
+            const opt = document.createElement("option");
+            opt.value = v;
+            opt.textContent = v;
             vetSelect.appendChild(opt);
           });
         });
 
-      // Filtros Unificados 
+      // Filtros Unificados
       function applyFilters() {
-        const search = document.getElementById("searchInput").value.toLowerCase();
-        const mascota = document.getElementById("filterMascota").value.toLowerCase();
-        const veterinario = document.getElementById("filterVeterinario").value.toLowerCase();
+        const search = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const mascota = document
+          .getElementById("filterMascota")
+          .value.toLowerCase();
+        const veterinario = document
+          .getElementById("filterVeterinario")
+          .value.toLowerCase();
         const fecha = document.getElementById("filterFecha").value;
 
         const rows = document.querySelectorAll("#appointmentTableBody tr");
@@ -467,10 +537,15 @@
           const matchesVet = !veterinario || rowVet === veterinario;
           const matchesFecha = !fecha || rowFecha === fecha;
 
-          row.style.display = matchesSearch && matchesMascota && matchesVet && matchesFecha ? "" : "none";
+          row.style.display =
+            matchesSearch && matchesMascota && matchesVet && matchesFecha
+              ? ""
+              : "none";
         });
 
-        const cards = document.querySelectorAll("#appointmentCardsContainer .mobile-card");
+        const cards = document.querySelectorAll(
+          "#appointmentCardsContainer .mobile-card",
+        );
         cards.forEach((card) => {
           const searchPool = card.getAttribute("data-search-pool");
           const cardMascota = card.getAttribute("data-mascota");
@@ -482,11 +557,19 @@
           const matchesVet = !veterinario || cardVet === veterinario;
           const matchesFecha = !fecha || cardFecha === fecha;
 
-          card.style.display = matchesSearch && matchesMascota && matchesVet && matchesFecha ? "" : "none";
+          card.style.display =
+            matchesSearch && matchesMascota && matchesVet && matchesFecha
+              ? ""
+              : "none";
         });
       }
 
-      ["searchInput", "filterMascota", "filterVeterinario", "filterFecha"].forEach((id) => {
+      [
+        "searchInput",
+        "filterMascota",
+        "filterVeterinario",
+        "filterFecha",
+      ].forEach((id) => {
         document.getElementById(id).addEventListener("input", applyFilters);
       });
 
@@ -496,29 +579,39 @@
         document.getElementById("reasonModal").classList.remove("hidden");
       }
 
-       ZarparModal = () => document.getElementById("reasonModal").classList.add("hidden");
+      ZarparModal = () =>
+        document.getElementById("reasonModal").classList.add("hidden");
       function closeModal() {
         document.getElementById("reasonModal").classList.add("hidden");
       }
 
       function toggleSidebar() {
-        document.getElementById("sidebar").classList.toggle("-translate-x-full");
+        document
+          .getElementById("sidebar")
+          .classList.toggle("-translate-x-full");
       }
 
       function logout() {
-        document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+        document.cookie =
+          "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
         window.location.href = "/";
       }
 
       // Lógica de Reprogramación con Slots Dinámicos
       function openRescheduleModal(id) {
         selectedAppointmentId = id;
-        
-        const appointment = allAppointments.find(cita => cita.id === id);
+
+        const appointment = allAppointments.find((cita) => cita.id === id);
         if (appointment) {
           // Usa 'veterinarioId' si tu backend lo provee, de lo contrario usará el nombre completo
-          currentAssignedVetId = appointment.veterinarioId || appointment.veterinario; 
-          document.getElementById("rescheduleVetName").innerText = appointment.veterinario;
+          currentAssignedVetId = appointment.veterinarioId;
+
+          if (!currentAssignedVetId) {
+            alert("No se encontró el ID del veterinario para cargar horarios.");
+            return;
+          }
+          document.getElementById("rescheduleVetName").innerText =
+            appointment.veterinario;
         }
 
         document.getElementById("newDate").value = "";
@@ -526,7 +619,7 @@
         document.getElementById("slots").innerHTML = "";
         document.getElementById("horaContainer").classList.add("hidden");
         document.getElementById("rescheduleReason").value = "";
-        
+
         document.getElementById("rescheduleModal").classList.remove("hidden");
       }
 
@@ -536,7 +629,9 @@
         document.getElementById("rescheduleModal").classList.add("hidden");
       }
 
-      document.getElementById("newDate").addEventListener("change", cargarHorariosReprogramacion);
+      document
+        .getElementById("newDate")
+        .addEventListener("change", cargarHorariosReprogramacion);
 
       function cargarHorariosReprogramacion() {
         const fecha = document.getElementById("newDate").value;
@@ -547,81 +642,109 @@
         if (!fecha || !currentAssignedVetId) return;
 
         inputHoraOculta.value = "";
-        container.innerHTML = "<p class='text-xs text-textSec col-span-3 text-center py-2'>⏳ Buscando horas...</p>";
+        container.innerHTML =
+          "<p class='text-xs text-textSec col-span-3 text-center py-2'>⏳ Buscando horas...</p>";
         horaContainer.classList.remove("hidden");
 
-        fetch(`/api/client/veterinarians/${encodeURIComponent(currentAssignedVetId)}/horarios?fecha=${fecha}`)
-          .then(res => res.json())
-          .then(horas => {
+        fetch(
+          `/api/client/veterinarians/${encodeURIComponent(currentAssignedVetId)}/horarios?fecha=${fecha}`,
+        )
+          .then((res) => res.json())
+          .then((horas) => {
             container.innerHTML = "";
 
             if (horas.length === 0) {
-              container.innerHTML = "<p class='text-xs text-red-500 col-span-3 text-center py-2'>❌ Sin horarios disponibles.</p>";
+              container.innerHTML =
+                "<p class='text-xs text-red-500 col-span-3 text-center py-2'>❌ Sin horarios disponibles.</p>";
               return;
             }
 
-            horas.forEach(hora => {
+            horas.forEach((hora) => {
               const btn = document.createElement("button");
               btn.type = "button";
               btn.textContent = hora;
-              btn.className = "p-3 rounded-xl border border-gray-200 font-bold text-sm transition-all text-textMain bg-white hover:bg-clifarBase hover:text-white hover:border-clifarBase";
-              
+              btn.className =
+                "p-3 rounded-xl border border-gray-200 font-bold text-sm transition-all text-textMain bg-white hover:bg-clifarBase hover:text-white hover:border-clifarBase";
+
               btn.onclick = () => {
-                document.querySelectorAll("#slots button").forEach(b => {
-                  b.classList.remove("bg-clifarBase", "text-white", "border-clifarBase");
-                  b.classList.add("bg-white", "text-textMain", "border-gray-200");
+                document.querySelectorAll("#slots button").forEach((b) => {
+                  b.classList.remove(
+                    "bg-clifarBase",
+                    "text-white",
+                    "border-clifarBase",
+                  );
+                  b.classList.add(
+                    "bg-white",
+                    "text-textMain",
+                    "border-gray-200",
+                  );
                 });
-                
-                btn.classList.remove("bg-white", "text-textMain", "border-gray-200");
-                btn.classList.add("bg-clifarBase", "text-white", "border-clifarBase");
-                
+
+                btn.classList.remove(
+                  "bg-white",
+                  "text-textMain",
+                  "border-gray-200",
+                );
+                btn.classList.add(
+                  "bg-clifarBase",
+                  "text-white",
+                  "border-clifarBase",
+                );
+
                 inputHoraOculta.value = hora;
               };
 
               container.appendChild(btn);
             });
           })
-          .catch(err => {
+          .catch((err) => {
             console.error(err);
-            container.innerHTML = "<p class='text-xs text-red-500 col-span-3 text-center py-2'>❌ Error al cargar datos.</p>";
+            container.innerHTML =
+              "<p class='text-xs text-red-500 col-span-3 text-center py-2'>❌ Error al cargar datos.</p>";
           });
       }
 
       // Envío asíncrono del formulario actualizado
-      document.getElementById("rescheduleForm").addEventListener("submit", async function (e) {
-        e.preventDefault();
+      document
+        .getElementById("rescheduleForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
 
-        const nuevaFecha = document.getElementById("newDate").value;
-        const nuevaHora = document.getElementById("newTime").value; // Toma el valor del campo oculto
-        const motivo = document.getElementById("rescheduleReason").value.trim();
+          const nuevaFecha = document.getElementById("newDate").value;
+          const nuevaHora = document.getElementById("newTime").value; // Toma el valor del campo oculto
+          const motivo = document
+            .getElementById("rescheduleReason")
+            .value.trim();
 
-        if (!selectedAppointmentId || !nuevaFecha || !nuevaHora || !motivo) {
-          alert("Por favor, selecciona una fecha, un horario y escribe el motivo.");
-          return;
-        }
-
-        const response = await fetch(
-          `/api/client/reschedule-appointments/${selectedAppointmentId}/reschedule`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({
-              fecha: nuevaFecha,
-              hora: nuevaHora,
-              motivoReprogramacion: motivo,
-            }),
+          if (!selectedAppointmentId || !nuevaFecha || !nuevaHora || !motivo) {
+            alert(
+              "Por favor, selecciona una fecha, un horario y escribe el motivo.",
+            );
+            return;
           }
-        );
 
-        if (response.ok) {
-          alert("Cita reprogramada correctamente.");
-          window.location.reload();
-        } else {
-          const errorText = await response.text();
-          alert(errorText || "No se pudo reprogramar la cita.");
-        }
-      });
+          const response = await fetch(
+            `/api/client/reschedule-appointments/${selectedAppointmentId}/reschedule`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({
+                fecha: nuevaFecha,
+                hora: nuevaHora,
+                motivoReprogramacion: motivo,
+              }),
+            },
+          );
+
+          if (response.ok) {
+            alert("Cita reprogramada correctamente.");
+            window.location.reload();
+          } else {
+            const errorText = await response.text();
+            alert(errorText || "No se pudo reprogramar la cita.");
+          }
+        });
     </script>
   </body>
 </html>
