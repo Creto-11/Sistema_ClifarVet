@@ -374,5 +374,7 @@ document.getElementById('appointmentForm').addEventListener('submit', async (e) 
             window.location.href = "/";
         }
     </script>
+
+<div th:replace="~{fragments/asistente :: ia-asistente(modo='privado')}"></div>
 </body>
 </html>
