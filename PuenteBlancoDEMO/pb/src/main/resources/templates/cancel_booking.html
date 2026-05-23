@@ -332,6 +332,25 @@
           }
         });
       });
+
+      // Cerrar si se hace clic fuera del sidebar en móvil
+      document.addEventListener("click", (e) => {
+        const sidebar = document.getElementById("sidebar");
+        const toggleBtn = document.querySelector(
+          'button[onclick="toggleSidebar()"]',
+        );
+
+        if (
+          window.innerWidth < 768 &&
+          !sidebar.contains(e.target) &&
+          !toggleBtn.contains(e.target)
+        ) {
+          sidebar.classList.add("-translate-x-full");
+        }
+      });
     </script>
+    <div
+      th:replace="~{fragments/asistente :: ia-asistente(modo='privado')}"
+    ></div>
   </body>
 </html>
