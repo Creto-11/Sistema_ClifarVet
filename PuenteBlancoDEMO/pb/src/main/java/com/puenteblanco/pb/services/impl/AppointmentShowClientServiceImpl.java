@@ -17,26 +17,26 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AppointmentShowClientServiceImpl implements AppointmentShowClientService {
 
-    private final CitaRepository citaRepository;
-    private final UserRepository userRepository;
+        private final CitaRepository citaRepository;
+        private final UserRepository userRepository;
 
-    @Override
-    public List<AppointmentListResponseDto> getAppointmentsByClient(Authentication auth) {
-        String correo = auth.getName();
-        User user = userRepository.findByCorreo(correo)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        @Override
+        public List<AppointmentListResponseDto> getAppointmentsByClient(Authentication auth) {
+                String correo = auth.getName();
+                User user = userRepository.findByCorreo(correo)
+                                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        return citaRepository.findByUsuario(user).stream()
-                .map(c -> new AppointmentListResponseDto(
-                        c.getServicio().getDescripcion(),
-                        c.getVeterinario().getUsuario().getNombres(),
-                        c.getPet().getName(),
-                        c.getFecha().toString(),
-                        c.getHora().toString(),
-                        c.getEstado(),
-                        c.getMotivoCancelacion()  // <- ahora se incluye el motivo
-                ))
-                .collect(Collectors.toList());
-    }
+                return citaRepository.findByUsuario(user).stream()
+                                .map(c -> new AppointmentListResponseDto(
+                                                c.getId(),
+                                                c.getServicio().getDescripcion(),
+                                                c.getVeterinario().getId(),
+                                                c.getVeterinario().getUsuario().getNombres(),
+                                                c.getPet().getName(),
+                                                c.getFecha().toString(),
+                                                c.getHora().toString(),
+                                                c.getEstado(),
+                                                c.getMotivoReprogramacion()))
+                                .collect(Collectors.toList());
+        }
 }
-

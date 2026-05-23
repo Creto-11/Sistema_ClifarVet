@@ -34,9 +34,12 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
 
         List<Cita> findByVeterinarioId(Long veterinarioId);
 
-        List<Cita> findByFechaBetween(LocalDate startDate, LocalDate endDate); // REPORTES
+        List<Cita> findByVeterinarioIdAndFechaAndEstadoIn(
+                        Long veterinarioId,
+                        LocalDate fecha,
+                        List<String> estados);
 
-        List<Cita> findByEstadoAndFechaBetween(String estado, LocalDate inicio, LocalDate fin);
+        List<Cita> findByFechaBetween(LocalDate startDate, LocalDate endDate); // REPORTES
 
         List<Cita> findByIntern_IdAndEstado(Long internId, String estado); // Para interno
 
@@ -75,5 +78,26 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
         // ✔ Buscar citas DERIVADA por intern y que no hayan sido vistas (false o NULL)
         @Query("SELECT c FROM Cita c WHERE c.intern = :intern AND c.estado = :estado AND (c.vistoInterno = false OR c.vistoInterno IS NULL)")
         List<Cita> findDerivadasNoVistas(@Param("intern") User intern, @Param("estado") String estado);
+
+        // Método de reprogramación de citas que evita que sea en un horario ocupado
+        @Query("""
+                        SELECT COUNT(c)
+                        FROM Cita c
+                        WHERE c.veterinario.id = :veterinarioId
+                        AND c.fecha = :fecha
+                        AND c.hora = :hora
+                        AND UPPER(c.estado) IN ('PENDIENTE_PAGO', 'PROGRAMADA', 'PAGADA')
+                        AND c.id <> :citaId
+                        """)
+        long countActiveAppointmentsAtSameSlot(
+                        @Param("veterinarioId") Long veterinarioId,
+                        @Param("fecha") LocalDate fecha,
+                        @Param("hora") LocalTime hora,
+                        @Param("citaId") Long citaId);
+
+        int countByCantidadReprogramacionesGreaterThanAndFechaBetween(
+                        Integer cantidad,
+                        LocalDate inicio,
+                        LocalDate fin);
 
 }

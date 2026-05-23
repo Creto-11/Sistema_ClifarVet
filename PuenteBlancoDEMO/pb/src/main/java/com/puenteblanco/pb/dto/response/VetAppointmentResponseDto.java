@@ -14,6 +14,4 @@ public class VetAppointmentResponseDto {
     private String servicio; // Ej: "Vacunación"
     private String comentarios; // Comentario opcional
     private String estado; // Ej: "PENDIENTE"
-    private String prioridad;
-    private String motivoConsulta;
 }

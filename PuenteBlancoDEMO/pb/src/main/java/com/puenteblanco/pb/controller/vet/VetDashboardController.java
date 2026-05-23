@@ -107,21 +107,4 @@ public class VetDashboardController {
         return vet;
     }
 
-    @GetMapping("/priority-summary")
-    public ResponseEntity<Map<String, Long>> getPrioritySummary() {
-
-        LocalDate inicioSemana = LocalDate.now().with(DayOfWeek.MONDAY);
-        LocalDate finSemana = LocalDate.now().with(DayOfWeek.SUNDAY);
-
-        List<Cita> citas = citaRepository
-                .findByEstadoAndFechaBetween("COMPLETADA", inicioSemana, finSemana);
-
-        Map<String, Long> resumen = citas.stream()
-                .collect(Collectors.groupingBy(
-                        Cita::getPrioridad,
-                        Collectors.counting()));
-
-        return ResponseEntity.ok(resumen);
-    }
-
 }

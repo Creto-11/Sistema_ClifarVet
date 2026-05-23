@@ -19,17 +19,23 @@ public class PaymentController {
     }
 
     @PostMapping("/create")
-public ResponseEntity<?> createPayment(@RequestBody StripePaymentRequestDto paymentRequestDto) {
-    try {
-        PaymentIntent intent = paymentService.processPayment(paymentRequestDto);
-        return ResponseEntity.ok(new StripePaymentResponseDto(
-                intent.getId(),
-                intent.getStatus()
-        ));
-    } catch (StripeException e) {
-        return ResponseEntity.status(500).body("Error procesando el pago: " + e.getMessage());
+    public ResponseEntity<?> createPayment(@RequestBody StripePaymentRequestDto paymentRequestDto) {
+        try {
+            PaymentIntent intent = paymentService.processPayment(paymentRequestDto);
+
+            return ResponseEntity.ok(new StripePaymentResponseDto(
+                    intent.getId(),
+                    intent.getStatus()));
+
+        } catch (StripeException e) {
+            return ResponseEntity.status(500).body("Error procesando el pago: " + e.getMessage());
+
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
-}
 
 }
-

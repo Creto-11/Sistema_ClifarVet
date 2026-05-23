@@ -1,6 +1,7 @@
 package com.puenteblanco.pb.services.impl;
 
 import com.puenteblanco.pb.dto.request.AppointmentRequestDto;
+import com.puenteblanco.pb.dto.response.AppointmentBookingResponseDto;
 import com.puenteblanco.pb.entity.Cita;
 import com.puenteblanco.pb.entity.Servicio;
 import com.puenteblanco.pb.entity.User;
@@ -29,86 +30,89 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AppointmentClientServiceImpl implements AppointmentClientService {
 
-    private final CitaRepository citaRepository;
-    private final ServiceRepository servicioRepository;
-    private final VeterinarioRepository veterinarioRepository;
-    private final UserRepository userRepository;
-    private final PetRepository petRepository;
+        private final CitaRepository citaRepository;
+        private final ServiceRepository servicioRepository;
+        private final VeterinarioRepository veterinarioRepository;
+        private final UserRepository userRepository;
+        private final PetRepository petRepository;
 
-    @Autowired
-    private JavaMailSender mailSender;
+        @Autowired
+        private JavaMailSender mailSender;
 
-    @Override
-    @Transactional
-    public void bookAppointment(Authentication auth, AppointmentRequestDto dto) {
-        String correo = auth.getName();
-        User user = userRepository.findByCorreo(correo)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        @Override
+        @Transactional
+        public AppointmentBookingResponseDto bookAppointment(Authentication auth, AppointmentRequestDto dto) {
+                String correo = auth.getName();
 
-        Servicio servicio = servicioRepository.findById(dto.getServicioId())
-                .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
+                User user = userRepository.findByCorreo(correo)
+                                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        Veterinario veterinario = veterinarioRepository.findById(dto.getVeterinarioId())
-                .orElseThrow(() -> new RuntimeException("Veterinario no encontrado"));
+                Servicio servicio = servicioRepository.findById(dto.getServicioId())
+                                .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
 
-        Pet pet = petRepository.findById(dto.getPetId())
-                .orElseThrow(() -> new RuntimeException("Mascota no encontrada"));
+                Veterinario veterinario = veterinarioRepository.findById(dto.getVeterinarioId())
+                                .orElseThrow(() -> new RuntimeException("Veterinario no encontrado"));
 
-        // Guardar la cita en la base de datos
-        Cita cita = Cita.builder()
-                .usuario(user)
-                .servicio(servicio)
-                .veterinario(veterinario)
-                .pet(pet)
-                .fecha(LocalDate.parse(dto.getFecha()))
-                .hora(LocalTime.parse(dto.getHora()))
-                .precioCobrado(servicio.getPrecioBase())
-                .estado("PROGRAMADA")
-                .prioridad(dto.getPrioridad() != null ? dto.getPrioridad() : "BAJA")
-                .build();
+                Pet pet = petRepository.findById(dto.getPetId())
+                                .orElseThrow(() -> new RuntimeException("Mascota no encontrada"));
 
-        citaRepository.save(cita);
+                Cita cita = Cita.builder()
+                                .usuario(user)
+                                .servicio(servicio)
+                                .veterinario(veterinario)
+                                .pet(pet)
+                                .fecha(LocalDate.parse(dto.getFecha()))
+                                .hora(LocalTime.parse(dto.getHora()))
+                                .precioCobrado(servicio.getPrecioBase())
+                                .estado("PENDIENTE_PAGO")
+                                .build();
 
-        // Enviar el correo de confirmación inmediato
-        sendAppointmentReminderEmail(dto, user.getCorreo(), veterinario.getNombreCompleto());
-    }
+                Cita citaGuardada = citaRepository.save(cita);
 
-    // Enviar correo de confirmación inmediato
-    private void sendAppointmentReminderEmail(AppointmentRequestDto dto, String userEmail, String veterinarianName) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(userEmail);
-        message.setSubject("Recordatorio de Cita - Puente Blanco");
-        message.setText("Estimado cliente,\n\n" +
-                "Le recordamos que la cita para su mascota está agendada para el " + dto.getFecha() +
-                " a las " + dto.getHora() + " con el veterinario " + veterinarianName +
-                ".\n\nGracias por elegirnos.\n\nAtentamente,\nClínica y Veterinaria Puente Blanco");
-
-        mailSender.send(message);
-    }
-
-    // Enviar correo 30 minutos antes de la cita
-    @Scheduled(cron = "0 0/30 * * * ?") // Ejecuta cada 30 minutos
-    public void sendReminder30MinutesBefore() {
-        // Buscar todas las citas que necesitan un recordatorio 30 minutos antes
-        List<Cita> citas = citaRepository.findCitasForReminder30MinutesBefore(LocalDate.now(), LocalTime.now(),
-                LocalTime.now().plusMinutes(30));
-
-        // Enviar recordatorio
-        for (Cita cita : citas) {
-            sendAppointmentReminderEmail(new AppointmentRequestDto(), cita.getUsuario().getCorreo(),
-                    cita.getVeterinario().getNombreCompleto());
+                return new AppointmentBookingResponseDto(
+                                citaGuardada.getId(),
+                                citaGuardada.getEstado(),
+                                citaGuardada.getPrecioCobrado(),
+                                "Cita pendiente de pago. Complete el pago para confirmar la reserva.");
         }
-    }
 
-    // Tarea programada para enviar recordatorio 10 minutos después de la reserva
-    @Scheduled(fixedRate = 600000) // Ejecuta cada 10 minutos (600,000 ms)
-    public void scheduleReminderEmail() {
-        // Verificar si han pasado 10 minutos desde que se registró la cita
-        List<Cita> citas = citaRepository.findCitasForReminder(LocalDate.now(), LocalTime.now(),
-                LocalTime.now().plusMinutes(10));
-        for (Cita cita : citas) {
-            sendAppointmentReminderEmail(new AppointmentRequestDto(), cita.getUsuario().getCorreo(),
-                    cita.getVeterinario().getNombreCompleto());
+        // Enviar correo de confirmación inmediato
+        private void sendAppointmentReminderEmail(AppointmentRequestDto dto, String userEmail,
+                        String veterinarianName) {
+                SimpleMailMessage message = new SimpleMailMessage();
+                message.setTo(userEmail);
+                message.setSubject("Recordatorio de Cita - Puente Blanco");
+                message.setText("Estimado cliente,\n\n" +
+                                "Le recordamos que la cita para su mascota está agendada para el " + dto.getFecha() +
+                                " a las " + dto.getHora() + " con el veterinario " + veterinarianName +
+                                ".\n\nGracias por elegirnos.\n\nAtentamente,\nClínica y Veterinaria Puente Blanco");
+
+                mailSender.send(message);
         }
-    }
+
+        // Enviar correo 30 minutos antes de la cita
+        @Scheduled(cron = "0 0/30 * * * ?") // Ejecuta cada 30 minutos
+        public void sendReminder30MinutesBefore() {
+                // Buscar todas las citas que necesitan un recordatorio 30 minutos antes
+                List<Cita> citas = citaRepository.findCitasForReminder30MinutesBefore(LocalDate.now(), LocalTime.now(),
+                                LocalTime.now().plusMinutes(30));
+
+                // Enviar recordatorio
+                for (Cita cita : citas) {
+                        sendAppointmentReminderEmail(new AppointmentRequestDto(), cita.getUsuario().getCorreo(),
+                                        cita.getVeterinario().getNombreCompleto());
+                }
+        }
+
+        // Tarea programada para enviar recordatorio 10 minutos después de la reserva
+        @Scheduled(fixedRate = 600000) // Ejecuta cada 10 minutos (600,000 ms)
+        public void scheduleReminderEmail() {
+                // Verificar si han pasado 10 minutos desde que se registró la cita
+                List<Cita> citas = citaRepository.findCitasForReminder(LocalDate.now(), LocalTime.now(),
+                                LocalTime.now().plusMinutes(10));
+                for (Cita cita : citas) {
+                        sendAppointmentReminderEmail(new AppointmentRequestDto(), cita.getUsuario().getCorreo(),
+                                        cita.getVeterinario().getNombreCompleto());
+                }
+        }
 }

@@ -14,6 +14,7 @@ import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
@@ -30,10 +31,14 @@ public class HorarioServiceImpl implements HorarioService {
         List<Horario> horarios = horarioRepository.findByVeterinarioIdAndDiaSemanaAndEstadoTrue(vetId, diaSemana);
 
         // 2. Obtener las horas ocupadas en CITA
-        List<LocalTime> horasOcupadas = citaRepository.findByVeterinarioIdAndFechaAndEstado(vetId, fecha, "PROGRAMADA")
-        .stream()
-        .map(Cita::getHora)
-        .toList();
+        List<LocalTime> horasOcupadas = citaRepository
+                .findByVeterinarioIdAndFechaAndEstadoIn(
+                        vetId,
+                        fecha,
+                        Arrays.asList("PENDIENTE_PAGO", "PROGRAMADA", "PAGADA"))
+                .stream()
+                .map(Cita::getHora)
+                .toList();
 
         // 3. Generar slots disponibles
         List<String> slots = new ArrayList<>();

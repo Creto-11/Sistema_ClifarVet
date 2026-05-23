@@ -22,20 +22,14 @@ public class Cita extends AudityEntity {
 
     /**
      * Estados posibles:
+     * - PENDIENTE_PAGO
      * - PROGRAMADA
      * - DERIVADA
      * - VALIDADA
      * - COMPLETADA
-     * - PAGADA
      */
     @Column(nullable = false)
     private String estado;
-
-    @Column(name = "prioridad")
-    private String prioridad;
-
-    @Column(name = "motivo_consulta", length = 255)
-    private String motivoConsulta;
 
     @Column(name = "precio_cobrado")
     private BigDecimal precioCobrado;
@@ -66,8 +60,18 @@ public class Cita extends AudityEntity {
     @JoinColumn(name = "intern_id")
     private User intern;
 
-    @Column(name = "motivo_cancelacion", length = 255)
-    private String motivoCancelacion;
+    @Column(name = "motivo_reprogramacion", length = 255)
+    private String motivoReprogramacion;
+
+    @Column(name = "fecha_original")
+    private LocalDate fechaOriginal;
+
+    @Column(name = "hora_original")
+    private LocalTime horaOriginal;
+
+    @Builder.Default
+    @Column(name = "cantidad_reprogramaciones")
+    private Integer cantidadReprogramaciones = 0;
 
     @Column(name = "visto_interno")
     private Boolean vistoInterno;

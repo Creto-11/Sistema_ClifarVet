@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,7 +40,10 @@ public class VetAppointmentServiceImpl implements VetAppointmentService {
         if (vet == null)
             throw new RuntimeException("Usuario no es veterinario");
 
-        List<Cita> citas = citaRepository.findByVeterinarioIdAndFecha(vet.getId(), date);
+        List<Cita> citas = citaRepository.findByVeterinarioIdAndFechaAndEstadoIn(
+                vet.getId(),
+                date,
+                Arrays.asList("PROGRAMADA", "DERIVADA", "VALIDADA", "COMPLETADA"));
 
         return citas.stream().map(cita -> {
             String nombreCliente = cita.getUsuario().getNombres() + " " + cita.getUsuario().getApellidoPaterno();
@@ -55,10 +59,8 @@ public class VetAppointmentServiceImpl implements VetAppointmentService {
                     nombreMascota,
                     razaMascota,
                     nombreServicio,
-                    cita.getMotivoConsulta(),
                     comentarios,
-                    cita.getEstado(),
-                    cita.getPrioridad());
+                    cita.getEstado());
         }).collect(Collectors.toList());
     }
 
