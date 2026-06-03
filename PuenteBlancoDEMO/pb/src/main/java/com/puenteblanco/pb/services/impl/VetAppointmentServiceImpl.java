@@ -43,14 +43,14 @@ public class VetAppointmentServiceImpl implements VetAppointmentService {
         List<Cita> citas = citaRepository.findByVeterinarioIdAndFechaAndEstadoIn(
                 vet.getId(),
                 date,
-                Arrays.asList("PROGRAMADA", "DERIVADA", "VALIDADA", "COMPLETADA"));
+                Arrays.asList("PROGRAMADA", "PAGADA", "DERIVADA", "VALIDADA", "COMPLETADA"));
 
         return citas.stream().map(cita -> {
             String nombreCliente = cita.getUsuario().getNombres() + " " + cita.getUsuario().getApellidoPaterno();
             String nombreMascota = cita.getPet() != null ? cita.getPet().getName() : "(No registrada)";
-            String razaMascota = cita.getPet().getBreed();
+            String razaMascota = cita.getPet() != null ? cita.getPet().getBreed() : "";
             String nombreServicio = cita.getServicio().getDescripcion();
-            String comentarios = ""; // Agregar cuando la entidad Cita tenga un campo comentarios
+            String comentarios = "";
 
             return new VetAppointmentResponseDto(
                     cita.getId(),

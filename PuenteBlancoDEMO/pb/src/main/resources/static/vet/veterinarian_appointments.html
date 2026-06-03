@@ -210,8 +210,6 @@
                   <th class="py-2 px-4">Cliente</th>
                   <th class="py-2 px-4">Mascota</th>
                   <th class="py-2 px-4">Servicio</th>
-                  <th class="py-2 px-4">Síntomas</th>
-                  <th class="py-2 px-4">Prioridad</th>
                   <th class="py-2 px-4">Comentarios</th>
                   <th class="py-2 px-4">Estado</th>
                   <th class="py-2 px-4">Acción</th>
@@ -219,7 +217,7 @@
               </thead>
               <tbody id="appointmentTableBody">
                 <tr>
-                  <td colspan="9" class="text-center py-4 text-gray-500">
+                  <td colspan="7" class="text-center py-4 text-gray-500">
                     No se encontraron citas para esta fecha.
                   </td>
                 </tr>
@@ -233,17 +231,19 @@
     <script>
       const DateTime = luxon.DateTime;
 
-      // Función para alternar el menú - versión corregida
       function toggleMenu() {
+        const sidebar = document.getElementById("sidebar");
+        const sidebarOverlay = document.querySelector(".sidebar-overlay");
+
+        if (!sidebar || !sidebarOverlay) return;
+
         const isOpen = sidebar.classList.contains("-translate-x-full");
 
         if (isOpen) {
-          // Abrir menú
           sidebar.classList.remove("-translate-x-full");
           sidebarOverlay.classList.remove("hidden");
           document.body.classList.add("overflow-hidden");
         } else {
-          // Cerrar menú
           sidebar.classList.add("-translate-x-full");
           sidebarOverlay.classList.add("hidden");
           document.body.classList.remove("overflow-hidden");
@@ -329,41 +329,23 @@
 
         appointments.forEach((app) => {
           const row = document.createElement("tr");
-          let prioridadColor = "bg-green-100 text-green-700";
+          const estado = (app.estado || "").toUpperCase();
+          const puedeAtender = ["PROGRAMADA", "PAGADA"].includes(estado);
 
-          if (app.prioridad === "MEDIA") {
-            prioridadColor = "bg-yellow-100 text-yellow-700";
-          }
-
-          if (app.prioridad === "ALTA") {
-            prioridadColor = "bg-red-100 text-red-700";
-          }
+          const accionHtml = puedeAtender
+            ? `<button onclick="atenderCita(${app.id})" class="text-blue-600 hover:underline text-sm">Atender</button>`
+            : `<span class="text-gray-400 text-sm">No disponible</span>`;
 
           row.innerHTML = `
-<td class="px-4 py-2">${app.hora}</td>
-<td class="px-4 py-2">${app.cliente}</td>
-<td class="px-4 py-2">${app.mascota}</td>
-<td class="px-4 py-2">${app.servicio}</td>
+      <td class="px-4 py-2" data-label="Hora">${app.hora ?? ""}</td>
+      <td class="px-4 py-2" data-label="Cliente">${app.cliente ?? ""}</td>
+      <td class="px-4 py-2" data-label="Mascota">${app.mascota ?? ""}</td>
+      <td class="px-4 py-2" data-label="Servicio">${app.servicio ?? ""}</td>
+      <td class="px-4 py-2" data-label="Comentarios">${app.comentarios ?? ""}</td>
+      <td class="px-4 py-2" data-label="Estado">${app.estado ?? ""}</td>
+      <td class="px-4 py-2" data-label="Acción">${accionHtml}</td>
+    `;
 
-<td class="px-4 py-2 text-xs text-gray-600">
-${app.sintomas ?? "Consulta general"}
-</td>
-
-<td class="px-4 py-2">
-<span class="px-2 py-1 rounded text-xs font-semibold ${prioridadColor}">
-${app.prioridad ?? "BAJA"}
-</span>
-</td>
-
-<td class="px-4 py-2">${app.comentarios ?? ""}</td>
-<td class="px-4 py-2">${app.estado}</td>
-
-<td class="px-4 py-2">
-<button onclick="atenderCita()" class="text-blue-600 hover:underline text-sm">
-Atender
-</button>
-</td>
-`;
           tbody.appendChild(row);
         });
       }
@@ -380,8 +362,13 @@ Atender
         });
       }
 
-      function atenderCita() {
-        window.location.href = "/vet/veterinarian_attend.html";
+      function atenderCita(citaId) {
+        if (!citaId) {
+          alert("No se encontró el identificador de la cita.");
+          return;
+        }
+
+        window.location.href = `/vet/veterinarian_attend.html?citaId=${encodeURIComponent(citaId)}`;
       }
 
       function logout() {

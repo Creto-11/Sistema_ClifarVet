@@ -24,13 +24,14 @@ public class Cita extends AudityEntity {
      * Estados posibles:
      * - PENDIENTE_PAGO
      * - PROGRAMADA
+     * - PAGADA
      * - DERIVADA
+     * - EVALUADA
      * - VALIDADA
      * - COMPLETADA
      */
     @Column(nullable = false)
     private String estado;
-
     @Column(name = "precio_cobrado")
     private BigDecimal precioCobrado;
 
