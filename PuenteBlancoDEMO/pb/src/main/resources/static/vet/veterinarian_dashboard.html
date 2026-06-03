@@ -190,42 +190,24 @@
             </div>
           </div>
 
-          <!-- Clasificación de consultas -->
+          <!-- Acceso rápido a atención -->
           <div
-            class="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-gray-100 flex flex-col gap-2 hover:shadow-md"
+            class="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-gray-100 flex flex-col gap-3 hover:shadow-md"
           >
-            <div class="text-gray-500 text-sm mb-2">
-              Clasificación de consultas de la semana
+            <div class="text-gray-500 text-sm">Gestión de atención</div>
+
+            <div class="text-sm text-gray-600">
+              Revisa las citas programadas y registra la atención médica desde
+              el botón correspondiente.
             </div>
 
-            <div class="flex justify-between items-center">
-              <div>
-                <div class="text-sm text-gray-600">Consultas normales</div>
-                <div class="text-xl font-bold text-green-600" id="priorityBaja">
-                  ...
-                </div>
-              </div>
-
-              <div class="text-sm text-gray-400">
-                <span id="percentBaja">0%</span>
-              </div>
-            </div>
-
-            <div class="flex justify-between items-center">
-              <div>
-                <div class="text-sm text-gray-600">Consultas con síntomas</div>
-                <div
-                  class="text-xl font-bold text-yellow-500"
-                  id="priorityMedia"
-                >
-                  ...
-                </div>
-              </div>
-
-              <div class="text-sm text-gray-400">
-                <span id="percentMedia">0%</span>
-              </div>
-            </div>
+            <a
+              href="/vet/veterinarian_appointments.html"
+              class="inline-flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm"
+            >
+              <i class="fa-solid fa-calendar-days"></i>
+              Ver citas agendadas
+            </a>
           </div>
         </div>
 
