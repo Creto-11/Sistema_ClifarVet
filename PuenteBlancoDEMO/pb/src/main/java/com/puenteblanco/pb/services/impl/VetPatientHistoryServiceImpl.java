@@ -51,14 +51,14 @@ public class VetPatientHistoryServiceImpl implements VetPatientHistoryService {
         @Override
         public List<VetClinicalRecordResponseDto> getClinicalHistoryByPet(Long petId) {
                 return atencionMedicaRepository.findByPetId(petId).stream()
-                                .filter(record -> "PAGADA".equalsIgnoreCase(record.getCita().getEstado())) // solo citas
-                                                                                                           // pagadas
+                                .filter(AtencionMedica::isActivo)
                                 .map(record -> VetClinicalRecordResponseDto.builder()
                                                 .fecha(record.getCita().getFecha())
                                                 .servicio(record.getCita().getServicio().getDescripcion())
                                                 .diagnostico(record.getDiagnostico())
                                                 .tratamiento(record.getTratamiento())
                                                 .observaciones(record.getObservacionesClinicas())
+                                                .estadoValidacion(record.getEstadoValidacion())
                                                 .build())
                                 .collect(Collectors.toList());
         }
