@@ -20,6 +20,12 @@ import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+//MODIFICACION POR CRETO: Nuevos imports
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.Arrays;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -52,8 +58,10 @@ public class SecurityConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception { 
         return http
+            //MODIFICACION POR CRETO: Para conexión con flutter
+            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // <-- se agrego esto
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
@@ -113,5 +121,19 @@ public class SecurityConfig implements WebMvcConfigurer {
         
         registry.addResourceHandler("/images/**")
             .addResourceLocations("classpath:/static/images/");
+    }
+    //MODIFICACIÓN POR CRETO: Para conexión con flutter
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOriginPatterns(Arrays.asList("*")); // O tu URL específica de Flutter si lo prefieres
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        // Aplica estas reglas a todos los endpoints de la API
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

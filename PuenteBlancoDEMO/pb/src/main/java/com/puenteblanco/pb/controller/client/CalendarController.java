@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*") //MODIFICACIÓN POR CRETO: Habilita flutter
 @RestController
 @RequestMapping("/api/client/appointments")
 @RequiredArgsConstructor

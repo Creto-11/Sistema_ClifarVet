@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/payments")
+@CrossOrigin(origins = "*") //MODIFICACIÓN POR CRETO
 public class PaymentController {
 
     private final PagoService paymentService;
@@ -24,7 +25,8 @@ public ResponseEntity<?> createPayment(@RequestBody StripePaymentRequestDto paym
         PaymentIntent intent = paymentService.processPayment(paymentRequestDto);
         return ResponseEntity.ok(new StripePaymentResponseDto(
                 intent.getId(),
-                intent.getStatus()
+                intent.getStatus(),
+                intent.getClientSecret() // agregado por CRETO para enviar a flutter
         ));
     } catch (StripeException e) {
         return ResponseEntity.status(500).body("Error procesando el pago: " + e.getMessage());
