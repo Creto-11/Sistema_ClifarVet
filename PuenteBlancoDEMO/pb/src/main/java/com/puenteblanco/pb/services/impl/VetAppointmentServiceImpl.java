@@ -101,7 +101,19 @@ public class VetAppointmentServiceImpl implements VetAppointmentService {
     public void actualizarEstadoCita(Long citaId, String nuevoEstado) {
         Cita cita = citaRepository.findById(citaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cita no encontrada con ID: " + citaId));
+
         cita.setEstado(nuevoEstado);
         citaRepository.save(cita);
+
+        atencionMedicaRepository.findByCita_Id(citaId).ifPresent(atencion -> {
+            if ("COMPLETADA".equalsIgnoreCase(nuevoEstado) || "VALIDADA".equalsIgnoreCase(nuevoEstado)) {
+                atencion.setEstadoValidacion("COMPLETADA");
+                atencion.setActivo(true);
+            } else if ("PROGRAMADA".equalsIgnoreCase(nuevoEstado)) {
+                atencion.setEstadoValidacion("RECHAZADA");
+                atencion.setActivo(false);
+            }
+            atencionMedicaRepository.save(atencion);
+        });
     }
 }

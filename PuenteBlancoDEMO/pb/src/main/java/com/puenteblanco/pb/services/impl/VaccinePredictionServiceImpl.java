@@ -24,9 +24,24 @@ public class VaccinePredictionServiceImpl implements VaccinePredictionService {
 
             AtencionMedica atencion = historial.get(i);
 
-            String servicio = atencion.getCita().getServicio().getDescripcion().toLowerCase();
+            if (!atencion.isActivo() || atencion.getCita() == null || atencion.getCita().getServicio() == null) {
+                continue;
+            }
 
-            if (servicio.contains("vacuna")) {
+            String estadoCita = atencion.getCita().getEstado() != null ? atencion.getCita().getEstado() : "";
+            String estadoValidacion = atencion.getEstadoValidacion() != null ? atencion.getEstadoValidacion() : "";
+
+            boolean atencionConfirmada = "COMPLETADA".equalsIgnoreCase(estadoCita)
+                    || "COMPLETADA".equalsIgnoreCase(estadoValidacion);
+
+            if (!atencionConfirmada) {
+                continue;
+            }
+
+            String servicio = atencion.getCita().getServicio().getDescripcion();
+            servicio = servicio != null ? servicio.toLowerCase() : "";
+
+            if (servicio.contains("vacuna") || servicio.contains("vacunación") || servicio.contains("vacunacion")) {
 
                 LocalDate fechaVacuna = atencion.getCita().getFecha();
 

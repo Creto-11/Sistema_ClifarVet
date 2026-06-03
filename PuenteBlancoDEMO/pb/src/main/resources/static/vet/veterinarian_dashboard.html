@@ -462,7 +462,9 @@
           month: "long",
           year: "numeric",
         });
+
         monthDays.innerHTML = "";
+
         for (let i = 0; i < firstDay; i++)
           monthDays.innerHTML += '<div class="h-6 sm:h-8"></div>';
 
@@ -473,21 +475,23 @@
           .then((res) => res.json())
           .then((data) => {
             for (let d = 1; d <= totalDays; d++) {
-              const key = d.toString();
-              const estado = data[key];
+              const key = String(d).padStart(2, "0");
+              const cantidad = data[key] ?? 0;
+
               let className =
                 "h-6 sm:h-8 flex items-center justify-center rounded-full text-xs sm:text-sm";
 
-              if (estado === "PROGRAMADA") className += " bg-blue-200";
-              else if (estado === "COMPLETADA") className += " bg-green-200";
-              else if (estado === "CANCELADA") className += " bg-red-200";
-              else className += " bg-gray-100";
+              className +=
+                cantidad > 0
+                  ? " bg-green-200 text-green-800 font-semibold"
+                  : " bg-gray-100";
 
-              monthDays.innerHTML += `<div class="${className}" title="${estado || "Sin citas"}">${d}</div>`;
+              monthDays.innerHTML += `<div class="${className}" title="${cantidad > 0 ? cantidad + " cita(s)" : "Sin citas"}">${d}</div>`;
             }
           })
           .catch((err) => {
             console.error("Error al cargar calendario:", err);
+
             for (let d = 1; d <= totalDays; d++) {
               monthDays.innerHTML += `<div class="h-6 sm:h-8 flex items-center justify-center text-xs sm:text-sm">${d}</div>`;
             }
@@ -513,27 +517,6 @@
         cargarGraficoServicios();
         renderCalendar();
       });
-
-      fetch("/api/vet/priority-summary", { credentials: "include" })
-        .then((res) => res.json())
-        .then((data) => {
-          const baja = data.BAJA ?? 0;
-          const media = data.MEDIA ?? 0;
-
-          const total = baja + media;
-
-          const porcentajeBaja = total ? Math.round((baja / total) * 100) : 0;
-          const porcentajeMedia = total ? Math.round((media / total) * 100) : 0;
-
-          document.getElementById("priorityBaja").textContent = baja;
-          document.getElementById("priorityMedia").textContent = media;
-
-          document.getElementById("percentBaja").textContent =
-            porcentajeBaja + "%";
-          document.getElementById("percentMedia").textContent =
-            porcentajeMedia + "%";
-        })
-        .catch((err) => console.error("Error cargando prioridades:", err));
     </script>
   </body>
 </html>
