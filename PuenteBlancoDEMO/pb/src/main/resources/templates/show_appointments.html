@@ -240,7 +240,7 @@
       </main>
     </div>
 
-    <!-- Modals Layer Container (Separated) -->
+    <!-- Modals Layer Container -->
     <div id="modalLayer">
       <!-- Reason Modal -->
       <div
@@ -284,7 +284,6 @@
             Reprogramar Cita
           </h2>
 
-          <!-- Información fija del veterinario asignado -->
           <div
             class="mb-4 p-3 bg-gray-50 rounded-xl border border-gray-100 text-xs text-textSec flex items-center gap-2"
           >
@@ -299,7 +298,6 @@
           </div>
 
           <form id="rescheduleForm" class="space-y-4">
-            <!-- Selección de Fecha -->
             <div class="flex flex-col gap-2">
               <label
                 class="text-xs uppercase tracking-widest font-black text-textSec"
@@ -313,19 +311,15 @@
               />
             </div>
 
-            <!-- Contenedor de Horarios en Botones (Grid de 3 columnas) -->
             <div id="horaContainer" class="hidden flex flex-col gap-2">
               <label
                 class="text-xs uppercase tracking-widest font-black text-textSec mb-1 block"
                 >Horarios Disponibles</label
               >
               <div id="slots" class="grid grid-cols-3 gap-2"></div>
-
-              <!-- Campo oculto donde se guardará la hora que el usuario presione -->
               <input type="hidden" id="newTime" required />
             </div>
 
-            <!-- Motivo de Reprogramación -->
             <div class="flex flex-col gap-2">
               <label
                 class="text-xs uppercase tracking-widest font-black text-textSec"
@@ -340,7 +334,6 @@
               ></textarea>
             </div>
 
-            <!-- Botones de Acción -->
             <div class="flex gap-3 pt-2">
               <button
                 type="button"
@@ -357,6 +350,72 @@
               </button>
             </div>
           </form>
+        </div>
+      </div>
+
+      <!-- Custom Warning Alert Modal (Nueva única reprogramación) -->
+      <div
+        id="warningModal"
+        class="hidden fixed inset-0 bg-clifarDark/60 backdrop-blur-sm flex items-center justify-center z-[60] p-6"
+      >
+        <div
+          class="bg-white p-8 rounded-[2rem] shadow-2xl w-full max-w-md text-center fade-in"
+        >
+          <div
+            class="w-16 h-16 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl"
+          >
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <h2
+            class="text-xl font-black text-clifarDark mb-3 uppercase tracking-tight"
+          >
+            Atención: Acción Única
+          </h2>
+          <p class="text-sm text-textSec leading-relaxed mb-6">
+            Solo se permite reprogramar tu cita <b>UNA SOLA VEZ</b>.<br />
+            Si confirmas los cambios, la opción se desactivará permanentemente
+            para esta consulta.
+          </p>
+          <div class="flex gap-3">
+            <button
+              id="btnCancelWarning"
+              class="w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl transition-all text-sm"
+            >
+              Cancelar
+            </button>
+            <button
+              id="btnConfirmWarning"
+              class="w-1/2 bg-clifarAccent hover:bg-amber-500 text-clifarDark font-black py-3 rounded-xl transition-all text-sm shadow-md"
+            >
+              Sí, Continuar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Custom Status Notification Modal (Éxito o Error) -->
+      <div
+        id="statusModal"
+        class="hidden fixed inset-0 bg-clifarDark/60 backdrop-blur-sm flex items-center justify-center z-[70] p-6"
+      >
+        <div
+          class="bg-white p-8 rounded-[2rem] shadow-2xl w-full max-w-sm text-center fade-in"
+        >
+          <div
+            id="statusModalIconContainer"
+            class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl"
+          >
+            <i id="statusModalIcon" class="fa-solid"></i>
+          </div>
+          <h2
+            id="statusModalTitle"
+            class="text-xl font-black text-clifarDark mb-2 uppercase tracking-tight"
+          ></h2>
+          <p id="statusModalMessage" class="text-sm text-textSec mb-6"></p>
+          <button
+            id="btnStatusClose"
+            class="w-full text-white font-bold py-3 rounded-xl transition-all shadow-lg"
+          ></button>
         </div>
       </div>
     </div>
@@ -391,6 +450,38 @@
         }
       }
 
+      // Helper para mostrar el Modal de Estado personalizado
+      function showStatusNotification(title, message, isSuccess, callback = null) {
+        const modal = document.getElementById("statusModal");
+        const iconContainer = document.getElementById("statusModalIconContainer");
+        const icon = document.getElementById("statusModalIcon");
+        const titleEl = document.getElementById("statusModalTitle");
+        const msgEl = document.getElementById("statusModalMessage");
+        const btn = document.getElementById("btnStatusClose");
+
+        titleEl.innerText = title;
+        msgEl.innerText = message;
+
+        if (isSuccess) {
+          iconContainer.className = "w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl";
+          icon.className = "fa-solid fa-circle-check";
+          btn.className = "w-full bg-clifarBase hover:bg-clifarDark text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-clifarBase/20";
+          btn.innerText = "Excelente";
+        } else {
+          iconContainer.className = "w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl";
+          icon.className = "fa-solid fa-circle-xmark";
+          btn.className = "w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-red-500/20";
+          btn.innerText = "Cerrar";
+        }
+
+        btn.onclick = () => {
+          modal.classList.add("hidden");
+          if (callback) callback();
+        };
+
+        modal.classList.remove("hidden");
+      }
+
       // Renderizado de tarjetas para móviles (con selectores para filtros)
       function renderMobileCards(data) {
         const container = document.getElementById("appointmentCardsContainer");
@@ -410,6 +501,9 @@
             `${cita.servicio} ${cita.veterinario}`.toLowerCase(),
           );
 
+          const estadoMayus = (cita.estado || "").toUpperCase();
+          const puedeReprogramar = !["REPROGRAMADA", "FINALIZADA", "CANCELADA"].includes(estadoMayus);
+
           card.innerHTML = `
             <div class="flex justify-between items-start mb-4">
               <div>
@@ -424,9 +518,7 @@
             </div>
             <div class="flex flex-col gap-2">
               ${
-                ["PROGRAMADA", "PAGADA", "REGISTRADA"].includes(
-                  (cita.estado || "").toUpperCase(),
-                )
+                puedeReprogramar
                   ? `<button onclick="openRescheduleModal(${cita.id})" class="w-full text-center py-2.5 text-xs font-bold text-white bg-clifarBase hover:bg-clifarDark rounded-xl uppercase tracking-widest transition-all">
                       <i class="fa-solid fa-calendar-days mr-1"></i> Reprogramar cita
                      </button>`
@@ -469,6 +561,9 @@
             tr.setAttribute("data-veterinario", cita.veterinario.toLowerCase());
             tr.setAttribute("data-fecha", cita.fecha);
 
+            const estadoMayus = (cita.estado || "").toUpperCase();
+            const puedeReprogramar = !["REPROGRAMADA", "FINALIZADA", "CANCELADA"].includes(estadoMayus);
+
             tr.innerHTML = `
               <td class="px-8 py-5 text-sm font-bold text-gray-500">${cita.fecha} <span class="block text-[10px] font-normal text-gray-400">${cita.hora}</span></td>
               <td class="px-8 py-5 text-sm font-black text-clifarDark">${cita.mascota}</td>
@@ -478,9 +573,7 @@
               <td class="px-8 py-5 text-center">
                 <div class="flex flex-col items-center gap-1">
                   ${
-                    ["PROGRAMADA", "PAGADA", "REGISTRADA"].includes(
-                      (cita.estado || "").toUpperCase(),
-                    )
+                    puedeReprogramar
                       ? `<button onclick="openRescheduleModal(${cita.id})" class="text-clifarBase hover:text-clifarDark font-bold text-xs transition-colors py-1 px-2 border border-clifarBase/20 rounded-lg hover:bg-clifarBase/5">
                           <i class="fa-solid fa-calendar-days mr-1"></i>Reprogramar
                          </button>`
@@ -514,15 +607,9 @@
 
       // Filtros Unificados
       function applyFilters() {
-        const search = document
-          .getElementById("searchInput")
-          .value.toLowerCase();
-        const mascota = document
-          .getElementById("filterMascota")
-          .value.toLowerCase();
-        const veterinario = document
-          .getElementById("filterVeterinario")
-          .value.toLowerCase();
+        const search = document.getElementById("searchInput").value.toLowerCase();
+        const mascota = document.getElementById("filterMascota").value.toLowerCase();
+        const veterinario = document.getElementById("filterVeterinario").value.toLowerCase();
         const fecha = document.getElementById("filterFecha").value;
 
         const rows = document.querySelectorAll("#appointmentTableBody tr");
@@ -537,15 +624,10 @@
           const matchesVet = !veterinario || rowVet === veterinario;
           const matchesFecha = !fecha || rowFecha === fecha;
 
-          row.style.display =
-            matchesSearch && matchesMascota && matchesVet && matchesFecha
-              ? ""
-              : "none";
+          row.style.display = matchesSearch && matchesMascota && matchesVet && matchesFecha ? "" : "none";
         });
 
-        const cards = document.querySelectorAll(
-          "#appointmentCardsContainer .mobile-card",
-        );
+        const cards = document.querySelectorAll("#appointmentCardsContainer .mobile-card");
         cards.forEach((card) => {
           const searchPool = card.getAttribute("data-search-pool");
           const cardMascota = card.getAttribute("data-mascota");
@@ -557,43 +639,30 @@
           const matchesVet = !veterinario || cardVet === veterinario;
           const matchesFecha = !fecha || cardFecha === fecha;
 
-          card.style.display =
-            matchesSearch && matchesMascota && matchesVet && matchesFecha
-              ? ""
-              : "none";
+          card.style.display = matchesSearch && matchesMascota && matchesVet && matchesFecha ? "" : "none";
         });
       }
 
-      [
-        "searchInput",
-        "filterMascota",
-        "filterVeterinario",
-        "filterFecha",
-      ].forEach((id) => {
+      ["searchInput", "filterMascota", "filterVeterinario", "filterFecha"].forEach((id) => {
         document.getElementById(id).addEventListener("input", applyFilters);
       });
 
-      // Control de Modales
+      // Control de Modales Básicos
       function showReason(reason) {
         document.getElementById("modalReasonText").innerText = reason;
         document.getElementById("reasonModal").classList.remove("hidden");
       }
 
-      ZarparModal = () =>
-        document.getElementById("reasonModal").classList.add("hidden");
       function closeModal() {
         document.getElementById("reasonModal").classList.add("hidden");
       }
 
       function toggleSidebar() {
-        document
-          .getElementById("sidebar")
-          .classList.toggle("-translate-x-full");
+        document.getElementById("sidebar").classList.toggle("-translate-x-full");
       }
 
       function logout() {
-        document.cookie =
-          "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+        document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
         window.location.href = "/";
       }
 
@@ -603,16 +672,18 @@
 
         const appointment = allAppointments.find((cita) => cita.id === id);
         if (appointment) {
-          // Usa 'veterinarioId' si tu backend lo provee, de lo contrario usará el nombre completo
           currentAssignedVetId = appointment.veterinarioId;
 
           if (!currentAssignedVetId) {
-            alert("No se encontró el ID del veterinario para cargar horarios.");
+            showStatusNotification("Error", "No se encontró el ID del veterinario para cargar horarios.", false);
             return;
           }
-          document.getElementById("rescheduleVetName").innerText =
-            appointment.veterinario;
+          document.getElementById("rescheduleVetName").innerText = appointment.veterinario;
         }
+
+        // Restricción de fechas pasadas
+        const hoy = new Date().toISOString().split('T')[0];
+        document.getElementById("newDate").setAttribute("min", hoy);
 
         document.getElementById("newDate").value = "";
         document.getElementById("newTime").value = "";
@@ -629,9 +700,7 @@
         document.getElementById("rescheduleModal").classList.add("hidden");
       }
 
-      document
-        .getElementById("newDate")
-        .addEventListener("change", cargarHorariosReprogramacion);
+      document.getElementById("newDate").addEventListener("change", cargarHorariosReprogramacion);
 
       function cargarHorariosReprogramacion() {
         const fecha = document.getElementById("newDate").value;
@@ -642,20 +711,16 @@
         if (!fecha || !currentAssignedVetId) return;
 
         inputHoraOculta.value = "";
-        container.innerHTML =
-          "<p class='text-xs text-textSec col-span-3 text-center py-2'>⏳ Buscando horas...</p>";
+        container.innerHTML = "<p class='text-xs text-textSec col-span-3 text-center py-2'>⏳ Buscando horas...</p>";
         horaContainer.classList.remove("hidden");
 
-        fetch(
-          `/api/client/veterinarians/${encodeURIComponent(currentAssignedVetId)}/horarios?fecha=${fecha}`,
-        )
+        fetch(`/api/client/veterinarians/${encodeURIComponent(currentAssignedVetId)}/horarios?fecha=${fecha}`)
           .then((res) => res.json())
           .then((horas) => {
             container.innerHTML = "";
 
             if (horas.length === 0) {
-              container.innerHTML =
-                "<p class='text-xs text-red-500 col-span-3 text-center py-2'>❌ Sin horarios disponibles.</p>";
+              container.innerHTML = "<p class='text-xs text-red-500 col-span-3 text-center py-2'>❌ Sin horarios disponibles.</p>";
               return;
             }
 
@@ -663,33 +728,16 @@
               const btn = document.createElement("button");
               btn.type = "button";
               btn.textContent = hora;
-              btn.className =
-                "p-3 rounded-xl border border-gray-200 font-bold text-sm transition-all text-textMain bg-white hover:bg-clifarBase hover:text-white hover:border-clifarBase";
+              btn.className = "p-3 rounded-xl border border-gray-200 font-bold text-sm transition-all text-textMain bg-white hover:bg-clifarBase hover:text-white hover:border-clifarBase";
 
               btn.onclick = () => {
                 document.querySelectorAll("#slots button").forEach((b) => {
-                  b.classList.remove(
-                    "bg-clifarBase",
-                    "text-white",
-                    "border-clifarBase",
-                  );
-                  b.classList.add(
-                    "bg-white",
-                    "text-textMain",
-                    "border-gray-200",
-                  );
+                  b.classList.remove("bg-clifarBase", "text-white", "border-clifarBase");
+                  b.classList.add("bg-white", "text-textMain", "border-gray-200");
                 });
 
-                btn.classList.remove(
-                  "bg-white",
-                  "text-textMain",
-                  "border-gray-200",
-                );
-                btn.classList.add(
-                  "bg-clifarBase",
-                  "text-white",
-                  "border-clifarBase",
-                );
+                btn.classList.remove("bg-white", "text-textMain", "border-gray-200");
+                btn.classList.add("bg-clifarBase", "text-white", "border-clifarBase");
 
                 inputHoraOculta.value = hora;
               };
@@ -699,33 +747,42 @@
           })
           .catch((err) => {
             console.error(err);
-            container.innerHTML =
-              "<p class='text-xs text-red-500 col-span-3 text-center py-2'>❌ Error al cargar datos.</p>";
+            container.innerHTML = "<p class='text-xs text-red-500 col-span-3 text-center py-2'>❌ Error al cargar datos.</p>";
           });
       }
 
-      // Envío asíncrono del formulario actualizado
-      document
-        .getElementById("rescheduleForm")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
+      // Envío asíncrono con Flujo de Modales Customizados (Intercepción de Advertencia y Estado)
+      document.getElementById("rescheduleForm").addEventListener("submit", function (e) {
+        e.preventDefault();
 
-          const nuevaFecha = document.getElementById("newDate").value;
-          const nuevaHora = document.getElementById("newTime").value; // Toma el valor del campo oculto
-          const motivo = document
-            .getElementById("rescheduleReason")
-            .value.trim();
+        const nuevaFecha = document.getElementById("newDate").value;
+        const nuevaHora = document.getElementById("newTime").value;
+        const motivo = document.getElementById("rescheduleReason").value.trim();
 
-          if (!selectedAppointmentId || !nuevaFecha || !nuevaHora || !motivo) {
-            alert(
-              "Por favor, selecciona una fecha, un horario y escribe el motivo.",
-            );
-            return;
-          }
+        if (!selectedAppointmentId || !nuevaFecha || !nuevaHora || !motivo) {
+          showStatusNotification("Datos Incompletos", "Por favor, selecciona una fecha, un horario y escribe el motivo.", false);
+          return;
+        }
 
-          const response = await fetch(
-            `/api/client/reschedule-appointments/${selectedAppointmentId}/reschedule`,
-            {
+        // Activamos el modal de Advertencia Única
+        const warningModal = document.getElementById("warningModal");
+        const btnCancel = document.getElementById("btnCancelWarning");
+        const btnConfirm = document.getElementById("btnConfirmWarning");
+
+        warningModal.classList.remove("hidden");
+
+        // Acción si cancela la advertencia
+        btnCancel.onclick = () => {
+          warningModal.classList.add("hidden");
+        };
+
+        // Acción si acepta la advertencia
+        btnConfirm.onclick = async () => {
+          warningModal.classList.add("hidden"); // Escondemos advertencia
+          document.getElementById("rescheduleModal").classList.add("hidden"); // Escondemos formulario base
+
+          try {
+            const response = await fetch(`/api/client/reschedule-appointments/${selectedAppointmentId}/reschedule`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               credentials: "include",
@@ -734,20 +791,28 @@
                 hora: nuevaHora,
                 motivoReprogramacion: motivo,
               }),
-            },
-          );
+            });
 
-          if (response.ok) {
-            alert("Cita reprogramada correctamente.");
-            window.location.reload();
-          } else {
-            const errorText = await response.text();
-            alert(errorText || "No se pudo reprogramar la cita.");
+            if (response.ok) {
+              showStatusNotification(
+                "¡Éxito!", 
+                "Cita reprogramada correctamente. El botón de cambio ha sido desactivado permanentemente.", 
+                true, 
+                () => window.location.reload()
+              );
+            } else {
+              const errorText = await response.text();
+              showStatusNotification("No se pudo procesar", errorText || "Ocurrió un inconveniente al cambiar la cita.", false, () => {
+                document.getElementById("rescheduleModal").classList.remove("hidden"); // Reabre el modal por si quiere corregir algo
+              });
+            }
+          } catch (error) {
+            console.error(error);
+            showStatusNotification("Error de red", "No se pudo conectar con el servidor.", false);
           }
-        });
+        };
+      });
     </script>
-    <div
-      th:replace="~{fragments/asistente :: ia-asistente(modo='privado')}"
-    ></div>
+    <div th:replace="~{fragments/asistente :: ia-asistente(modo='privado')}"></div>
   </body>
 </html>
