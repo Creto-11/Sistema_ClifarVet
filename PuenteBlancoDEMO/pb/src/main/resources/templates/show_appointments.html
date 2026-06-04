@@ -451,9 +451,16 @@
       }
 
       // Helper para mostrar el Modal de Estado personalizado
-      function showStatusNotification(title, message, isSuccess, callback = null) {
+      function showStatusNotification(
+        title,
+        message,
+        isSuccess,
+        callback = null,
+      ) {
         const modal = document.getElementById("statusModal");
-        const iconContainer = document.getElementById("statusModalIconContainer");
+        const iconContainer = document.getElementById(
+          "statusModalIconContainer",
+        );
         const icon = document.getElementById("statusModalIcon");
         const titleEl = document.getElementById("statusModalTitle");
         const msgEl = document.getElementById("statusModalMessage");
@@ -463,14 +470,18 @@
         msgEl.innerText = message;
 
         if (isSuccess) {
-          iconContainer.className = "w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl";
+          iconContainer.className =
+            "w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl";
           icon.className = "fa-solid fa-circle-check";
-          btn.className = "w-full bg-clifarBase hover:bg-clifarDark text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-clifarBase/20";
+          btn.className =
+            "w-full bg-clifarBase hover:bg-clifarDark text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-clifarBase/20";
           btn.innerText = "Excelente";
         } else {
-          iconContainer.className = "w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl";
+          iconContainer.className =
+            "w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl";
           icon.className = "fa-solid fa-circle-xmark";
-          btn.className = "w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-red-500/20";
+          btn.className =
+            "w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-red-500/20";
           btn.innerText = "Cerrar";
         }
 
@@ -502,7 +513,9 @@
           );
 
           const estadoMayus = (cita.estado || "").toUpperCase();
-          const puedeReprogramar = !["REPROGRAMADA", "FINALIZADA", "CANCELADA"].includes(estadoMayus);
+          const puedeReprogramar = ["PROGRAMADA", "PAGADA"].includes(
+            estadoMayus,
+          );
 
           card.innerHTML = `
             <div class="flex justify-between items-start mb-4">
@@ -562,7 +575,11 @@
             tr.setAttribute("data-fecha", cita.fecha);
 
             const estadoMayus = (cita.estado || "").toUpperCase();
-            const puedeReprogramar = !["REPROGRAMADA", "FINALIZADA", "CANCELADA"].includes(estadoMayus);
+            const puedeReprogramar = ![
+              "REPROGRAMADA",
+              "FINALIZADA",
+              "CANCELADA",
+            ].includes(estadoMayus);
 
             tr.innerHTML = `
               <td class="px-8 py-5 text-sm font-bold text-gray-500">${cita.fecha} <span class="block text-[10px] font-normal text-gray-400">${cita.hora}</span></td>
@@ -607,9 +624,15 @@
 
       // Filtros Unificados
       function applyFilters() {
-        const search = document.getElementById("searchInput").value.toLowerCase();
-        const mascota = document.getElementById("filterMascota").value.toLowerCase();
-        const veterinario = document.getElementById("filterVeterinario").value.toLowerCase();
+        const search = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const mascota = document
+          .getElementById("filterMascota")
+          .value.toLowerCase();
+        const veterinario = document
+          .getElementById("filterVeterinario")
+          .value.toLowerCase();
         const fecha = document.getElementById("filterFecha").value;
 
         const rows = document.querySelectorAll("#appointmentTableBody tr");
@@ -624,10 +647,15 @@
           const matchesVet = !veterinario || rowVet === veterinario;
           const matchesFecha = !fecha || rowFecha === fecha;
 
-          row.style.display = matchesSearch && matchesMascota && matchesVet && matchesFecha ? "" : "none";
+          row.style.display =
+            matchesSearch && matchesMascota && matchesVet && matchesFecha
+              ? ""
+              : "none";
         });
 
-        const cards = document.querySelectorAll("#appointmentCardsContainer .mobile-card");
+        const cards = document.querySelectorAll(
+          "#appointmentCardsContainer .mobile-card",
+        );
         cards.forEach((card) => {
           const searchPool = card.getAttribute("data-search-pool");
           const cardMascota = card.getAttribute("data-mascota");
@@ -639,11 +667,19 @@
           const matchesVet = !veterinario || cardVet === veterinario;
           const matchesFecha = !fecha || cardFecha === fecha;
 
-          card.style.display = matchesSearch && matchesMascota && matchesVet && matchesFecha ? "" : "none";
+          card.style.display =
+            matchesSearch && matchesMascota && matchesVet && matchesFecha
+              ? ""
+              : "none";
         });
       }
 
-      ["searchInput", "filterMascota", "filterVeterinario", "filterFecha"].forEach((id) => {
+      [
+        "searchInput",
+        "filterMascota",
+        "filterVeterinario",
+        "filterFecha",
+      ].forEach((id) => {
         document.getElementById(id).addEventListener("input", applyFilters);
       });
 
@@ -658,11 +694,14 @@
       }
 
       function toggleSidebar() {
-        document.getElementById("sidebar").classList.toggle("-translate-x-full");
+        document
+          .getElementById("sidebar")
+          .classList.toggle("-translate-x-full");
       }
 
       function logout() {
-        document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+        document.cookie =
+          "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
         window.location.href = "/";
       }
 
@@ -675,14 +714,19 @@
           currentAssignedVetId = appointment.veterinarioId;
 
           if (!currentAssignedVetId) {
-            showStatusNotification("Error", "No se encontró el ID del veterinario para cargar horarios.", false);
+            showStatusNotification(
+              "Error",
+              "No se encontró el ID del veterinario para cargar horarios.",
+              false,
+            );
             return;
           }
-          document.getElementById("rescheduleVetName").innerText = appointment.veterinario;
+          document.getElementById("rescheduleVetName").innerText =
+            appointment.veterinario;
         }
 
         // Restricción de fechas pasadas
-        const hoy = new Date().toISOString().split('T')[0];
+        const hoy = new Date().toISOString().split("T")[0];
         document.getElementById("newDate").setAttribute("min", hoy);
 
         document.getElementById("newDate").value = "";
@@ -700,7 +744,9 @@
         document.getElementById("rescheduleModal").classList.add("hidden");
       }
 
-      document.getElementById("newDate").addEventListener("change", cargarHorariosReprogramacion);
+      document
+        .getElementById("newDate")
+        .addEventListener("change", cargarHorariosReprogramacion);
 
       function cargarHorariosReprogramacion() {
         const fecha = document.getElementById("newDate").value;
@@ -711,16 +757,20 @@
         if (!fecha || !currentAssignedVetId) return;
 
         inputHoraOculta.value = "";
-        container.innerHTML = "<p class='text-xs text-textSec col-span-3 text-center py-2'>⏳ Buscando horas...</p>";
+        container.innerHTML =
+          "<p class='text-xs text-textSec col-span-3 text-center py-2'>⏳ Buscando horas...</p>";
         horaContainer.classList.remove("hidden");
 
-        fetch(`/api/client/veterinarians/${encodeURIComponent(currentAssignedVetId)}/horarios?fecha=${fecha}`)
+        fetch(
+          `/api/client/veterinarians/${encodeURIComponent(currentAssignedVetId)}/horarios?fecha=${fecha}`,
+        )
           .then((res) => res.json())
           .then((horas) => {
             container.innerHTML = "";
 
             if (horas.length === 0) {
-              container.innerHTML = "<p class='text-xs text-red-500 col-span-3 text-center py-2'>❌ Sin horarios disponibles.</p>";
+              container.innerHTML =
+                "<p class='text-xs text-red-500 col-span-3 text-center py-2'>❌ Sin horarios disponibles.</p>";
               return;
             }
 
@@ -728,16 +778,33 @@
               const btn = document.createElement("button");
               btn.type = "button";
               btn.textContent = hora;
-              btn.className = "p-3 rounded-xl border border-gray-200 font-bold text-sm transition-all text-textMain bg-white hover:bg-clifarBase hover:text-white hover:border-clifarBase";
+              btn.className =
+                "p-3 rounded-xl border border-gray-200 font-bold text-sm transition-all text-textMain bg-white hover:bg-clifarBase hover:text-white hover:border-clifarBase";
 
               btn.onclick = () => {
                 document.querySelectorAll("#slots button").forEach((b) => {
-                  b.classList.remove("bg-clifarBase", "text-white", "border-clifarBase");
-                  b.classList.add("bg-white", "text-textMain", "border-gray-200");
+                  b.classList.remove(
+                    "bg-clifarBase",
+                    "text-white",
+                    "border-clifarBase",
+                  );
+                  b.classList.add(
+                    "bg-white",
+                    "text-textMain",
+                    "border-gray-200",
+                  );
                 });
 
-                btn.classList.remove("bg-white", "text-textMain", "border-gray-200");
-                btn.classList.add("bg-clifarBase", "text-white", "border-clifarBase");
+                btn.classList.remove(
+                  "bg-white",
+                  "text-textMain",
+                  "border-gray-200",
+                );
+                btn.classList.add(
+                  "bg-clifarBase",
+                  "text-white",
+                  "border-clifarBase",
+                );
 
                 inputHoraOculta.value = hora;
               };
@@ -747,72 +814,97 @@
           })
           .catch((err) => {
             console.error(err);
-            container.innerHTML = "<p class='text-xs text-red-500 col-span-3 text-center py-2'>❌ Error al cargar datos.</p>";
+            container.innerHTML =
+              "<p class='text-xs text-red-500 col-span-3 text-center py-2'>❌ Error al cargar datos.</p>";
           });
       }
 
       // Envío asíncrono con Flujo de Modales Customizados (Intercepción de Advertencia y Estado)
-      document.getElementById("rescheduleForm").addEventListener("submit", function (e) {
-        e.preventDefault();
+      document
+        .getElementById("rescheduleForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
 
-        const nuevaFecha = document.getElementById("newDate").value;
-        const nuevaHora = document.getElementById("newTime").value;
-        const motivo = document.getElementById("rescheduleReason").value.trim();
+          const nuevaFecha = document.getElementById("newDate").value;
+          const nuevaHora = document.getElementById("newTime").value;
+          const motivo = document
+            .getElementById("rescheduleReason")
+            .value.trim();
 
-        if (!selectedAppointmentId || !nuevaFecha || !nuevaHora || !motivo) {
-          showStatusNotification("Datos Incompletos", "Por favor, selecciona una fecha, un horario y escribe el motivo.", false);
-          return;
-        }
-
-        // Activamos el modal de Advertencia Única
-        const warningModal = document.getElementById("warningModal");
-        const btnCancel = document.getElementById("btnCancelWarning");
-        const btnConfirm = document.getElementById("btnConfirmWarning");
-
-        warningModal.classList.remove("hidden");
-
-        // Acción si cancela la advertencia
-        btnCancel.onclick = () => {
-          warningModal.classList.add("hidden");
-        };
-
-        // Acción si acepta la advertencia
-        btnConfirm.onclick = async () => {
-          warningModal.classList.add("hidden"); // Escondemos advertencia
-          document.getElementById("rescheduleModal").classList.add("hidden"); // Escondemos formulario base
-
-          try {
-            const response = await fetch(`/api/client/reschedule-appointments/${selectedAppointmentId}/reschedule`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              credentials: "include",
-              body: JSON.stringify({
-                fecha: nuevaFecha,
-                hora: nuevaHora,
-                motivoReprogramacion: motivo,
-              }),
-            });
-
-            if (response.ok) {
-              showStatusNotification(
-                "¡Éxito!", 
-                "Cita reprogramada correctamente. El botón de cambio ha sido desactivado permanentemente.", 
-                true, 
-                () => window.location.reload()
-              );
-            } else {
-              const errorText = await response.text();
-              showStatusNotification("No se pudo procesar", errorText || "Ocurrió un inconveniente al cambiar la cita.", false, () => {
-                document.getElementById("rescheduleModal").classList.remove("hidden"); // Reabre el modal por si quiere corregir algo
-              });
-            }
-          } catch (error) {
-            console.error(error);
-            showStatusNotification("Error de red", "No se pudo conectar con el servidor.", false);
+          if (!selectedAppointmentId || !nuevaFecha || !nuevaHora || !motivo) {
+            showStatusNotification(
+              "Datos Incompletos",
+              "Por favor, selecciona una fecha, un horario y escribe el motivo.",
+              false,
+            );
+            return;
           }
-        };
-      });
+
+          // Activamos el modal de Advertencia Única
+          const warningModal = document.getElementById("warningModal");
+          const btnCancel = document.getElementById("btnCancelWarning");
+          const btnConfirm = document.getElementById("btnConfirmWarning");
+
+          warningModal.classList.remove("hidden");
+
+          // Acción si cancela la advertencia
+          btnCancel.onclick = () => {
+            warningModal.classList.add("hidden");
+          };
+
+          // Acción si acepta la advertencia
+          btnConfirm.onclick = async () => {
+            warningModal.classList.add("hidden"); // Escondemos advertencia
+            document.getElementById("rescheduleModal").classList.add("hidden"); // Escondemos formulario base
+
+            try {
+              const response = await fetch(
+                `/api/client/reschedule-appointments/${selectedAppointmentId}/reschedule`,
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  credentials: "include",
+                  body: JSON.stringify({
+                    fecha: nuevaFecha,
+                    hora: nuevaHora,
+                    motivoReprogramacion: motivo,
+                  }),
+                },
+              );
+
+              if (response.ok) {
+                showStatusNotification(
+                  "¡Éxito!",
+                  "Cita reprogramada correctamente. El botón de cambio ha sido desactivado permanentemente.",
+                  true,
+                  () => window.location.reload(),
+                );
+              } else {
+                const errorText = await response.text();
+                showStatusNotification(
+                  "No se pudo procesar",
+                  errorText || "Ocurrió un inconveniente al cambiar la cita.",
+                  false,
+                  () => {
+                    document
+                      .getElementById("rescheduleModal")
+                      .classList.remove("hidden"); // Reabre el modal por si quiere corregir algo
+                  },
+                );
+              }
+            } catch (error) {
+              console.error(error);
+              showStatusNotification(
+                "Error de red",
+                "No se pudo conectar con el servidor.",
+                false,
+              );
+            }
+          };
+        });
     </script>
-    <div th:replace="~{fragments/asistente :: ia-asistente(modo='privado')}"></div>
+    <div
+      th:replace="~{fragments/asistente :: ia-asistente(modo='privado')}"
+    ></div>
   </body>
 </html>

@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,13 +21,24 @@ public class AppointmentShowClientServiceImpl implements AppointmentShowClientSe
         private final CitaRepository citaRepository;
         private final UserRepository userRepository;
 
+        private static final Set<String> ESTADOS_VISIBLES_CLIENTE = Set.of(
+                        "PROGRAMADA",
+                        "PAGADA",
+                        "REPROGRAMADA",
+                        "DERIVADA",
+                        "VALIDADA",
+                        "COMPLETADA");
+
         @Override
         public List<AppointmentListResponseDto> getAppointmentsByClient(Authentication auth) {
                 String correo = auth.getName();
+
                 User user = userRepository.findByCorreo(correo)
                                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
                 return citaRepository.findByUsuario(user).stream()
+                                .filter(cita -> cita.getEstado() != null)
+                                .filter(cita -> ESTADOS_VISIBLES_CLIENTE.contains(cita.getEstado().toUpperCase()))
                                 .map(c -> new AppointmentListResponseDto(
                                                 c.getId(),
                                                 c.getServicio().getDescripcion(),

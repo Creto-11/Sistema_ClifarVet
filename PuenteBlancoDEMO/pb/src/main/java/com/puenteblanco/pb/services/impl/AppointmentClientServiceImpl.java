@@ -3,28 +3,25 @@ package com.puenteblanco.pb.services.impl;
 import com.puenteblanco.pb.dto.request.AppointmentRequestDto;
 import com.puenteblanco.pb.dto.response.AppointmentBookingResponseDto;
 import com.puenteblanco.pb.entity.Cita;
+import com.puenteblanco.pb.entity.Pet;
 import com.puenteblanco.pb.entity.Servicio;
 import com.puenteblanco.pb.entity.User;
 import com.puenteblanco.pb.entity.Veterinario;
-import com.puenteblanco.pb.entity.Pet;
-import com.puenteblanco.pb.repository.PetRepository;
 import com.puenteblanco.pb.repository.CitaRepository;
+import com.puenteblanco.pb.repository.PetRepository;
 import com.puenteblanco.pb.repository.ServiceRepository;
 import com.puenteblanco.pb.repository.UserRepository;
 import com.puenteblanco.pb.repository.VeterinarioRepository;
 import com.puenteblanco.pb.services.interfaces.AppointmentClientService;
+import com.puenteblanco.pb.services.interfaces.EmailService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
@@ -35,9 +32,11 @@ public class AppointmentClientServiceImpl implements AppointmentClientService {
         private final VeterinarioRepository veterinarioRepository;
         private final UserRepository userRepository;
         private final PetRepository petRepository;
+        private final EmailService emailService;
 
-        @Autowired
-        private JavaMailSender mailSender;
+        private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
+        private static final String NOMBRE_CLINICA = "Clínica Veterinaria Puente Blanco";
 
         @Override
         @Transactional
@@ -56,6 +55,10 @@ public class AppointmentClientServiceImpl implements AppointmentClientService {
                 Pet pet = petRepository.findById(dto.getPetId())
                                 .orElseThrow(() -> new RuntimeException("Mascota no encontrada"));
 
+                if (!correo.equalsIgnoreCase(pet.getOwnerEmail())) {
+                        throw new RuntimeException("La mascota seleccionada no pertenece al usuario autenticado.");
+                }
+
                 Cita cita = Cita.builder()
                                 .usuario(user)
                                 .servicio(servicio)
@@ -65,9 +68,12 @@ public class AppointmentClientServiceImpl implements AppointmentClientService {
                                 .hora(LocalTime.parse(dto.getHora()))
                                 .precioCobrado(servicio.getPrecioBase())
                                 .estado("PENDIENTE_PAGO")
+                                .cantidadReprogramaciones(0)
                                 .build();
 
                 Cita citaGuardada = citaRepository.save(cita);
+
+                sendAppointmentCreatedEmail(citaGuardada);
 
                 return new AppointmentBookingResponseDto(
                                 citaGuardada.getId(),
@@ -76,43 +82,72 @@ public class AppointmentClientServiceImpl implements AppointmentClientService {
                                 "Cita pendiente de pago. Complete el pago para confirmar la reserva.");
         }
 
-        // Enviar correo de confirmación inmediato
-        private void sendAppointmentReminderEmail(AppointmentRequestDto dto, String userEmail,
-                        String veterinarianName) {
-                SimpleMailMessage message = new SimpleMailMessage();
-                message.setTo(userEmail);
-                message.setSubject("Recordatorio de Cita - Puente Blanco");
-                message.setText("Estimado cliente,\n\n" +
-                                "Le recordamos que la cita para su mascota está agendada para el " + dto.getFecha() +
-                                " a las " + dto.getHora() + " con el veterinario " + veterinarianName +
-                                ".\n\nGracias por elegirnos.\n\nAtentamente,\nClínica y Veterinaria Puente Blanco");
+        private void sendAppointmentCreatedEmail(Cita cita) {
+                String mensaje = String.format(
+                                "Estimado(a) %s,\n\n" +
+                                                "Hemos recibido la solicitud de cita para su mascota %s.\n\n" +
+                                                "Detalle de la cita:\n" +
+                                                "Fecha: %s\n" +
+                                                "Hora: %s\n" +
+                                                "Servicio: %s\n" +
+                                                "Veterinario: %s\n" +
+                                                "Estado: Pendiente de pago\n\n" +
+                                                "Para confirmar la reserva, complete el pago desde la plataforma.\n\n" +
+                                                "Atentamente,\n%s",
+                                getNombreCliente(cita),
+                                getNombreMascota(cita),
+                                formatFecha(cita),
+                                formatHora(cita),
+                                getServicio(cita),
+                                getVeterinario(cita),
+                                NOMBRE_CLINICA);
 
-                mailSender.send(message);
+                sendSafe(cita.getUsuario().getCorreo(), "Solicitud de cita recibida - Puente Blanco", mensaje);
         }
 
-        // Enviar correo 30 minutos antes de la cita
-        @Scheduled(cron = "0 0/30 * * * ?") // Ejecuta cada 30 minutos
-        public void sendReminder30MinutesBefore() {
-                // Buscar todas las citas que necesitan un recordatorio 30 minutos antes
-                List<Cita> citas = citaRepository.findCitasForReminder30MinutesBefore(LocalDate.now(), LocalTime.now(),
-                                LocalTime.now().plusMinutes(30));
-
-                // Enviar recordatorio
-                for (Cita cita : citas) {
-                        sendAppointmentReminderEmail(new AppointmentRequestDto(), cita.getUsuario().getCorreo(),
-                                        cita.getVeterinario().getNombreCompleto());
+        private void sendSafe(String to, String subject, String message) {
+                try {
+                        emailService.sendEmail(to, subject, message);
+                } catch (Exception e) {
+                        System.err.println("No se pudo enviar correo a " + to + ": " + e.getMessage());
                 }
         }
 
-        // Tarea programada para enviar recordatorio 10 minutos después de la reserva
-        @Scheduled(fixedRate = 600000) // Ejecuta cada 10 minutos (600,000 ms)
-        public void scheduleReminderEmail() {
-                // Verificar si han pasado 10 minutos desde que se registró la cita
-                List<Cita> citas = citaRepository.findCitasForReminder(LocalDate.now(), LocalTime.now(),
-                                LocalTime.now().plusMinutes(10));
-                for (Cita cita : citas) {
-                        sendAppointmentReminderEmail(new AppointmentRequestDto(), cita.getUsuario().getCorreo(),
-                                        cita.getVeterinario().getNombreCompleto());
+        private String getNombreCliente(Cita cita) {
+                User usuario = cita.getUsuario();
+                if (usuario == null) {
+                        return "cliente";
                 }
+
+                String nombres = usuario.getNombres() != null ? usuario.getNombres() : "";
+                String apellido = usuario.getApellidoPaterno() != null ? usuario.getApellidoPaterno() : "";
+
+                String nombreCompleto = (nombres + " " + apellido).trim();
+                return nombreCompleto.isBlank() ? "cliente" : nombreCompleto;
+        }
+
+        private String getNombreMascota(Cita cita) {
+                return cita.getPet() != null && cita.getPet().getName() != null
+                                ? cita.getPet().getName()
+                                : "su mascota";
+        }
+
+        private String getServicio(Cita cita) {
+                return cita.getServicio() != null && cita.getServicio().getDescripcion() != null
+                                ? cita.getServicio().getDescripcion()
+                                : "Servicio veterinario";
+        }
+
+        private String getVeterinario(Cita cita) {
+                String nombre = cita.getVeterinario() != null ? cita.getVeterinario().getNombreCompleto() : null;
+                return nombre != null && !nombre.isBlank() ? nombre : "veterinario asignado";
+        }
+
+        private String formatFecha(Cita cita) {
+                return cita.getFecha() != null ? cita.getFecha().format(DATE_FORMAT) : "fecha no registrada";
+        }
+
+        private String formatHora(Cita cita) {
+                return cita.getHora() != null ? cita.getHora().format(TIME_FORMAT) : "hora no registrada";
         }
 }
