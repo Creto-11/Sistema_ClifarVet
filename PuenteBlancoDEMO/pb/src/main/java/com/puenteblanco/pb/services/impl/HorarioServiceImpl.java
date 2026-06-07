@@ -27,26 +27,23 @@ public class HorarioServiceImpl implements HorarioService {
     public List<String> getAvailableTimeSlots(Long vetId, LocalDate fecha) {
         String diaSemana = capitalize(fecha.getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("es")));
 
-        // 1. Horarios activos para ese día y veterinario
         List<Horario> horarios = horarioRepository.findByVeterinarioIdAndDiaSemanaAndEstadoTrue(vetId, diaSemana);
 
-        // 2. Obtener las horas ocupadas en CITA
         List<LocalTime> horasOcupadas = citaRepository
                 .findByVeterinarioIdAndFechaAndEstadoIn(
                         vetId,
                         fecha,
-                        Arrays.asList("PENDIENTE_PAGO", "PROGRAMADA", "PAGADA"))
+                        Arrays.asList("PENDIENTE_PAGO", "PROGRAMADA", "PAGADA", "REPROGRAMADA"))
                 .stream()
                 .map(Cita::getHora)
                 .toList();
 
-        // 3. Generar slots disponibles
         List<String> slots = new ArrayList<>();
         for (Horario horario : horarios) {
             LocalTime start = horario.getHoraComienzo();
             while (start.isBefore(horario.getHoraFin())) {
                 if (!horasOcupadas.contains(start)) {
-                    slots.add(start.toString()); // formato "12:00"
+                    slots.add(start.toString());
                 }
                 start = start.plusMinutes(20);
             }

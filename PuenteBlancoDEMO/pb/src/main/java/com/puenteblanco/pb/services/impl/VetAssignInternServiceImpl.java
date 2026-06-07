@@ -51,8 +51,11 @@ public class VetAssignInternServiceImpl implements VetAssignInternService {
 
                 String estadoActual = cita.getEstado() != null ? cita.getEstado().toUpperCase() : "";
 
-                if (!estadoActual.equals("PROGRAMADA") && !estadoActual.equals("PAGADA")) {
-                        throw new IllegalStateException("Solo se pueden derivar citas programadas o pagadas.");
+                if (!estadoActual.equals("PROGRAMADA")
+                                && !estadoActual.equals("PAGADA")
+                                && !estadoActual.equals("REPROGRAMADA")) {
+                        throw new IllegalStateException(
+                                        "Solo se pueden derivar citas programadas, pagadas o reprogramadas.");
                 }
 
                 cita.setIntern(intern);
@@ -60,14 +63,12 @@ public class VetAssignInternServiceImpl implements VetAssignInternService {
                 cita.setVistoInterno(false);
                 citaRepository.save(cita);
 
-                // Datos de la cita (adaptarlo según tu entidad)
                 String fecha = cita.getFecha().format(DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy"));
-                String hora = cita.getHora().toString(); // Ajusta el formato si es LocalTime
+                String hora = cita.getHora().toString();
                 String veterinarioNombre = cita.getVeterinario().getUsuario().getNombres();
                 String mascotaNombre = cita.getPet().getName();
                 String clienteNombre = cita.getUsuario().getNombres();
 
-                // ➤ Email al cliente
                 emailService.sendEmail(
                                 cita.getUsuario().getCorreo(),
                                 "Actualización de su cita",
@@ -79,7 +80,6 @@ public class VetAssignInternServiceImpl implements VetAssignInternService {
                                                 veterinarioNombre,
                                                 NOMBRE_CLINICA));
 
-                // ➤ Email al practicante
                 emailService.sendEmail(
                                 intern.getCorreo(),
                                 "Nueva cita asignada",

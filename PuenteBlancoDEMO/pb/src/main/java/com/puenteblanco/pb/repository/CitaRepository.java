@@ -39,54 +39,48 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
                         LocalDate fecha,
                         List<String> estados);
 
-        List<Cita> findByFechaBetween(LocalDate startDate, LocalDate endDate); // REPORTES
+        List<Cita> findByFechaBetween(LocalDate startDate, LocalDate endDate);
 
-        List<Cita> findByIntern_IdAndEstado(Long internId, String estado); // Para interno
+        List<Cita> findByIntern_IdAndEstado(Long internId, String estado);
 
         @Query("SELECT c FROM Cita c WHERE c.intern.id = :internId AND (c.estado = 'COMPLETADA' OR c.estado = 'PAGADA')")
-        List<Cita> findCitasValidadasPorIntern(@Param("internId") Long internId); // Para Interno
+        List<Cita> findCitasValidadasPorIntern(@Param("internId") Long internId);
 
-        List<Cita> findByEstado(String estado); // PARA EVALUADAS
+        List<Cita> findByEstado(String estado);
 
         int countByVeterinarioIdAndFecha(Long vetId, LocalDate fecha);
 
         int countByVeterinarioIdAndFechaBetweenAndEstado(Long vetId, LocalDate desde, LocalDate hasta, String estado);
 
-        int countByFecha(LocalDate fecha); // Admin
+        int countByFecha(LocalDate fecha);
 
-        int countByEstadoAndFechaBetween(String estado, LocalDate inicio, LocalDate fin); // Admin
+        int countByEstadoAndFechaBetween(String estado, LocalDate inicio, LocalDate fin);
 
         @Query("SELECT COUNT(c) FROM Cita c WHERE c.estado = 'COMPLETADA' AND c.id NOT IN (SELECT a.cita.id FROM AtencionMedica a)")
         int countCompletadasSinAtencion();
 
         int countByEstado(String estado);
 
-        // Método para encontrar citas que deben recibir un recordatorio 10 minutos
-        // después de la reserva
         @Query("SELECT c FROM Cita c WHERE c.fecha = :today AND c.hora BETWEEN :now AND :nowPlus10Minutes")
         List<Cita> findCitasForReminder(@Param("today") LocalDate today,
                         @Param("now") LocalTime now,
                         @Param("nowPlus10Minutes") LocalTime nowPlus10Minutes);
 
-        // Método para encontrar citas que deben recibir un recordatorio 30 minutos
-        // antes
         @Query("SELECT c FROM Cita c WHERE c.fecha = :today AND c.hora BETWEEN :reminderTime AND :reminderTimePlus30Minutes")
         List<Cita> findCitasForReminder30MinutesBefore(@Param("today") LocalDate today,
                         @Param("reminderTime") LocalTime reminderTime,
                         @Param("reminderTimePlus30Minutes") LocalTime reminderTimePlus30Minutes);
 
-        // ✔ Buscar citas DERIVADA por intern y que no hayan sido vistas (false o NULL)
         @Query("SELECT c FROM Cita c WHERE c.intern = :intern AND c.estado = :estado AND (c.vistoInterno = false OR c.vistoInterno IS NULL)")
         List<Cita> findDerivadasNoVistas(@Param("intern") User intern, @Param("estado") String estado);
 
-        // Método de reprogramación de citas que evita que sea en un horario ocupado
         @Query("""
                         SELECT COUNT(c)
                         FROM Cita c
                         WHERE c.veterinario.id = :veterinarioId
                         AND c.fecha = :fecha
                         AND c.hora = :hora
-                        AND UPPER(c.estado) IN ('PENDIENTE_PAGO', 'PROGRAMADA', 'PAGADA')
+                        AND UPPER(c.estado) IN ('PENDIENTE_PAGO', 'PROGRAMADA', 'PAGADA', 'REPROGRAMADA')
                         AND c.id <> :citaId
                         """)
         long countActiveAppointmentsAtSameSlot(
@@ -99,5 +93,16 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
                         Integer cantidad,
                         LocalDate inicio,
                         LocalDate fin);
+
+        @Query("""
+                        SELECT c
+                        FROM Cita c
+                        WHERE c.fecha = :fecha
+                        AND c.hora = :hora
+                        AND UPPER(c.estado) IN ('PROGRAMADA', 'REPROGRAMADA')
+                        """)
+        List<Cita> findCitasConfirmadasForReminderAt(
+                        @Param("fecha") LocalDate fecha,
+                        @Param("hora") LocalTime hora);
 
 }

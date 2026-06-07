@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service        
+@Service
 @RequiredArgsConstructor
 public class AppointmentServiceImpl implements AppointmentService {
 
@@ -26,20 +26,19 @@ public class AppointmentServiceImpl implements AppointmentService {
         User user = userRepository.findByCorreo(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // Obtener la fecha y hora actuales
         LocalDateTime now = LocalDateTime.now();
 
         return citaRepository.findByUsuario(user).stream()
-                .filter(cita -> "PROGRAMADA".equalsIgnoreCase(cita.getEstado())) // Solo citas programadas
+                .filter(cita -> "PROGRAMADA".equalsIgnoreCase(cita.getEstado())
+                        || "REPROGRAMADA".equalsIgnoreCase(cita.getEstado()))
                 .filter(cita -> {
                     LocalDateTime citaDateTime = LocalDateTime.of(cita.getFecha(), cita.getHora());
-                    return citaDateTime.isAfter(now); // Filtra solo las citas que son después de la hora actual
+                    return citaDateTime.isAfter(now);
                 })
                 .map(cita -> new AppointmentCalendarResponseDto(
                         "Cita: " + cita.getServicio().getDescripcion() +
-                        " con " + cita.getVeterinario().getUsuario().getNombres(),
-                        cita.getFecha().toString() + "T" + cita.getHora().toString() // ISO 8601
-                ))
+                                " con " + cita.getVeterinario().getUsuario().getNombres(),
+                        cita.getFecha().toString() + "T" + cita.getHora().toString()))
                 .collect(Collectors.toList());
     }
 }

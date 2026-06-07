@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,9 @@ public class CitaClienteServiceImpl implements CitaClienteService {
 
     @Override
     public List<AppointmentPaidResponseDto> obtenerCitasPagadasPorUsuario(String correo) {
-        List<Cita> citas = citaRepository.findByUsuarioCorreoAndEstadoIgnoreCase(correo, "PROGRAMADA");
+        List<Cita> citas = new ArrayList<>();
+        citas.addAll(citaRepository.findByUsuarioCorreoAndEstadoIgnoreCase(correo, "PROGRAMADA"));
+        citas.addAll(citaRepository.findByUsuarioCorreoAndEstadoIgnoreCase(correo, "REPROGRAMADA"));
 
         return citas.stream()
                 .map(cita -> AppointmentPaidResponseDto.builder()

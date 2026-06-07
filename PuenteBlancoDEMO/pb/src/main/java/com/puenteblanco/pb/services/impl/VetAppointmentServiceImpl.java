@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -43,7 +42,7 @@ public class VetAppointmentServiceImpl implements VetAppointmentService {
         List<Cita> citas = citaRepository.findByVeterinarioIdAndFechaAndEstadoIn(
                 vet.getId(),
                 date,
-                Arrays.asList("PROGRAMADA", "PAGADA", "DERIVADA", "VALIDADA", "COMPLETADA"));
+                Arrays.asList("PROGRAMADA", "PAGADA", "REPROGRAMADA", "DERIVADA", "VALIDADA", "COMPLETADA"));
 
         return citas.stream().map(cita -> {
             String nombreCliente = cita.getUsuario().getNombres() + " " + cita.getUsuario().getApellidoPaterno();

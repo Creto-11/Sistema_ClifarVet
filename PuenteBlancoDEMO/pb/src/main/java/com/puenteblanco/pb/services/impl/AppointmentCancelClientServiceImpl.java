@@ -10,6 +10,7 @@ import com.puenteblanco.pb.services.interfaces.AppointmentCancelClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,7 +33,8 @@ public class AppointmentCancelClientServiceImpl implements AppointmentCancelClie
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         return citaRepository.findByUsuario(user).stream()
-                .filter(c -> "PROGRAMADA".equalsIgnoreCase(c.getEstado()) || "PAGADA".equalsIgnoreCase(c.getEstado()))
+                .filter(this::isEstadoReprogramable)
+                .filter(c -> c.getCantidadReprogramaciones() == null || c.getCantidadReprogramaciones() == 0)
                 .map(c -> new AppointmentCancelOptionDto(
                         c.getId(),
                         c.getFecha().toString(),
@@ -43,18 +45,24 @@ public class AppointmentCancelClientServiceImpl implements AppointmentCancelClie
     }
 
     @Override
+    @Transactional
     public void rescheduleAppointment(Long id, AppointmentRescheduleRequestDto dto, Authentication auth) {
         String correo = auth.getName();
 
         Cita cita = citaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cita no encontrada"));
 
-        if (!cita.getUsuario().getCorreo().equals(correo)) {
+        if (!cita.getUsuario().getCorreo().equalsIgnoreCase(correo)) {
             throw new RuntimeException("No autorizado para reprogramar esta cita.");
         }
 
-        if (!"PROGRAMADA".equalsIgnoreCase(cita.getEstado()) && !"PAGADA".equalsIgnoreCase(cita.getEstado())) {
-            throw new RuntimeException("Solo se pueden reprogramar citas activas.");
+        if (!isEstadoReprogramable(cita)) {
+            throw new RuntimeException("Solo se pueden reprogramar citas programadas o pagadas.");
+        }
+
+        if (cita.getCantidadReprogramaciones() != null && cita.getCantidadReprogramaciones() >= 1) {
+            throw new RuntimeException(
+                    "Esta cita ya fue reprogramada una vez. No se permite una segunda reprogramación.");
         }
 
         if (dto.getMotivoReprogramacion() == null || dto.getMotivoReprogramacion().trim().isEmpty()) {
@@ -91,9 +99,14 @@ public class AppointmentCancelClientServiceImpl implements AppointmentCancelClie
         cita.setFecha(nuevaFecha);
         cita.setHora(nuevaHora);
         cita.setMotivoReprogramacion(dto.getMotivoReprogramacion().trim());
-        cita.setCantidadReprogramaciones(
-                cita.getCantidadReprogramaciones() == null ? 1 : cita.getCantidadReprogramaciones() + 1);
+        cita.setCantidadReprogramaciones(1);
+        cita.setEstado("REPROGRAMADA");
 
         citaRepository.save(cita);
+    }
+
+    private boolean isEstadoReprogramable(Cita cita) {
+        String estado = cita.getEstado() != null ? cita.getEstado().toUpperCase() : "";
+        return "PROGRAMADA".equals(estado) || "PAGADA".equals(estado);
     }
 }
