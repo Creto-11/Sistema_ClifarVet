@@ -7,97 +7,249 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+   <link rel="icon" href="https://res.cloudinary.com/dtqf08fo5/image/upload/f_auto,q_auto/LOGO_CLIFARVET_onqjmj">
 </head>
 
 <body class="bg-gray-100 min-h-screen flex flex-col">
 
   <!-- Barra superior -->
-  <header class="bg-green-600 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20">
-    <h1 class="text-xl font-bold">Clínica y Veterinaria Puente Blanco</h1>
-    <span>Atención Médica (Practicante)</span>
+  <header
+    class="h-16 bg-[#0F5E52] text-white px-4 md:px-6 flex justify-between items-center w-full fixed top-0 z-50 shadow-md">
+    <div class="flex items-center gap-4">
+      <button onclick="toggleSidebar()"
+        class="md:hidden text-white focus:outline-none hover:bg-white/10 p-1 rounded-md transition">
+        <i class="fa-solid fa-bars text-xl"></i>
+      </button>
+      <img class="w-12 object-contain"
+        src="https://res.cloudinary.com/dtqf08fo5/image/upload/f_auto,q_auto/LOGO_CLIFARVET_onqjmj"
+        alt="">
+      <h1 class="text-xl md:text-2xl font-bold tracking-tight">CLIFARVET |</h1>
+      <h2 class="font-light text-base hidden sm:inline">Clínica y Veterinaria Puente Blanco</h2>
+    </div>
+
+    <!--Usuario-->
+    <div class="flex items-center gap-2 md:gap-3">
+      <span th:text="'Hola, ' + ${dashboard.fullName}"
+        class="text-base font-light  opacity-90 truncate max-w-[150px] md:max-w-[250px]">Shamira Shantal</span>
+      <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center border border-white overflow-hidden">
+        <img class="w-full h-full object-cover"
+          src="https://i.pinimg.com/1200x/7b/5c/43/7b5c43a2cc8ec0bc71416746a5798a2d.jpg" alt="">
+      </div>
+    </div>
+
   </header>
 
-  <div class="flex flex-1">
+  <div class="pt-16">
     <!-- Sidebar -->
-    <aside class="w-64 bg-gray-800 text-white flex flex-col justify-between min-h-full">
-      <div>
-        <nav class="flex flex-col p-4 space-y-4">
-          <a href="/intern/intern_dashboard.html" class="flex items-center gap-3 hover:text-blue-300">
-            <i class="fa-solid fa-table-columns"></i> Dashboard
-          </a>
-          <a href="/intern/intern_appointments.html" class="flex items-center gap-3 hover:text-blue-300">
-            <i class="fa-solid fa-calendar-check"></i> Citas Derivadas
-          </a>
-          <a href="/intern/intern_attend.html" class="flex items-center gap-3 text-blue-300 ">
-            <i class="fa-solid fa-stethoscope"></i> Atender Cita
-          </a>
-          <a href="/intern/intern_validated.html" class="flex items-center gap-3 ">
-            <i class="fa-solid fa-check-double"></i> Citas Validadas
-          </a>
-        </nav>
+    <aside id="sidebar"
+      class="fixed top-16 left-0 w-64 h-[calc(100vh-64px)] bg-[#111827] text-gray-300 flex flex-col justify-between z-40 transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
+
+      <div class="py-6 flex flex-col px-3 space-y-2">
+
+        <a href="/intern/intern_dashboard.html"
+          class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all">
+          <i class="fa-solid fa-table-columns w-5 text-center text-xl"></i>
+          <span class="font-bold">Dashboard</span>
+        </a>
+
+        <a href="/intern/intern_appointments.html"
+          class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all">
+          <i class="fa-solid fa-calendar-check w-5 text-center text-xl"></i>
+          <span class="font-medium">Citas derivadas</span>
+        </a>
+
+        <!--<a href="/intern/intern_attend.html"
+          class="flex items-center gap-3 p-3 rounded-lg text-clifarAccent bg-clifarBase/30 border-l-4 border-clifarAccent transition-all shadow-inner">
+          <i class="fa-solid fa-stethoscope w-5 text-center text-xl"></i>
+          <span class="font-medium">Atender Cita</span>
+        </a>-->
+
+        <a href="/intern/intern_validated.html"
+          class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all">
+          <i class="fa-solid fa-check-double w-5 text-center text-xl"></i>
+          <span class="font-medium">Citas Validadas</span>
+        </a>
       </div>
-      <button onclick="logout()"
-        class="m-4 flex items-center justify-center gap-2 bg-gray-100 text-red-500 px-4 py-2 rounded hover:bg-gray-200">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
-      </button>
+
+      <div class="p-4 border-t border-gray-700/50">
+        <button onclick="logout()"
+          class="w-full flex items-center justify-center gap-2.5 bg-gray-700/60 text-red-400 hover:bg-red-500 hover:text-white px-4 py-3 rounded-xl transition-all duration-200">
+          <i class="fa-solid fa-power-off text-lg"></i>
+          <span class="font-semibold">Cerrar Sesión</span>
+        </button>
+      </div>
     </aside>
 
     <!-- Contenido -->
-    <main class="flex-1 p-8 space-y-10 bg-gray-50 min-h-screen">
+    <main class="max-w-full md:ml-64 p-4 md:p-8 transition-all duration-300">
 
       <!-- Información de la Mascota -->
-      <section>
-        <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2 mb-4">
-          <i class="fa-solid fa-dog text-blue-600"></i>
-          Información de la Mascota
-        </h2>
+      <section class="mb-8">
 
-        <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 space-y-4 text-gray-800" id="infoPaciente">
-          <p id="mensajeNoCita" class="text-center text-gray-500 hidden">No hay citas derivadas pendientes para hoy.</p>
+        <!-- título -->
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center">
+            <i class="fa-solid fa-paw text-blue-600 text-2xl"></i>
+          </div>
 
-          <div id="datosCita" class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 hidden">
-            <p><strong>🐾 Cliente:</strong> <span id="clienteNombre"></span></p>
-            <p><strong>🧑‍⚕️ Veterinario:</strong> <span id="VeterinarioACargo"></span></p>
-            <p><strong>🐶 Mascota:</strong> <span id="nombreMascota"></span></p>
-            <p><strong>📋 Tipo:</strong> <span id="tipoMascota"></span></p>
-            <p><strong>🐕 Raza:</strong> <span id="razaMascota"></span></p>
-            <p><strong>📆 Edad:</strong> <span id="edadMascota"></span></p>
-            <p><strong>🩺 Servicio:</strong> <span id="servicio"></span></p>
-            <p><strong>📅 Fecha:</strong> <span id="fecha"></span></p>
-            <p><strong>⏰ Hora:</strong> <span id="hora"></span></p>
+          <div>
+            <h2 class="text-2xl font-bold text-gray-800">
+              Información de la Mascota
+            </h2>
+            <p class="text-gray-500">
+              Detalles de la cita asignada
+            </p>
           </div>
         </div>
+
+        <!-- card -->
+        <div id="infoPaciente" class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+
+          <!-- mensaje vacío -->
+          <div id="mensajeNoCita" class="hidden flex flex-col items-center justify-center py-14 text-gray-400">
+
+            <div class="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-4">
+              <i class="fa-solid fa-calendar-xmark text-4xl text-blue-400"></i>
+            </div>
+
+            <p class="text-lg font-semibold">
+              No hay citas derivadas pendientes
+            </p>
+
+            <span class="text-sm">
+              Cuando llegue una nueva cita aparecerá aquí
+            </span>
+          </div>
+
+          <!-- datos -->
+          <div id="datosCita" class="hidden grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+
+            <div class="bg-gray-50 rounded-xl p-4">
+              <p class="text-sm text-gray-500">Cliente</p>
+              <span id="clienteNombre" class="font-bold text-gray-800"></span>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-4">
+              <p class="text-sm text-gray-500">Veterinario</p>
+              <span id="VeterinarioACargo" class="font-bold text-gray-800"></span>
+            </div>
+
+            <div class="bg-blue-50 rounded-xl p-4">
+              <p class="text-sm text-blue-500">Mascota</p>
+              <span id="nombreMascota" class="font-bold text-blue-700"></span>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-4">
+              <p class="text-sm text-gray-500">Tipo</p>
+              <span id="tipoMascota" class="font-bold text-gray-800"></span>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-4">
+              <p class="text-sm text-gray-500">Raza</p>
+              <span id="razaMascota" class="font-bold text-gray-800"></span>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-4">
+              <p class="text-sm text-gray-500">Edad</p>
+              <span id="edadMascota" class="font-bold text-gray-800"></span>
+            </div>
+
+            <div class="bg-emerald-50 rounded-xl p-4">
+              <p class="text-sm text-emerald-500">Servicio</p>
+              <span id="servicio" class="font-bold text-emerald-700"></span>
+            </div>
+
+            <div class="bg-yellow-50 rounded-xl p-4">
+              <p class="text-sm text-yellow-500">Fecha</p>
+              <span id="fecha" class="font-bold text-yellow-700"></span>
+            </div>
+
+            <div class="bg-purple-50 rounded-xl p-4">
+              <p class="text-sm text-purple-500">Hora</p>
+              <span id="hora" class="font-bold text-purple-700"></span>
+            </div>
+
+          </div>
+
+        </div>
+
       </section>
-
       <!-- Registrar Atención Médica -->
-      <section>
-        <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2 mb-4">
-          <i class="fa-solid fa-notes-medical text-blue-600"></i>
-          Registrar Atención Médica
-        </h2>
+      <section class="mt-12">
 
-        <form id="attendForm" class="bg-white rounded-xl shadow-md border border-gray-200 p-6 space-y-5 hidden">
-          <textarea id="observacionesClinicas" placeholder="📝 Observaciones clínicas"
-            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-400 outline-none resize-y placeholder-opacity-30"></textarea>
+        <!-- Encabezado -->
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-16 h-16 bg-gradient-to-br from-blue-100 to-teal-100 rounded-full flex items-center justify-center shadow-sm">
+            <i class="fa-solid fa-notes-medical text-blue-600 text-2xl"></i>
+          </div>
 
-          <textarea id="diagnostico" placeholder="🔍 Diagnóstico"
-            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-400 outline-none resize-y placeholder-opacity-30"></textarea>
+          <div>
+            <h2 class="text-2xl font-bold text-gray-800">
+              Registrar Atención Médica
+            </h2>
+            <p class="text-gray-500">
+              Completa la evaluación clínica del paciente
+            </p>
+          </div>
+        </div>
 
-          <textarea id="tratamiento" placeholder="💊 Tratamiento"
-            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-400 outline-none resize-y placeholder-opacity-30"></textarea>
+        <!-- Formulario -->
+        <form id="attendForm" class="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 md:p-10">
 
-          <textarea id="prescripcion" placeholder="📄 Prescripción"
-            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-400 outline-none resize-y placeholder-opacity-30"></textarea>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
+            <!-- Observaciones -->
+            <div>
+              <label class="block text-lg font-semibold text-gray-700 mb-3">
+                Observaciones Clínicas
+              </label>
+              <textarea id="observacionesClinicas" rows="5" placeholder="Describe hallazgos clínicos relevantes..."
+                class="w-full border border-gray-200 rounded-2xl px-5 py-4 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none resize-none transition-all"></textarea>
+            </div>
 
+            <!-- Diagnóstico -->
+            <div>
+              <label class="block text-lg font-semibold text-gray-700 mb-3">
+                Diagnóstico
+              </label>
+              <textarea id="diagnostico" rows="5" placeholder="Diagnóstico preliminar o definitivo..."
+                class="w-full border border-gray-200 rounded-2xl px-5 py-4 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none resize-none transition-all"></textarea>
+            </div>
 
-          <div class="text-right">
+            <!-- Tratamiento -->
+            <div>
+              <label class="block text-lg font-semibold text-gray-700 mb-3">
+                Tratamiento
+              </label>
+              <textarea id="tratamiento" rows="5" placeholder="Indica tratamiento aplicado..."
+                class="w-full border border-gray-200 rounded-2xl px-5 py-4 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none resize-none transition-all"></textarea>
+            </div>
+
+            <!-- Prescripción -->
+            <div>
+              <label class="block text-lg font-semibold text-gray-700 mb-3">
+                Prescripción
+              </label>
+              <textarea id="prescripcion" rows="5" placeholder="Medicamentos y recomendaciones..."
+                class="w-full border border-gray-200 rounded-2xl px-5 py-4 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none resize-none transition-all"></textarea>
+            </div>
+
+          </div>
+
+          <!-- Botón -->
+          <div class="mt-10 pt-6 border-t border-gray-100 flex justify-end">
             <button type="submit"
-              class="bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition duration-200">
-              <i class="fa-solid fa-paper-plane mr-2"></i>Solicitar Evaluación
+              class="bg-teal-600  hover:scale-105 hover:shadow-xl text-white px-8 py-4 rounded-2xl font-semibold flex items-center gap-3 transition-all duration-300">
+
+              <i class="fa-solid fa-paper-plane"></i>
+              Solicitar Evaluación
+
             </button>
           </div>
+
         </form>
+
       </section>
 
     </main>
