@@ -30,3 +30,5 @@ jobs:
 
       - name: Empaquetar aplicación
         run: mvn clean package -DskipTests
+
+# Pipeline CI para el backend de Puente Blanco
