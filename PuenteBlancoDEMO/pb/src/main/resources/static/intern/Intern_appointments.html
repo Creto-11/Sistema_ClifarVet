@@ -7,63 +7,106 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+   <link rel="icon" href="https://res.cloudinary.com/dtqf08fo5/image/upload/f_auto,q_auto/LOGO_CLIFARVET_onqjmj">
 </head>
 
-<body class="bg-gray-100 min-h-screen flex flex-col">
+<body class="bg-gray-100 min-h-screen flex flex-col overflow-x-hidden">
 
   <!-- Barra superior -->
-  <header class="bg-green-600 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20">
-    <h1 class="text-xl font-bold">Clínica y Veterinaria Puente Blanco</h1>
-    <span>Citas Derivadas</span>
+  <header
+    class="h-16 bg-[#0F5E52] text-white px-4 md:px-6 flex justify-between items-center w-full fixed top-0 z-50 shadow-md">
+    <div class="flex items-center gap-4">
+      <button onclick="toggleSidebar()"
+        class="md:hidden text-white focus:outline-none hover:bg-white/10 p-1 rounded-md transition">
+        <i class="fa-solid fa-bars text-xl"></i>
+      </button>
+      <img class="w-12 object-contain"
+        src="https://res.cloudinary.com/dtqf08fo5/image/upload/f_auto,q_auto/LOGO_CLIFARVET_onqjmj"
+        alt="">
+      <h1 class="text-xl md:text-2xl font-bold tracking-tight">CLIFARVET |</h1>
+      <h2 class="font-light text-base hidden sm:inline">Clínica y Veterinaria Puente Blanco</h2>
+    </div>
+
+    <!--Usuario-->
+    <div class="flex items-center gap-2 md:gap-3">
+      <span th:text="'Hola, ' + ${dashboard.fullName}"
+        class="text-base font-light  opacity-90 truncate max-w-[150px] md:max-w-[250px]">Shamira Shantal</span>
+      <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center border border-white overflow-hidden">
+        <img class="w-full h-full object-cover"
+          src="https://i.pinimg.com/1200x/7b/5c/43/7b5c43a2cc8ec0bc71416746a5798a2d.jpg" alt="">
+      </div>
+    </div>
+
   </header>
 
-  <div class="flex flex-1">
+  <div class="pt-16">
     <!-- Sidebar -->
-    <aside class="w-64 bg-gray-800 text-white flex flex-col justify-between min-h-full">
-      <div>
-        <nav class="flex flex-col p-4 space-y-4">
-          <a href="/intern/intern_dashboard.html" class="flex items-center gap-3 hover:text-blue-300">
-            <i class="fa-solid fa-table-columns"></i> Dashboard
-          </a>
-          <a href="/intern/intern_appointments.html" class="flex items-center text-blue-300 gap-3 hover:text-blue-300">
-            <i class="fa-solid fa-calendar-check"></i> Citas Derivadas
-          </a>
-          <a href="/intern/intern_attend.html" class="flex items-center gap-3 hover:text-blue-300">
-            <i class="fa-solid fa-stethoscope"></i> Atender Cita
-          </a>
-          <a href="/intern/intern_validated.html" class="flex items-center gap-3">
-            <i class="fa-solid fa-check-double"></i> Citas Validadas
-          </a>
-        </nav>
+    <aside id="sidebar" c
+      class="fixed top-16 left-0 w-64 h-[calc(100vh-64px)] bg-[#111827] text-gray-300 flex flex-col justify-between z-40 transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
+
+      <div class="py-6 flex flex-col px-3 space-y-2">
+
+        <a href="/intern/intern_dashboard.html"
+          class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all">
+          <i class="fa-solid fa-table-columns w-5 text-center text-xl"></i>
+          <span class="font-bold">Dashboard</span>
+        </a>
+
+        <a href="/intern/intern_appointments.html"
+          class="flex items-center gap-3 p-3 rounded-lg text-clifarAccent bg-clifarBase/30 border-l-4 border-clifarAccent transition-all shadow-inner">
+          <i class="fa-solid fa-calendar-check w-5 text-center text-xl"></i>
+          <span class="font-medium">Citas derivadas</span>
+        </a>
+
+
+        <a href="/intern/intern_validated.html"
+          class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all">
+          <i class="fa-solid fa-check-double w-5 text-center text-xl"></i>
+          <span class="font-medium">Citas Validadas</span>
+        </a>
       </div>
-      <button onclick="logout()"
-        class="m-4 flex items-center justify-center gap-2 bg-gray-100 text-red-500 px-4 py-2 rounded hover:bg-gray-200">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
-      </button>
+
+      <div class="p-4 border-t border-gray-700/50">
+        <button onclick="logout()"
+          class="w-full flex items-center justify-center gap-2.5 bg-gray-700/60 text-red-400 hover:bg-red-500 hover:text-white px-4 py-3 rounded-xl transition-all duration-200">
+          <i class="fa-solid fa-power-off text-lg"></i>
+          <span class="font-semibold">Cerrar Sesión</span>
+        </button>
+      </div>
     </aside>
 
     <!-- Contenido -->
-    <main class="flex-1 p-8 space-y-6">
-      <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
-        Citas Derivadas
-        <i class="fa-solid fa-bell fa-shake text-yellow-500"></i>
-      </h2>
+    <main class="max-w-full md:ml-64 p-4 md:p-8 transition-all duration-300">
+      <div class="space-y-2">
+        <h2 class="text-4xl font-bold text-gray-800">
+          Citas Derivadas
+        </h2>
+        <p class="text-lg text-gray-700">
+          Observa las citas que te han asignado
+        </p>
+      </div>
 
-      <div class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
+      <div class="overflow-x-auto mt-8 bg-white rounded-xl shadow-lg border border-gray-200">
         <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gradient-to-r from-blue-100 via-blue-200 to-blue-300">
-            <tr>
-              <th class="px-6 py-3 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Mascota</th>
-              <th class="px-6 py-3 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Servicio</th>
-              <th class="px-6 py-3 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Fecha</th>
-              <th class="px-6 py-3 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Hora</th>
-              <th class="px-6 py-3 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Estado</th>
-              <th class="px-6 py-3 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Acción</th>
+
+          <thead class="bg-teal-600">
+            <tr class="text-white text-center text-sm font-bold">
+              <th class="px-6 py-3 uppercase tracking-wider">Mascota</th>
+              <th class="px-6 py-3 uppercase tracking-wider">Servicio</th>
+              <th class="px-6 py-3 uppercase tracking-wider">Fecha</th>
+              <th class="px-6 py-3 uppercase tracking-wider">Hora</th>
+              <th class="px-6 py-3 uppercase tracking-wider">Estado</th>
+              <th class="px-6 py-3 uppercase tracking-wider">Acción</th>
             </tr>
           </thead>
+
           <tbody id="citasTable" class="divide-y divide-gray-100 text-sm text-gray-800">
-            <!-- Se llenará con JS -->
+            <!--Se completa con JS-->
+
+            </tr>
+
           </tbody>
+
         </table>
       </div>
     </main>
@@ -80,24 +123,84 @@
           const table = document.getElementById("citasTable");
 
           if (citas.length === 0) {
-            table.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-gray-500">No hay citas derivadas.</td></tr>';
+            table.innerHTML = `
+              <tr>
+                <td colspan="6" class="py-12">
+
+                  <div class="flex flex-col items-center justify-center gap-4">
+
+                    <div class="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center">
+                      <i class="fa-solid fa-calendar-day text-4xl text-teal-600"></i>
+                    </div>
+
+                    <p class="text-lg font-medium text-gray-500">
+                      No hay citas derivadas
+                    </p>
+
+
+                  </div>
+
+                </td>
+              </tr>
+            `;
             return;
           }
 
           citas.forEach(cita => {
             const row = document.createElement("tr");
-            row.className = "border-b hover:bg-gray-50";
+
+            row.className = `hover:bg-blue-50 transition-all duration-300 text-center`;
+
+            let estadoColor = "bg-gray-100 text-gray-700";
+
+            if (cita.estado === "APROBADA")
+              estadoColor = "bg-green-100 text-green-700";
+
+            if (cita.estado === "DERIVADA")
+              estadoColor = "bg-blue-100 text-blue-600";
+
+            if (cita.estado === "PENDIENTE")
+              estadoColor = "bg-yellow-100 text-yellow-700";
 
             row.innerHTML = `
-            <td class="py-2 px-4">${cita.nombreMascota}</td>
-            <td class="py-2 px-4">${cita.servicio}</td>
-            <td class="py-2 px-4">${cita.fecha}</td>
-            <td class="py-2 px-4">${cita.hora}</td>
-            <td class="py-2 px-4">${cita.estado}</td>
-            <td class="py-2 px-4">
-              <a href="/intern/intern_attend.html?citaId=${cita.citaId}" class="text-blue-600 hover:underline">Atender</a>
-            </td>
-          `;
+    <td class="py-4 px-4 font-semibold text-gray-800">
+      🐾 ${cita.nombreMascota}
+    </td>
+
+    <td class="py-4 px-4 text-gray-600">
+      ${cita.servicio}
+    </td>
+
+    <td class="py-4 px-4 text-gray-500">
+      ${cita.fecha}
+    </td>
+
+    <td class="py-4 px-4 text-teal-600 font-medium">
+      ${cita.hora}
+    </td>
+
+    <td class="py-4 px-4">
+      <span class="px-3 py-1 rounded-full text-xs font-semibold
+        ${estadoColor}
+      ">
+        ${cita.estado}
+      </span>
+    </td>
+
+    <td class="py-4 px-4">
+      <a href="/intern/intern_attend.html?citaId=${cita.citaId}"
+        class="
+          inline-flex items-center gap-2
+          bg-teal-500 hover:bg-teal-600
+          text-white px-4 py-2 rounded-xl
+          text-sm font-medium transition shadow-md
+        ">
+        <i class="fa-solid fa-stethoscope"></i>
+        Atender
+      </a>
+    </td>
+  `;
+
             table.appendChild(row);
           });
         })

@@ -7,9 +7,10 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="icon" href="https://res.cloudinary.com/dtqf08fo5/image/upload/f_auto,q_auto/LOGO_CLIFARVET_onqjmj">
 </head>
 
-<body class="bg-gray-100 min-h-screen flex flex-col">
+<body class="bg-gray-100 min-h-screen flex flex-col overflow-x-hidden">
 
   <!-- Modal de Notificación -->
   <div id="modalNotificacion" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
@@ -23,178 +24,502 @@
   </div>
 
   <!-- Barra superior -->
-  <header class="bg-green-600 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20">
-    <h1 class="text-xl font-bold">Clínica y Veterinaria Puente Blanco</h1>
-    <span>Panel del Practicante</span>
+  <header
+    class="h-16 bg-[#0F5E52] text-white px-4 md:px-6 flex justify-between items-center w-full fixed top-0 z-50 shadow-md">
+    <div class="flex items-center gap-4">
+      <button onclick="toggleSidebar()"
+        class="md:hidden text-white focus:outline-none hover:bg-white/10 p-1 rounded-md transition">
+        <i class="fa-solid fa-bars text-xl"></i>
+      </button>
+      <img class="w-12 object-contain"
+        src="https://res.cloudinary.com/dtqf08fo5/image/upload/f_auto,q_auto/LOGO_CLIFARVET_onqjmj"
+        alt="">
+      <h1 class="text-xl md:text-2xl font-bold tracking-tight">CLIFARVET |</h1>
+      <h2 class="font-light text-base hidden sm:inline">Clínica y Veterinaria Puente Blanco</h2>
+    </div>
+
+    <!--Usuario-->
+    <div class="flex items-center gap-2 md:gap-3">
+      <span th:text="'Hola, ' + ${dashboard.fullName}"
+        class="text-base font-light  opacity-90 truncate max-w-[150px] md:max-w-[250px]">Shamira Shantal</span>
+      <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center border border-white overflow-hidden">
+        <img class="w-full h-full object-cover"
+          src="https://i.pinimg.com/1200x/7b/5c/43/7b5c43a2cc8ec0bc71416746a5798a2d.jpg" alt="">
+      </div>
+    </div>
+
   </header>
 
-  <div class="flex flex-1">
+  <div class="pt-16">
     <!-- Sidebar -->
-    <aside class="w-64 bg-gray-800 text-white flex flex-col justify-between min-h-full">
-      <div>
-        <nav class="flex flex-col p-4 space-y-4">
-          <a href="/intern/intern_dashboard.html" class="flex items-center gap-3 text-blue-300">
-            <i class="fa-solid fa-table-columns"></i> Dashboard
-          </a>
-          <a href="/intern/intern_appointments.html" class="flex items-center gap-3 hover:text-blue-300">
-            <i class="fa-solid fa-calendar-check"></i> Citas Derivadas
-          </a>
-          <a href="/intern/intern_attend.html" class="flex items-center gap-3 hover:text-blue-300">
-            <i class="fa-solid fa-stethoscope"></i> Atender Cita
-          </a>
-          <a href="/intern/intern_validated.html" class="flex items-center gap-3  hover:text-blue-300">
-            <i class="fa-solid fa-check-double"></i> Citas Validadas
-          </a>
-        </nav>
+    <aside id="sidebar"
+      class="fixed top-16 left-0 w-64 h-[calc(100vh-64px)] bg-[#111827] text-gray-300 flex flex-col justify-between z-40 transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
+
+      <div class="py-6 flex flex-col px-3 space-y-2">
+
+        <a href="/intern/intern_dashboard.html"
+          class="flex items-center gap-3 p-3 rounded-lg text-clifarAccent bg-clifarBase/30 border-l-4 border-clifarAccent transition-all shadow-inner">
+          <i class="fa-solid fa-table-columns w-5 text-center text-xl"></i>
+          <span class="font-bold">Dashboard</span>
+        </a>
+
+        <a href="/intern/intern_appointments.html"
+          class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all">
+          <i class="fa-solid fa-calendar-check w-5 text-center text-xl"></i>
+          <span class="font-medium">Citas derivadas</span>
+        </a>
+
+
+        <a href="/intern/intern_validated.html"
+          class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all">
+          <i class="fa-solid fa-check-double w-5 text-center text-xl"></i>
+          <span class="font-medium">Citas Validadas</span>
+        </a>
       </div>
-      <button onclick="logout()"
-        class="m-4 flex items-center justify-center gap-2 bg-gray-100 text-red-500 px-4 py-2 rounded hover:bg-gray-200">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
-      </button>
+
+      <div class="p-4 border-t border-gray-700/50">
+        <button onclick="logout()"
+          class="w-full flex items-center justify-center gap-2.5 bg-gray-700/60 text-red-400 hover:bg-red-500 hover:text-white px-4 py-3 rounded-xl transition-all duration-200">
+          <i class="fa-solid fa-power-off text-lg"></i>
+          <span class="font-semibold">Cerrar Sesión</span>
+        </button>
+      </div>
     </aside>
 
-    <!-- Contenido -->
-    <main class="flex-1 p-8 space-y-8">
-      <h2 class="text-2xl font-bold text-gray-800">Resumen de Actividades</h2>
 
-      <!-- Tarjetas resumen -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white p-6 rounded-lg shadow-md flex items-center gap-4">
-          <i class="fa-solid fa-calendar-day text-3xl text-blue-600"></i>
-          <div>
-            <p class="text-sm text-gray-500">Citas Derivadas</p>
-            <p id="countDerivadas" class="text-2xl font-bold text-gray-800">--</p>
-          </div>
-        </div>
-        <div class="bg-white p-6 rounded-lg shadow-md flex items-center gap-4">
-          <i class="fa-solid fa-clipboard-check text-3xl text-yellow-500"></i>
-          <div>
-            <p class="text-sm text-gray-500">Citas Aprobadas</p>
-            <p id="countAprobadas" class="text-2xl font-bold text-gray-800">--</p>
-          </div>
-        </div>
-        <div class="bg-white p-6 rounded-lg shadow-md flex items-center gap-4">
-          <i class="fa-solid fa-list-check text-3xl text-green-600"></i>
-          <div>
-            <p class="text-sm text-gray-500">Tareas Pendientes</p>
-            <p id="countTareas" class="text-2xl font-bold text-gray-800">--</p>
-          </div>
-        </div>
+    <!-- Contenido -->
+    <main class="max-w-full md:ml-64 p-4 md:p-8 transition-all duration-300">
+      <div class="space-y-2">
+        <h2 class="text-4xl font-bold text-gray-800">
+          ¡Bienvenido, Practicante!
+        </h2>
+        <p class="text-lg text-gray-700">
+          Este es el resumen de tus actividades del día
+        </p>
       </div>
 
-      <!-- Citas Derivadas -->
-      <section class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          Citas Derivadas de Hoy
-          <i class="fa-solid fa-bell fa-shake text-yellow-500"></i>
-        </h3>
-        <ul id="citasDerivadas" class="list-disc pl-5 text-gray-700 space-y-1">
-          <li class="flex items-center gap-2">
-            Cargando citas...
-            <i class="fa-solid fa-envelope fa-bounce text-purple-500" style="--fa-bounce-start-scale-x: 1;
-                --fa-bounce-start-scale-y: 1;
-                --fa-bounce-jump-scale-x: 1;
-                --fa-bounce-jump-scale-y: 1;
-                --fa-bounce-land-scale-x: 1;
-                --fa-bounce-land-scale-y: 1;
-                --fa-bounce-rebound: 0;"></i>
-          </li>
-        </ul>
-      </section>
+      <!-- Tarjetas resumen -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
 
-      <!-- Citas Aprobadas -->
-      <section class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          Citas Aprobadas
-          <i class="fa-solid fa-circle-info fa-beat-fade text-blue-500"
-            style="--fa-beat-fade-opacity: 0.67; --fa-beat-fade-scale: 1.075;"></i>
-        </h3>
-        <ul id="citasAprobadas" class="list-disc pl-5 text-gray-700 space-y-1">
-          <li class="flex items-center gap-2">
-            Cargando citas...
-            <i class="fa-solid fa-envelope fa-bounce text-purple-500" style="--fa-bounce-start-scale-x: 1;
-                --fa-bounce-start-scale-y: 1;
-                --fa-bounce-jump-scale-x: 1;
-                --fa-bounce-jump-scale-y: 1;
-                --fa-bounce-land-scale-x: 1;
-                --fa-bounce-land-scale-y: 1;
-                --fa-bounce-rebound: 0;"></i>
-          </li>
-        </ul>
-      </section>
+        <!--tarjeta-->
+        <div
+          class="bg-white p-10 rounded-2xl shadow-md flex items-center gap-6 min-h-[140px] hover:shadow-lg transition">
+
+          <!-- círculo icono -->
+          <div class="w-20 h-20 bg-blue-600/30 rounded-full flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-calendar-day text-4xl text-blue-600"></i>
+          </div>
+          <!-- info -->
+          <div>
+            <p class="text-lg text-gray-700 font-medium">
+              Citas Derivadas
+            </p>
+
+            <p id="countDerivadas" class="text-4xl font-bold text-gray-800">
+              0
+            </p>
+          </div>
+        </div>
+
+        <!--tarjeta-->
+        <div
+          class="bg-white p-10 rounded-2xl shadow-md flex items-center gap-6 min-h-[140px] hover:shadow-lg transition">
+
+          <!-- círculo icono -->
+          <div class="w-20 h-20 bg-emerald-500/30 rounded-full flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-clipboard-check text-4xl text-emerald-500"></i>
+          </div>
+          <!-- info -->
+          <div>
+            <p class="text-lg text-gray-700 font-medium">
+              Citas Aprobadas
+            </p>
+
+            <p id="countAprobadas" class="text-4xl font-bold text-gray-800">
+              0
+            </p>
+          </div>
+        </div>
+
+        <!--tarjeta-->
+        <div
+          class="bg-white p-10 rounded-2xl shadow-md flex items-center gap-6 min-h-[140px] hover:shadow-lg transition">
+
+          <!-- círculo -->
+          <div class="w-20 h-20 bg-[#F6B44B]/20 rounded-full flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-list-check text-3xl text-[#F6B44B]"></i>
+          </div>
+
+          <!-- info -->
+          <div>
+            <p class="text-lg text-gray-700 font-medium">
+              Tareas Pendientes
+            </p>
+
+            <p id="countTareas" class="text-4xl font-bold text-gray-800">
+              08
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 mt-8">
+
+        <!-- Citas Derivadas -->
+        <section
+          class="bg-white rounded-2xl shadow-lg p-6 border border-purple-100 hover:shadow-xl transition-all duration-300">
+
+          <div class="flex items-center justify-between mb-5">
+            <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-3">
+              <div class="w-10 h-10 bg-blue-600/30 rounded-full flex items-center justify-center">
+                <i class="fa-solid fa-calendar-day text-blue-600"></i>
+              </div>
+              Citas Derivadas
+            </h3>
+          </div>
+
+          <!-- Lista -->
+          <ul id="citasDerivadas" class="space-y-3 text-gray-700 max-h-[400px] overflow-y-auto pr-2">
+            <li class="flex items-center gap-3 text-gray-500 animate-pulse">
+              <i class="fa-solid fa-envelope-open-text text-purple-400"></i>
+              Cargando citas...
+            </li>
+          </ul>
+
+        </section>
+
+               <!-- Tareas Pendientes -->
+        <section
+          class="bg-white rounded-2xl shadow-lg p-6 border border-teal-100 hover:shadow-xl transition-all duration-300">
+
+          <!-- Header -->
+          <div class="flex items-center justify-between mb-5">
+            <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-3">
+              <div class="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
+                <i class="fa-solid fa-list-check text-teal-600"></i>
+              </div>
+              Tareas Pendientes
+            </h3>
+
+          </div>
+
+          <!-- Formulario -->
+          <form id="taskForm" class="flex gap-3 mb-5">
+            <input type="text" id="newTask"
+              class="flex-1 border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-teal-300 outline-none"
+              placeholder="Agregar nueva tarea..." />
+
+            <button type="submit" class="bg-teal-500 hover:bg-teal-600 text-white px-5 rounded-xl transition shadow-md">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </form>
+
+          <!-- Lista -->
+          <ul id="taskList" class="space-y-3 max-h-[420px] overflow-y-auto pr-2"></ul>
+
+        </section>
+        
+        <!-- Citas Aprobadas -->
+        <section
+          class="bg-white rounded-2xl shadow-lg p-6 border border-green-100 hover:shadow-xl transition-all duration-300">
+
+          <div class="flex items-center justify-between mb-5">
+            <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-3">
+              <div class="w-10 h-10 bg-emerald-500/30 rounded-full flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-clipboard-check text-emerald-500"></i>
+              </div>
+              Citas Aprobadas
+            </h3>
+          </div>
+
+          <!-- Lista -->
+          <ul id="citasAprobadas" class="space-y-3 text-gray-700 max-h-[400px] overflow-y-auto pr-2">
+            <li class="flex items-center gap-3 text-gray-500 animate-pulse">
+              <i class="fa-solid fa-calendar-check text-green-400"></i>
+              Cargando citas...
+            </li>
+          </ul>
+
+        </section>
 
 
-      <!-- Tareas Pendientes -->
-      <section class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Tareas Pendientes</h3>
-        <form id="taskForm" class="flex gap-3 mb-4">
-          <input type="text" id="newTask" class="flex-1 border border-gray-300 rounded px-3 py-2"
-            placeholder="Nueva tarea..." />
-          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Agregar</button>
-        </form>
-        <ul id="taskList" class="space-y-2 text-gray-800"></ul>
-      </section>
+ 
+
+      </div>
     </main>
   </div>
 
   <script>
-    const taskForm = document.getElementById("taskForm");
-    const newTaskInput = document.getElementById("newTask");
-    const taskList = document.getElementById("taskList");
+      const taskForm = document.getElementById("taskForm");
+  const newTaskInput = document.getElementById("newTask");
+  const taskList = document.getElementById("taskList");
 
-    function updateTaskCount() {
-      const count = taskList.children.length;
-      document.getElementById("countTareas").textContent = count;
-    }
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-    taskForm.addEventListener("submit", e => {
-      e.preventDefault();
-      const taskText = newTaskInput.value.trim();
-      if (taskText) {
-        const li = document.createElement("li");
-        li.className = "flex justify-between items-center border-b pb-1";
-        li.innerHTML = `<span>${taskText}</span>
-          <button class="text-red-600"><i class="fa-solid fa-trash"></i></button>`;
-        li.querySelector("button").addEventListener("click", () => {
-          li.remove();
-          updateTaskCount();
-        });
-        taskList.appendChild(li);
-        newTaskInput.value = "";
-        updateTaskCount();
-      }
+  function saveTasks() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
+
+  function updateTaskCount() {
+    document.getElementById("countTareas").textContent = tasks.length;
+  }
+
+  function renderTasks() {
+    taskList.innerHTML = "";
+
+    tasks.forEach((task, index) => {
+      const li = document.createElement("li");
+
+      li.className = `
+        bg-white border border-teal-100
+        rounded-xl p-4 flex justify-between items-center
+        hover:bg-teal-50 transition-all duration-300 shadow-sm
+        ${task.completed ? "opacity-70" : ""}
+      `;
+
+      li.innerHTML = `
+        <div class="flex items-center gap-3">
+          <input type="checkbox"
+            class="w-5 h-5 accent-teal-500 cursor-pointer"
+            ${task.completed ? "checked" : ""}>
+
+          <span class="task-text font-medium ${
+            task.completed
+              ? "line-through text-gray-400"
+              : "text-gray-800"
+          }">
+            ${task.text}
+          </span>
+        </div>
+
+        <button class="delete-btn text-red-500 hover:text-red-700 transition">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      `;
+
+      const checkbox = li.querySelector("input");
+      const deleteBtn = li.querySelector(".delete-btn");
+
+      checkbox.addEventListener("change", () => {
+        tasks[index].completed = checkbox.checked;
+        saveTasks();
+        renderTasks();
+      });
+
+      deleteBtn.addEventListener("click", () => {
+        li.classList.add("opacity-0", "scale-95");
+
+        setTimeout(() => {
+          tasks.splice(index, 1);
+          saveTasks();
+          renderTasks();
+        }, 250);
+      });
+
+      taskList.appendChild(li);
     });
 
+    updateTaskCount();
+  }
+
+  taskForm.addEventListener("submit", e => {
+    e.preventDefault();
+
+    const taskText = newTaskInput.value.trim();
+    if (!taskText) return;
+
+    tasks.unshift({
+      text: taskText,
+      completed: false
+    });
+
+    saveTasks();
+    renderTasks();
+
+    newTaskInput.value = "";
+  });
+
+  renderTasks();
+
     // Cargar citas derivadas
-    fetch("/api/intern/appointments?estado=DERIVADA", { credentials: 'include' })
+    fetch("/api/intern/appointments?estado=DERIVADA", {
+      credentials: "include"
+    })
       .then(res => res.json())
       .then(data => {
         const citasDerivadas = document.getElementById("citasDerivadas");
+        const count = document.getElementById("countDerivadas");
+
         citasDerivadas.innerHTML = "";
-        document.getElementById("countDerivadas").textContent = data.length;
-        data.forEach(cita => {
-          const item = document.createElement("li");
-          item.textContent = `${cita.fecha} - ${cita.hora} - ${cita.nombreMascota} (${cita.servicio})`;
-          citasDerivadas.appendChild(item);
+        count.textContent = data.length;
+
+        if (data.length === 0) {
+          citasDerivadas.innerHTML = `
+      <li class="text-center py-6 text-gray-400">
+        <i class="fa-regular fa-face-smile text-3xl mb-2"></i>
+        <p>No hay citas derivadas hoy</p>
+      </li>
+    `;
+          return;
+        }
+
+        // ordenar por fecha reciente
+        data.sort((a, b) => {
+          const fechaA = new Date(`${a.fecha} ${a.hora}`);
+          const fechaB = new Date(`${b.fecha} ${b.hora}`);
+          return fechaB - fechaA;
         });
+
+        let expanded = false;
+
+        function renderList() {
+          citasDerivadas.innerHTML = "";
+
+          const citasMostrar = expanded ? data : data.slice(0, 3);
+
+          citasMostrar.forEach(cita => {
+            const item = document.createElement("li");
+
+            item.className = `
+        bg-white border border-purple-100
+        rounded-xl p-4 flex justify-between items-center
+        hover:bg-teal-50 transition-all duration-300
+      `;
+
+            item.innerHTML = `
+        <div>
+          <p class="font-semibold text-gray-800">
+            ${cita.nombreMascota}
+          </p>
+          <p class="text-sm text-gray-500">
+            ${cita.servicio}
+          </p>
+        </div>
+
+        <div class="text-right">
+          <p class="text-teal-600 font-medium">${cita.hora}</p>
+          <p class="text-sm text-gray-500">${cita.fecha}</p>
+        </div>
+      `;
+
+            citasDerivadas.appendChild(item);
+          });
+
+          // botón ver más
+          if (data.length > 3) {
+            const btn = document.createElement("button");
+
+            btn.className = `
+        w-full mt-3 py-2 rounded-xl
+        bg-purple-100 hover:bg-purple-200
+        text-purple-700 font-medium transition
+      `;
+
+            btn.innerHTML = expanded
+              ? `Ver menos ▲`
+              : `Ver más (${data.length - 3}) ▼`;
+
+            btn.onclick = () => {
+              expanded = !expanded;
+              renderList();
+            };
+
+            citasDerivadas.appendChild(btn);
+          }
+        }
+
+        renderList();
       });
 
+
     // Cargar citas aprobadas
-    fetch("/api/intern/appointments/aprobadas", { credentials: 'include' })
+    fetch("/api/intern/appointments/aprobadas", {
+      credentials: "include"
+    })
       .then(res => res.json())
       .then(data => {
         const citasAprobadas = document.getElementById("citasAprobadas");
+        const count = document.getElementById("countAprobadas");
+
         citasAprobadas.innerHTML = "";
-        document.getElementById("countAprobadas").textContent = data.length;
-        data.forEach(cita => {
-          const item = document.createElement("li");
-          item.textContent = `${cita.fechaHora} - ${cita.mascota} (${cita.servicio})`;
-          citasAprobadas.appendChild(item);
-        });
+        count.textContent = data.length;
+
+        if (data.length === 0) {
+          citasAprobadas.innerHTML = `
+        <li class="text-center py-6 text-gray-400">
+          <i class="fa-regular fa-circle-check text-3xl mb-2"></i>
+          <p>No hay citas aprobadas</p>
+        </li>
+      `;
+          return;
+        }
+
+        // ordenar más recientes primero
+        data.sort((a, b) => new Date(b.fechaHora) - new Date(a.fechaHora));
+
+        let expanded = false;
+
+        function renderList() {
+          citasAprobadas.innerHTML = "";
+
+          const citasMostrar = expanded ? data : data.slice(0, 3);
+
+          citasMostrar.forEach(cita => {
+            const item = document.createElement("li");
+
+            item.className = `
+          bg-green-50 border border-green-100
+          rounded-xl p-4 flex justify-between items-center
+          hover:bg-green-100 transition-all duration-300
+        `;
+
+            item.innerHTML = `
+          <div>
+            <p class="font-semibold text-gray-800">${cita.mascota}</p>
+            <p class="text-sm text-gray-500">${cita.servicio}</p>
+          </div>
+
+          <div class="text-right">
+            <p class="text-green-700 font-medium">${cita.fechaHora}</p>
+            <i class="fa-solid fa-check text-green-500 mt-1"></i>
+          </div>
+        `;
+
+            citasAprobadas.appendChild(item);
+          });
+
+          // botón ver más
+          if (data.length > 3) {
+            const btn = document.createElement("button");
+
+            btn.className = `
+          w-full mt-3 py-2 rounded-xl
+          bg-green-100 hover:bg-green-200
+          text-green-700 font-medium transition
+        `;
+
+            btn.innerHTML = expanded
+              ? `Ver menos ▲`
+              : `Ver más (${data.length - 3}) ▼`;
+
+            btn.onclick = () => {
+              expanded = !expanded;
+              renderList();
+            };
+
+            citasAprobadas.appendChild(btn);
+          }
+        }
+
+        renderList();
       });
 
+    //.....................................
     function logout() {
-      document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      document.cookie =
+        "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
       window.location.href = "/";
     }
 
@@ -215,6 +540,11 @@
       } catch (err) {
         console.error("Error al verificar notificaciones", err);
       }
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('-translate-x-full');
     }
 
     function mostrarModal() {
