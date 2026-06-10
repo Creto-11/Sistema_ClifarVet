@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,118 +30,167 @@
       z-index: 50;
     }
 
-    /* Estilos para tabla responsive */
+    /* Estilos avanzados para tabla responsive con tarjetas premium */
     @media (max-width: 1024px) {
       .responsive-table thead {
         display: none;
       }
-      
+
       .responsive-table tr {
         display: block;
         margin-bottom: 1.5rem;
-        border: 1px solid #e2e8f0;
-        border-radius: 0.5rem;
+        border: 2px solid #f1f5f9;
+        border-radius: 1rem;
         padding: 1rem;
+        background-color: #f8fafc;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
       }
-      
+
       .responsive-table td {
         display: flex;
         justify-content: space-between;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #f3f4f6;
+        padding: 0.65rem 0.5rem;
+        border-bottom: 1px solid #e2e8f0;
+        align-items: center;
       }
-      
+
       .responsive-table td:before {
         content: attr(data-label);
-        font-weight: 600;
+        font-weight: 700;
         padding-right: 1rem;
-        color: #4b5563;
+        color: #334155;
       }
-      
+
       .responsive-table td:last-child {
         border-bottom: 0;
         justify-content: center;
       }
-      
+
       .responsive-table .action-cell {
         padding-top: 1rem;
+        background-color: #f1f5f9;
+        border-radius: 0.75rem;
+        margin-top: 0.5rem;
       }
     }
   </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
 
-  <!-- Encabezado superior -->
-  <header class="bg-green-600 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20">
-    <div class="flex items-center">
-      <button id="menuToggle" class="mr-4 md:hidden">
+<body class="bg-gray-100 min-h-screen flex flex-col font-sans">
+
+  <header class="bg-teal-800 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20">
+    <div class="flex items-center gap-2">
+      <button id="menuToggle" class="mr-2 md:hidden text-white hover:text-gray-300 transition-colors">
         <i class="fas fa-bars text-xl"></i>
       </button>
-      <h1 class="text-lg sm:text-xl font-bold">Clínica Puente Blanco</h1>
+
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-paw text-2xl text-amber-400"></i>
+        <h1 class="text-xl font-bold tracking-tight">
+          CLIFARVET <span class="font-light hidden sm:inline">| Puente Blanco</span>
+        </h1>
+      </div>
     </div>
-    <div class="flex items-center space-x-3 p-2 rounded-lg bg-green-700 bg-opacity-80">
-      <i class="fas fa-user-md text-lg text-green-300"></i>
-      <span class="font-medium">Veterinario/a</span>
-      <span id="vetName" class="font-medium">Cargando...</span>
+
+    <div
+      class="flex items-center space-x-3 px-4 py-1.5 rounded-full bg-teal-900 bg-opacity-50 border border-teal-700 text-sm">
+      <span class="text-gray-300 hidden md:inline">Hola, Veterinario </span>
+      <span class="font-semibold text-white tracking-wide uppercase" id="vetName">Cargando...</span>
+      <div class="w-8 h-8 rounded-full bg-teal-700 flex items-center justify-center text-white">
+        <i class="fas fa-user-md text-sm"></i>
+      </div>
     </div>
   </header>
 
   <div class="flex flex-1">
-    <!-- Sidebar con menú móvil -->
     <aside id="sidebar"
-      class="w-64 bg-gray-800 text-white flex flex-col justify-between fixed h-full md:h-auto md:sticky md:top-0 left-0 z-30 transform -translate-x-full md:transform-none transition-transform duration-300 overflow-y-auto">
-      <div class="p-4">
-        <nav class="flex flex-col space-y-3">
-          <a href="/vet/veterinarian_dashboard.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
-              class="fa-solid fa-table-columns"></i>Resumen Clínico</a>
-          <a href="/vet/veterinarian_appointments.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
-              class="fa-solid fa-calendar-days"></i> Citas Agendadas</a>
-          <a href="/vet/veterinarian_attend.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
-              class="fa-solid fa-stethoscope"></i> Atender Cita</a>
-          <a href="/vet/veterinarian_clinicalreport.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
-              class="fa-solid fa-user"></i> Historial</a>
-          <a href="/vet/veterinarian_schedule.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
-              class="fa-solid fa-clock"></i> Horario</a>
-          <a href="/vet/vet_assign.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
-              class="fa-solid fa-user"></i> Asignación</a>
-          <a href="/vet/veterinarian_validate.html" class="flex items-center gap-3 p-2 rounded bg-gray-700 text-green-300"><i
-              class="fa-solid fa-check-double"></i> Validaciones</a>
-          <a href="/vet/veterinarian_reports.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i
-              class="fa-solid fa-chart-pie"></i> Reportes</a>
-        </nav>
+      class="w-64 bg-slate-900 text-gray-300 flex flex-col justify-between fixed h-full md:h-auto md:sticky md:top-0 left-0 z-30 transform -translate-x-full md:transform-none transition-transform duration-300 overflow-y-auto border-r border-slate-800">
+      <div class="p-4 flex flex-col h-full justify-between">
+        <div>
+          <div class="text-xs font-bold text-gray-500 uppercase tracking-wider px-3 mb-4 mt-2">Menú Principal</div>
+          <nav class="flex flex-col space-y-2">
+            <a href="/vet/veterinarian_dashboard.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-table-columns text-gray-400"></i> Resumen Clínico
+            </a>
+            <a href="/vet/veterinarian_appointments.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-calendar-days text-gray-400"></i> Citas Agendadas
+            </a>
+            <a href="/vet/veterinarian_attend.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-stethoscope text-gray-400"></i> Atender Cita
+            </a>
+            <a href="/vet/veterinarian_clinicalreport.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-user text-gray-400"></i> Historial de Mascota
+            </a>
+            <a href="/vet/veterinarian_schedule.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-clock text-gray-400"></i> Horario
+            </a>
+            <a href="/vet/vet_assign.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-user text-gray-400"></i> Asignación
+            </a>
+
+            <a href="/vet/veterinarian_validate.html"
+              class="flex items-center gap-3 text-amber-400 bg-slate-800 p-3 rounded-xl font-semibold border-l-4 border-amber-400 shadow-inner">
+              <i class="fa-solid fa-check-double text-lg"></i> Validar Evaluaciones
+            </a>
+
+            <a href="/vet/veterinarian_reports.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-chart-pie text-gray-400"></i> Reportes
+            </a>
+          </nav>
+        </div>
+
+        <div class="pt-6 border-t border-slate-800 mt-6">
+          <button onclick="logout()"
+            class="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-red-950 hover:text-red-400 text-gray-400 px-4 py-3 rounded-xl transition-all font-medium border border-slate-700">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+          </button>
+        </div>
       </div>
-      <button onclick="logout()"
-        class="m-4 flex items-center justify-center gap-2 bg-gray-100 text-red-500 px-4 py-2 rounded-lg hover:shadow-md">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
-      </button>
     </aside>
 
-    <!-- Overlay para móvil -->
     <div class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"></div>
 
-    <!-- Contenido principal -->
-    <main class="flex-1 p-6 md:p-8 space-y-6 transition-all duration-300">
-      <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Citas Evaluadas Pendientes de Validación</h2>
+    <main class="flex-1 p-4 md:p-8 space-y-6 transition-all duration-300">
 
-      <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="min-w-full responsive-table">
-            <thead class="bg-gray-100 text-gray-700">
-              <tr>
-                <th class="px-4 py-3 text-left">Fecha</th>
-                <th class="px-4 py-3 text-left">Hora</th>
-                <th class="px-4 py-3 text-left">Cliente</th>
-                <th class="px-4 py-3 text-left">Mascota</th>
-                <th class="px-4 py-3 text-left">Tipo</th>
-                <th class="px-4 py-3 text-left">Raza</th>
-                <th class="px-4 py-3 text-left">Practicante</th>
-                <th class="px-4 py-3 text-left">Servicio</th>
-                <th class="px-4 py-3 text-left">Acción</th>
+      <div
+        class="bg-white rounded-2xl shadow-xl p-6 border-l-4 border-teal-600 flex flex-col justify-between items-start gap-1">
+        <h2 class="text-2xl sm:text-3xl font-bold text-teal-950 tracking-tight flex items-center gap-2">
+          🩺 Validar Evaluaciones
+        </h2>
+        <p class="text-sm text-gray-500">
+          Supervisa, revisa y autoriza los informes médicos de atenciones ejecutadas por los practicantes.
+        </p>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl shadow-xl border-4 border-white overflow-hidden">
+        <div class="overflow-x-auto rounded-xl">
+          <table class="min-w-full text-sm text-gray-700 border-collapse responsive-table">
+            <thead>
+              <tr class="bg-teal-50 text-teal-900 font-bold border-b-2 border-teal-100 text-left">
+                <th class="px-4 py-3 rounded-tl-xl">Fecha</th>
+                <th class="px-4 py-3">Hora</th>
+                <th class="px-4 py-3">Cliente</th>
+                <th class="px-4 py-3">Mascota</th>
+                <th class="px-4 py-3">Tipo</th>
+                <th class="px-4 py-3">Raza</th>
+                <th class="px-4 py-3">Practicante</th>
+                <th class="px-4 py-3">Servicio</th>
+                <th class="px-4 py-3 rounded-tr-xl">Acción</th>
               </tr>
             </thead>
-            <tbody id="tablaCitas" class="text-gray-700 divide-y divide-gray-200">
+            <tbody id="tablaCitas" class="text-gray-700 divide-y divide-gray-100 font-medium">
               <tr>
-                <td colspan="9" class="text-center px-4 py-6 text-gray-500">Cargando citas...</td>
+                <td colspan="9" class="text-center py-8 text-gray-400 font-medium bg-gray-50 rounded-b-xl">
+                  <i class="fa-solid fa-spinner animate-spin text-xl mb-1 block text-teal-600"></i>
+                  Cargando citas...
+                </td>
               </tr>
             </tbody>
           </table>
@@ -149,37 +199,59 @@
     </main>
   </div>
 
-  <!-- Modal Detalle -->
-  <div id="modalDetalle" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 transition-opacity duration-300">
-    <div class="bg-white w-full max-w-2xl rounded-xl shadow-xl p-6 relative mx-4 transform scale-95 transition-transform duration-300">
-      <button onclick="cerrarModal()" class="absolute top-4 right-4 text-gray-500 hover:text-red-600 text-2xl">
+  <div id="modalDetalle"
+    class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center hidden z-50 transition-all duration-300 ease-out p-4">
+    <div
+      class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6 relative mx-4 transform scale-95 transition-all duration-300 border-4 border-white overflow-y-auto max-h-[90vh]">
+
+      <button onclick="cerrarModal()"
+        class="absolute top-4 right-4 text-gray-400 hover:text-red-500 hover:bg-red-50 w-8 h-8 rounded-full flex items-center justify-center text-2xl transition-all">
         &times;
       </button>
-      <h3 class="text-xl md:text-2xl font-bold mb-4 text-gray-800">Detalles de la Atención Médica</h3>
-      <div class="space-y-4 text-gray-700">
-        <div>
-          <h4 class="font-semibold text-green-600 mb-1">Observaciones clínicas:</h4>
-          <p id="observaciones" class="bg-gray-50 p-3 rounded-lg"></p>
+
+      <h3
+        class="text-2xl font-bold mb-5 text-teal-950 tracking-tight flex items-center gap-2 border-b pb-3 border-gray-100">
+        📋 Detalles de la Atención Médica
+      </h3>
+
+      <div class="space-y-4 text-sm font-medium">
+        <div class="transition-all hover:translate-x-1 duration-200">
+          <h4 class="font-bold text-teal-800 uppercase tracking-wider text-xs mb-1.5 ml-1">Observaciones clínicas:</h4>
+          <p id="observaciones"
+            class="bg-slate-50 border border-slate-100 p-3.5 rounded-xl text-gray-700 shadow-inner font-normal leading-relaxed">
+          </p>
         </div>
-        <div>
-          <h4 class="font-semibold text-green-600 mb-1">Diagnóstico:</h4>
-          <p id="diagnostico" class="bg-gray-50 p-3 rounded-lg"></p>
+
+        <div class="transition-all hover:translate-x-1 duration-200">
+          <h4 class="font-bold text-teal-800 uppercase tracking-wider text-xs mb-1.5 ml-1">Diagnóstico:</h4>
+          <p id="diagnostico"
+            class="bg-slate-50 border border-slate-100 p-3.5 rounded-xl text-gray-700 shadow-inner font-normal leading-relaxed">
+          </p>
         </div>
-        <div>
-          <h4 class="font-semibold text-green-600 mb-1">Tratamiento:</h4>
-          <p id="tratamiento" class="bg-gray-50 p-3 rounded-lg"></p>
+
+        <div class="transition-all hover:translate-x-1 duration-200">
+          <h4 class="font-bold text-teal-800 uppercase tracking-wider text-xs mb-1.5 ml-1">Tratamiento:</h4>
+          <p id="tratamiento"
+            class="bg-slate-50 border border-slate-100 p-3.5 rounded-xl text-gray-700 shadow-inner font-normal leading-relaxed">
+          </p>
         </div>
-        <div>
-          <h4 class="font-semibold text-green-600 mb-1">Prescripción:</h4>
-          <p id="prescripcion" class="bg-gray-50 p-3 rounded-lg"></p>
+
+        <div class="transition-all hover:translate-x-1 duration-200">
+          <h4 class="font-bold text-teal-800 uppercase tracking-wider text-xs mb-1.5 ml-1">Prescripción:</h4>
+          <p id="prescripcion"
+            class="bg-slate-50 border border-slate-100 p-3.5 rounded-xl text-gray-700 shadow-inner font-normal leading-relaxed">
+          </p>
         </div>
       </div>
-      <div class="mt-6 flex flex-col sm:flex-row justify-end gap-3">
-        <button onclick="rechazarCita()" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-lg transition-colors">
-          <i class="fa-solid fa-xmark mr-1"></i> Rechazar Evaluación
+
+      <div class="mt-6 pt-4 border-t border-gray-100 flex flex-col sm:flex-row justify-end gap-3">
+        <button onclick="rechazarCita()"
+          class="w-full sm:w-auto bg-rose-50 border-2 border-rose-100 hover:bg-rose-600 text-rose-700 hover:text-white px-5 py-2.5 rounded-xl transition-all font-semibold flex items-center justify-center gap-2 shadow-sm">
+          <i class="fa-solid fa-xmark text-base"></i> Rechazar Evaluación
         </button>
-        <button onclick="validarCita()" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg transition-colors">
-          <i class="fa-solid fa-check mr-1"></i> Validar Cita
+        <button onclick="validarCita()"
+          class="w-full sm:w-auto bg-teal-700 hover:bg-teal-800 text-white px-5 py-2.5 rounded-xl transition-all font-semibold flex items-center justify-center gap-2 shadow-lg shadow-teal-700/10">
+          <i class="fa-solid fa-check text-base"></i> Validar Cita
         </button>
       </div>
     </div>
@@ -194,17 +266,17 @@
       fetch('/api/vet/current-vet-name', {
         credentials: 'include'
       })
-      .then(response => {
-        if (!response.ok) throw new Error('Error al obtener datos del veterinario');
-        return response.json();
-      })
-      .then(data => {
-        document.getElementById('vetName').textContent = data.fullName;
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        document.getElementById('vetName').textContent = 'Veterinario';
-      });
+        .then(response => {
+          if (!response.ok) throw new Error('Error al obtener datos del veterinario');
+          return response.json();
+        })
+        .then(data => {
+          document.getElementById('vetName').textContent = data.fullName;
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          document.getElementById('vetName').textContent = 'Veterinario';
+        });
 
       // Elementos del menú móvil
       const menuToggle = document.getElementById('menuToggle');
@@ -226,7 +298,7 @@
     // Función para alternar el menú
     function toggleMenu() {
       const isOpen = sidebar.classList.contains('-translate-x-full');
-      
+
       if (isOpen) {
         // Abrir menú
         sidebar.classList.remove('-translate-x-full');
@@ -305,10 +377,10 @@
           document.getElementById("diagnostico").innerText = data.diagnostico || "No registrado";
           document.getElementById("tratamiento").innerText = data.tratamiento || "No registrado";
           document.getElementById("prescripcion").innerText = data.prescripcion || "No registrada";
-          
+
           const modal = document.getElementById("modalDetalle");
           modal.classList.remove("hidden");
-          
+
           setTimeout(() => {
             modal.querySelector("div").classList.add("scale-100");
           }, 10);
@@ -321,52 +393,52 @@
 
     function validarCita() {
       if (!citaIdActual) return;
-      
+
       fetch(`/api/vet/appointments/${citaIdActual}/estado`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ estado: "COMPLETADA" }),
         credentials: "include"
       })
-      .then(res => {
-        if (!res.ok) throw new Error('Error al validar cita');
-        mostrarMensajeExito('Cita validada correctamente');
-        cerrarModal();
-        cargarCitas();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Error al validar la cita');
-      });
+        .then(res => {
+          if (!res.ok) throw new Error('Error al validar cita');
+          mostrarMensajeExito('Cita validada correctamente');
+          cerrarModal();
+          cargarCitas();
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error al validar la cita');
+        });
     }
 
     function rechazarCita() {
       if (!citaIdActual) return;
-      
+
       if (!confirm('¿Estás seguro que deseas rechazar esta evaluación?')) return;
-      
+
       fetch(`/api/vet/appointments/${citaIdActual}/estado`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ estado: "PROGRAMADA" }),
         credentials: "include"
       })
-      .then(res => {
-        if (!res.ok) throw new Error('Error al rechazar evaluación');
-        mostrarMensajeExito('Evaluación rechazada correctamente');
-        cerrarModal();
-        cargarCitas();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Error al rechazar la evaluación');
-      });
+        .then(res => {
+          if (!res.ok) throw new Error('Error al rechazar evaluación');
+          mostrarMensajeExito('Evaluación rechazada correctamente');
+          cerrarModal();
+          cargarCitas();
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error al rechazar la evaluación');
+        });
     }
 
     function cerrarModal() {
       const modal = document.getElementById("modalDetalle");
       modal.querySelector("div").classList.remove("scale-100");
-      
+
       setTimeout(() => {
         modal.classList.add("hidden");
         citaIdActual = null;
@@ -381,7 +453,7 @@
         <span>${mensaje}</span>
       `;
       document.body.appendChild(alerta);
-      
+
       setTimeout(() => {
         alerta.classList.add("animate-fade-out");
         setTimeout(() => alerta.remove(), 300);
@@ -395,4 +467,5 @@
   </script>
 
 </body>
+
 </html>

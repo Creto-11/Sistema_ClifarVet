@@ -1,239 +1,250 @@
 <!doctype html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Historial del Paciente</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <style>
-      .sidebar-overlay {
-        transition: opacity 0.3s ease;
-        z-index: 40;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 0, 0, 0.5);
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Historial de Mascota </title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    .sidebar-overlay {
+      transition: opacity 0.3s ease;
+      z-index: 40;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    @media (max-width: 767px) {
+      body.menu-open {
+        overflow: hidden;
+      }
+    }
+
+    #sidebar {
+      z-index: 50;
+    }
+
+    .main-content {
+      margin-left: 200px;
+    }
+
+    /* Estilos para contenedores responsive */
+    @media (max-width: 1024px) {
+      .historial-container {
+        flex-direction: column;
+        align-items: center;
       }
 
-      @media (max-width: 767px) {
-        body.menu-open {
-          overflow: hidden;
-        }
+      .lista-pacientes {
+        width: 100%;
       }
 
-      #sidebar {
-        z-index: 50;
+      .detalle-historial {
+        width: 100%;
+        margin-top: 1.5rem;
+      }
+    }
+
+    /* Estilos para tabla responsive unificados al diseño curvo */
+    @media (max-width: 640px) {
+      .tabla-responsive thead {
+        display: none;
       }
 
-      .main-content {
-        margin-left: 200px;
+      .tabla-responsive tr {
+        display: block;
+        margin-bottom: 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 1rem;
+        /* Modificado a juego con las tarjetas */
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: #f9fafb;
+        padding: 0.5rem 0;
       }
 
-      /* Estilos para tabla responsive */
-      @media (max-width: 1024px) {
-        .historial-container {
-          flex-direction: column;
-          align-items: center;
-        }
-
-        .lista-pacientes {
-          width: 100%;
-        }
-
-        .detalle-historial {
-          width: 100%;
-          margin-top: 1.5rem;
-        }
+      .tabla-responsive td {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #edf2f7;
+        align-items: center;
       }
 
-      @media (max-width: 640px) {
-        .tabla-responsive thead {
-          display: none;
-        }
-
-        .tabla-responsive tr {
-          display: block;
-          margin-bottom: 1rem;
-          border: 1px solid #e2e8f0;
-          border-radius: 0.375rem;
-          max-width: 100%;
-          margin-left: auto;
-          margin-right: auto;
-        }
-
-        .tabla-responsive td {
-          display: flex;
-          justify-content: space-between;
-          padding: 0.75rem;
-          border-bottom: 1px solid #e2e8f0;
-        }
-
-        .tabla-responsive td:before {
-          content: attr(data-label);
-          font-weight: 600;
-          padding-right: 1rem;
-          color: #4a5568;
-        }
-
-        .tabla-responsive td:last-child {
-          border-bottom: 0;
-        }
-
-        .lista-pacientes {
-          text-align: center;
-        }
-
-        .lista-pacientes ul {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
+      .tabla-responsive td:before {
+        content: attr(data-label);
+        font-weight: 700;
+        padding-right: 1rem;
+        color: #1e293b;
       }
-    </style>
-  </head>
 
-  <body class="bg-gray-100 min-h-screen flex flex-col">
-    <!-- Encabezado superior -->
-    <header
-      class="bg-green-600 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20"
-    >
-      <div class="flex items-center">
-        <button id="menuToggle" class="mr-4 md:hidden">
-          <i class="fas fa-bars text-xl"></i>
-        </button>
-        <h1 class="text-lg sm:text-xl font-bold">Clínica Puente Blanco</h1>
+      .tabla-responsive td:last-child {
+        border-bottom: 0;
+      }
+
+      .lista-pacientes {
+        text-align: center;
+      }
+
+      .lista-pacientes ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col font-sans">
+  <header class="bg-teal-800 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20">
+    <div class="flex items-center gap-2">
+      <button id="menuToggle" class="mr-2 md:hidden text-white hover:text-gray-300 transition-colors">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-paw text-2xl text-amber-400"></i>
+        <h1 class="text-xl font-bold tracking-tight">
+          CLIFARVET <span class="font-light hidden sm:inline">| Puente Blanco</span>
+        </h1>
       </div>
-      <div
-        class="flex items-center space-x-3 p-2 rounded-lg bg-green-700 bg-opacity-80"
-      >
-        <i class="fas fa-user-md text-lg text-green-300"></i>
-        <span class="font-medium">Veterinario/a</span>
-        <span id="vetName" class="font-medium">Cargando...</span>
-      </div>
-    </header>
+    </div>
 
-    <div class="flex flex-1">
-      <!-- Sidebar con menú móvil -->
-      <aside
-        id="sidebar"
-        class="w-64 bg-gray-800 text-white flex flex-col justify-between fixed h-full md:h-auto md:sticky md:top-0 left-0 z-30 transform -translate-x-full md:transform-none transition-transform duration-300 overflow-y-auto"
-      >
-        <div class="p-4">
-          <nav class="flex flex-col space-y-3">
-            <a
-              href="/vet/veterinarian_dashboard.html"
-              class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"
-              ><i class="fa-solid fa-table-columns"></i>Resumen Clínico
-              Veterinario</a
-            >
-            <a
-              href="/vet/veterinarian_appointments.html"
-              class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"
-              ><i class="fa-solid fa-calendar-days"></i> Citas Agendadas</a
-            >
-            <a
-              href="/vet/veterinarian_attend.html"
-              class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"
-              ><i class="fa-solid fa-stethoscope"></i> Atender Cita</a
-            >
-            <a
-              href="/vet/veterinarian_clinicalreport.html"
-              class="flex items-center gap-3 p-2 rounded hover:bg-gray-700 bg-gray-700 text-green-300"
-              ><i class="fa-solid fa-user"></i> Historial del Paciente</a
-            >
-            <a
-              href="/vet/veterinarian_schedule.html"
-              class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"
-              ><i class="fa-solid fa-clock"></i> Horario</a
-            >
-            <a
-              href="/vet/vet_assign.html"
-              class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"
-              ><i class="fa-solid fa-user"></i> Asignación</a
-            >
-            <a
-              href="/vet/veterinarian_validate.html"
-              class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"
-              ><i class="fa-solid fa-check-double"></i> Validar Evaluaciones</a
-            >
-            <a
-              href="/vet/veterinarian_reports.html"
-              class="flex items-center gap-3 p-2 rounded"
-              ><i class="fa-solid fa-chart-pie"></i> Reportes</a
-            >
+    <div
+      class="flex items-center space-x-3 px-4 py-1.5 rounded-full bg-teal-900 bg-opacity-50 border border-teal-700 text-sm">
+      <span class="text-gray-300 hidden md:inline">Hola, Veterinario </span>
+      <span class="font-semibold text-white tracking-wide uppercase" id="vetName">Cargando...</span>
+      <div class="w-8 h-8 rounded-full bg-teal-700 flex items-center justify-center text-white">
+        <i class="fas fa-user-md text-sm"></i>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex flex-1">
+    <aside id="sidebar"
+      class="w-64 bg-slate-900 text-gray-300 flex flex-col justify-between fixed h-full md:h-auto md:sticky md:top-0 left-0 z-30 transform -translate-x-full md:transform-none transition-transform duration-300 overflow-y-auto border-r border-slate-800">
+      <div class="p-4 flex flex-col h-full justify-between">
+        <div>
+          <div class="text-xs font-bold text-gray-500 uppercase tracking-wider px-3 mb-4 mt-2">Menú Principal</div>
+          <nav class="flex flex-col space-y-2">
+            <a href="/vet/veterinarian_dashboard.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-table-columns text-gray-400"></i> Resumen Clínico
+            </a>
+            <a href="/vet/veterinarian_appointments.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-calendar-days text-gray-400"></i> Citas Agendadas
+            </a>
+            <a href="/vet/veterinarian_attend.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-stethoscope text-gray-400"></i> Atender Cita
+            </a>
+
+            <a href="/vet/veterinarian_clinicalreport.html"
+              class="flex items-center gap-3 text-amber-400 bg-slate-800 p-3 rounded-xl font-semibold border-l-4 border-amber-400 shadow-inner">
+              <i class="fa-solid fa-user text-lg"></i> Historial de Mascota
+            </a>
+
+            <a href="/vet/veterinarian_schedule.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-clock text-gray-400"></i> Horario
+            </a>
+            <a href="/vet/vet_assign.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-user text-gray-400"></i> Asignación
+            </a>
+            <a href="/vet/veterinarian_validate.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-check-double text-gray-400"></i> Validar Evaluaciones
+            </a>
+            <a href="/vet/veterinarian_reports.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-chart-pie text-gray-400"></i> Reportes
+            </a>
           </nav>
         </div>
-        <button
-          onclick="logout()"
-          class="m-4 flex items-center justify-center gap-2 bg-gray-100 text-red-500 px-4 py-2 rounded-lg hover:shadow-md"
-        >
-          <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
-        </button>
-      </aside>
 
-      <!-- Overlay para móvil -->
+        <div class="pt-6 border-t border-slate-800 mt-6">
+          <button onclick="logout()"
+            class="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-red-950 hover:text-red-400 text-gray-400 px-4 py-3 rounded-xl transition-all font-medium border border-slate-700">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"></div>
+
+    <main class="flex-1 p-4 md:p-8 space-y-6 transition-all duration-300">
+
       <div
-        class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"
-      ></div>
-
-      <!-- Contenido principal -->
-      <main class="flex-1 p-8 space-y-6 transition-all duration-300">
-        <h2 class="text-2xl font-bold text-gray-800">
-          Historial de la Mascota
+        class="bg-white rounded-2xl shadow-xl p-6 border-l-4 border-teal-600 flex flex-col justify-between items-start gap-1">
+        <h2 class="text-2xl sm:text-3xl font-bold text-teal-950 tracking-tight flex items-center gap-2">
+          🗂️ Historial Clínico
         </h2>
-        <div class="flex historial-container">
-          <!-- Lista de pacientes -->
-          <div class="w-full lg:w-1/3 space-y-4 lista-pacientes">
-            <h3 class="text-lg font-semibold">Pacientes</h3>
-            <ul
-              id="listaPacientes"
-              class="space-y-2 max-h-[calc(100vh-230px)] overflow-y-auto pr-2"
-            >
-              <li class="text-gray-500">Cargando pacientes...</li>
-            </ul>
+        <p class="text-sm text-gray-500">
+          Expediente completo de atenciones y alertas preventivas por cada mascota.
+        </p>
+      </div>
+
+      <div class="flex gap-6 flex-col lg:flex-row items-start">
+
+        <div class="w-full lg:w-1/3 bg-white p-5 rounded-2xl shadow-xl border-4 border-white space-y-4">
+          <h3
+            class="text-base font-bold text-slate-800 uppercase tracking-wider border-b border-gray-100 pb-2 flex items-center gap-2">
+            🐾 Lista de Mascotas
+          </h3>
+          <ul id="listaPacientes" class="space-y-2 font-medium text-sm">
+            <li class="text-gray-400 italic p-3 text-center bg-gray-50 rounded-xl">Cargando mascotas...</li>
+          </ul>
+        </div>
+
+        <div class="flex-1 w-full space-y-4">
+
+          <div class="bg-slate-900 text-white p-4 px-6 rounded-2xl shadow-lg flex items-center justify-between">
+            <h3 id="tituloMascota" class="text-base sm:text-lg font-bold tracking-wide flex items-center gap-2">
+              📌 Selecciona una Mascota
+            </h3>
           </div>
 
-          <!-- Detalles del historial -->
-          <div class="flex-1 space-y-4 detalle-historial lg:pl-6">
-            <h3 id="tituloMascota" class="text-lg font-semibold">
-              Selecciona un Paciente
-            </h3>
-            <div
-              id="prediccionVacuna"
-              class="hidden bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-lg shadow-sm"
-            >
-              <div class="font-semibold">🔔 Próxima vacuna recomendada</div>
-              <div id="textoVacuna" class="text-sm mt-1"></div>
+          <div id="prediccionVacuna"
+            class="hidden bg-amber-50 border-2 border-amber-100 text-amber-900 p-4 rounded-2xl shadow-md transition-all">
+            <div class="font-bold flex items-center gap-2 text-sm sm:text-base">
+              <span>🔔</span> Próxima vacuna recomendada
             </div>
-            <div
-              id="alertaDesparasitacion"
-              class="hidden bg-orange-50 border border-orange-200 text-orange-800 p-4 rounded-lg shadow-sm mt-4"
-            >
-              <div class="font-semibold">⚠ Recordatorio de desparasitación</div>
-              <div id="textoDesparasitacion" class="text-sm mt-1"></div>
+            <div id="textoVacuna" class="text-sm mt-1 font-medium text-amber-800 pl-6"></div>
+          </div>
+
+          <div id="alertaDesparasitacion"
+            class="hidden bg-orange-50 border-2 border-orange-100 text-orange-900 p-4 rounded-2xl shadow-md transition-all">
+            <div class="font-bold flex items-center gap-2 text-sm sm:text-base">
+              <span>⚠</span> Recordatorio de desparasitación
             </div>
-            <div class="overflow-x-auto">
-              <table
-                class="w-full text-sm text-left bg-white shadow rounded-lg overflow-hidden tabla-responsive"
-              >
-                <thead class="bg-gray-100 text-gray-700">
-                  <tr>
-                    <th class="px-4 py-3">Fecha</th>
+            <div id="textoDesparasitacion" class="text-sm mt-1 font-medium text-orange-800 pl-6"></div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl shadow-xl border-4 border-white">
+            <div class="overflow-x-auto rounded-xl">
+              <table class="w-full text-sm text-left border-collapse tabla-responsive">
+                <thead>
+                  <tr class="bg-teal-50 text-teal-900 font-bold border-b-2 border-teal-100">
+                    <th class="px-4 py-3 rounded-tl-xl">Fecha</th>
                     <th class="px-4 py-3">Servicio</th>
                     <th class="px-4 py-3">Diagnóstico</th>
                     <th class="px-4 py-3">Tratamiento</th>
-                    <th class="px-4 py-3">Observaciones</th>
+                    <th class="px-4 py-3 rounded-tr-xl">Observaciones</th>
                   </tr>
                 </thead>
-                <tbody id="tablaHistorial" class="text-gray-700">
+                <tbody id="tablaHistorial" class="text-gray-700 divide-y divide-gray-100 font-medium">
                   <tr>
-                    <td colspan="5" class="text-center px-4 py-6 text-gray-500">
+                    <td colspan="5" class="text-center px-4 py-8 text-gray-400 font-medium bg-gray-50 rounded-b-xl">
+                      <i class="fa-solid fa-folder-minus text-xl mb-1 block text-gray-300"></i>
                       No hay historial seleccionado
                     </td>
                   </tr>
@@ -241,220 +252,198 @@
               </table>
             </div>
           </div>
+
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
+  </div>
 
-    <script>
-      // Función para alternar el menú
-      function toggleMenu() {
-        const isOpen = sidebar.classList.contains("-translate-x-full");
+  <script>
+    // Función para alternar el menú
+    function toggleMenu() {
+      const isOpen = sidebar.classList.contains("-translate-x-full");
 
-        if (isOpen) {
-          // Abrir menú
+      if (isOpen) {
+        // Abrir menú
+        sidebar.classList.remove("-translate-x-full");
+        sidebarOverlay.classList.remove("hidden");
+        document.body.classList.add("overflow-hidden");
+      } else {
+        // Cerrar menú
+        sidebar.classList.add("-translate-x-full");
+        sidebarOverlay.classList.add("hidden");
+        document.body.classList.remove("overflow-hidden");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Cargar nombre del veterinario
+      fetch("/api/vet/current-vet-name", {
+        credentials: "include",
+      })
+        .then((response) => {
+          if (!response.ok)
+            throw new Error("Error al obtener datos del veterinario");
+          return response.json();
+        })
+        .then((data) => {
+          document.getElementById("vetName").textContent = data.fullName;
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          document.getElementById("vetName").textContent = "Veterinario";
+        });
+
+      // Elementos del menú móvil
+      const menuToggle = document.getElementById("menuToggle");
+      const sidebar = document.getElementById("sidebar");
+      const sidebarOverlay = document.querySelector(".sidebar-overlay");
+
+      // Eventos para el menú móvil
+      menuToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleMenu();
+      });
+
+      sidebarOverlay.addEventListener("click", toggleMenu);
+
+      // Cerrar menú al cambiar a vista desktop
+      window.addEventListener("resize", () => {
+        if (window.innerWidth >= 768) {
           sidebar.classList.remove("-translate-x-full");
-          sidebarOverlay.classList.remove("hidden");
-          document.body.classList.add("overflow-hidden");
-        } else {
-          // Cerrar menú
-          sidebar.classList.add("-translate-x-full");
           sidebarOverlay.classList.add("hidden");
           document.body.classList.remove("overflow-hidden");
         }
-      }
-
-      document.addEventListener("DOMContentLoaded", () => {
-        // Cargar nombre del veterinario
-        fetch("/api/vet/current-vet-name", {
-          credentials: "include",
-        })
-          .then((response) => {
-            if (!response.ok)
-              throw new Error("Error al obtener datos del veterinario");
-            return response.json();
-          })
-          .then((data) => {
-            document.getElementById("vetName").textContent = data.fullName;
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-            document.getElementById("vetName").textContent = "Veterinario";
-          });
-
-        // Elementos del menú móvil
-        const menuToggle = document.getElementById("menuToggle");
-        const sidebar = document.getElementById("sidebar");
-        const sidebarOverlay = document.querySelector(".sidebar-overlay");
-
-        // Eventos para el menú móvil
-        menuToggle.addEventListener("click", (e) => {
-          e.stopPropagation();
-          toggleMenu();
-        });
-
-        sidebarOverlay.addEventListener("click", toggleMenu);
-
-        // Cerrar menú al cambiar a vista desktop
-        window.addEventListener("resize", () => {
-          if (window.innerWidth >= 768) {
-            sidebar.classList.remove("-translate-x-full");
-            sidebarOverlay.classList.add("hidden");
-            document.body.classList.remove("overflow-hidden");
-          }
-        });
-
-        // Cargar lista de pacientes
-        fetch("/api/vet/history", {
-          credentials: "include",
-        })
-          .then((res) => {
-            if (!res.ok)
-              throw new Error(
-                "No autorizado o error al cargar la lista de pacientes.",
-              );
-            return res.json();
-          })
-          .then((data) => {
-            const lista = document.getElementById("listaPacientes");
-            lista.innerHTML = "";
-
-            if (data.length === 0) {
-              lista.innerHTML = `<li class="text-gray-500">No hay pacientes registrados</li>`;
-              return;
-            }
-
-            data
-              .sort((a, b) => (a.name || "").localeCompare(b.name || ""))
-              .forEach((p) => {
-                const li = document.createElement("li");
-                li.className = "w-full";
-
-                const nombre = p.name || "Sin nombre";
-                const raza = p.breed || "Sin raza registrada";
-                const tipo = p.type || "";
-                const duenio = p.owner || "No registrado";
-                const nombreSeguro = nombre
-                  .replace(/'/g, "\\'")
-                  .replace(/"/g, "&quot;");
-
-                li.innerHTML = `
-        <button class="w-full text-left px-4 py-3 bg-white hover:bg-green-50 rounded-lg shadow-sm border border-gray-100 transition-all" 
-                onclick="verHistorial(${p.id}, '${nombreSeguro}')">
-          <div class="font-medium text-gray-800">${nombre}</div>
-          <div class="text-sm text-gray-600">${raza}</div>
-          <div class="text-xs text-gray-500 mt-1">${tipo ? tipo + " · " : ""}Dueño: ${duenio}</div>
-        </button>`;
-
-                lista.appendChild(li);
-              });
-          })
-          .catch((err) => {
-            document.getElementById("listaPacientes").innerHTML =
-              `<li class="px-4 py-3 bg-red-50 text-red-600 rounded-lg">${err.message}</li>`;
-          });
       });
 
-      function verHistorial(petId, petName) {
-        document.getElementById("tituloMascota").textContent =
-          `Historial de ${petName}`;
-
-        // Ocultar avisos antes de cargar nueva mascota
-        document.getElementById("prediccionVacuna").classList.add("hidden");
-        document
-          .getElementById("alertaDesparasitacion")
-          .classList.add("hidden");
-
-        // Consultar predicción de vacuna
-        fetch(`/api/vet/history/${petId}/next-vaccine`, {
-          credentials: "include",
+      // Cargar lista de pacientes
+      fetch("/api/vet/history", {
+        credentials: "include",
+      })
+        .then((res) => {
+          if (!res.ok)
+            throw new Error(
+              "No autorizado o error al cargar la lista de mascotas.",
+            );
+          return res.json();
         })
-          .then((res) => {
-            if (res.status === 204) return null;
-            if (!res.ok)
-              throw new Error("No se pudo calcular la próxima vacuna");
-            return res.text();
-          })
-          .then((fecha) => {
-            if (!fecha) return;
+        .then((data) => {
+          const lista = document.getElementById("listaPacientes");
+          lista.innerHTML = "";
 
-            const contenedor = document.getElementById("prediccionVacuna");
-            const texto = document.getElementById("textoVacuna");
+          if (data.length === 0) {
+            lista.innerHTML = `<li class="text-gray-500">No hay mascotas registrados</li>`;
+            return;
+          }
 
-            contenedor.classList.remove("hidden");
-            texto.textContent = `La próxima vacuna recomendada sería el ${fecha}`;
-          })
-          .catch(() => {});
-
-        cargarAlertaDesparasitacion(petId);
-
-        fetch(`/api/vet/history/${petId}`, {
-          credentials: "include",
-        })
-          .then((res) => {
-            if (!res.ok) throw new Error("Error al cargar historial clínico");
-            return res.json();
-          })
-          .then((data) => {
-            const tabla = document.getElementById("tablaHistorial");
-            tabla.innerHTML = "";
-
-            if (data.length === 0) {
-              tabla.innerHTML = `
-        <tr>
-          <td colspan="5" class="text-center px-4 py-6 text-gray-500">
-            No hay registros clínicos para esta mascota
-          </td>
-        </tr>`;
-              return;
-            }
-
-            data.forEach((item) => {
-              const tr = document.createElement("tr");
-              tr.className = "hover:bg-gray-50 border-b border-gray-100";
-              tr.innerHTML = `
-        <td class="px-4 py-3" data-label="Fecha">${item.fecha}</td>
-        <td class="px-4 py-3" data-label="Servicio">${item.servicio}</td>
-        <td class="px-4 py-3" data-label="Diagnóstico">${item.diagnostico || "-"}</td>
-        <td class="px-4 py-3" data-label="Tratamiento">${item.tratamiento || "-"}</td>
-        <td class="px-4 py-3" data-label="Observaciones">${item.observaciones || "-"}</td>
-      `;
-              tabla.appendChild(tr);
-            });
-          })
-          .catch((err) => {
-            document.getElementById("tablaHistorial").innerHTML = `
-      <tr>
-        <td colspan="5" class="text-red-500 text-center px-4 py-6">
-          ${err.message}
-        </td>
-      </tr>`;
+          data.forEach((p) => {
+            const li = document.createElement("li");
+            li.className = "w-full md:w-auto";
+            li.innerHTML = `
+              <button class="w-full md:w-64 text-left px-4 py-3 bg-white hover:bg-green-50 rounded-lg shadow-sm border border-gray-100 transition-all" 
+                      onclick="verHistorial(${p.id}, '${p.name.replace(/'/g, "\\'")}')">
+                <div class="font-medium text-gray-800">${p.name}</div>
+                <div class="text-sm text-gray-600">${p.breed}</div>
+                <div class="text-xs text-gray-500 mt-1">Dueño: ${p.owner}</div>
+              </button>`;
+            lista.appendChild(li);
           });
-      }
-
-      function cargarAlertaDesparasitacion(petId) {
-        fetch(`/api/vet/history/${petId}/desparasitacion-alerta`, {
-          credentials: "include",
         })
-          .then((response) => response.text())
-          .then((data) => {
-            const alerta = document.getElementById("alertaDesparasitacion");
-            const texto = document.getElementById("textoDesparasitacion");
+        .catch((err) => {
+          document.getElementById("listaPacientes").innerHTML =
+            `<li class="px-4 py-3 bg-red-50 text-red-600 rounded-lg">${err.message}</li>`;
+        });
+    });
 
-            if (data && data !== "Desparasitación al día.") {
-              alerta.classList.remove("hidden");
-              texto.textContent = data;
-            } else {
-              alerta.classList.add("hidden");
-            }
-          })
-          .catch((error) => console.error("Error:", error));
-      }
+    function verHistorial(petId, petName) {
+      document.getElementById("tituloMascota").textContent =
+        `Historial de ${petName}`;
+      // Ocultar predicción antes de cargar nueva mascota
+      document.getElementById("prediccionVacuna").classList.add("hidden");
 
-      function logout() {
-        document.cookie =
-          "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
-        window.location.href = "/";
-      }
-    </script>
-  </body>
+      // Consultar predicción de vacuna
+      fetch(`/api/vet/history/${petId}/next-vaccine`, {
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((fecha) => {
+          if (!fecha) return;
+
+          const contenedor = document.getElementById("prediccionVacuna");
+          const texto = document.getElementById("textoVacuna");
+
+          contenedor.classList.remove("hidden");
+
+          texto.textContent = `La próxima vacuna recomendada sería el ${fecha}`;
+        })
+        .catch(() => { });
+      fetch(`/api/vet/history/${petId}`, {
+        credentials: "include",
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error("Error al cargar historial clínico");
+          return res.json();
+        })
+        .then((data) => {
+          const tabla = document.getElementById("tablaHistorial");
+          tabla.innerHTML = "";
+
+          if (data.length === 0) {
+            tabla.innerHTML = `
+              <tr>
+                <td colspan="5" class="text-center px-4 py-6 text-gray-500">
+                  No hay registros clínicos para esta mascota
+                </td>
+              </tr>`;
+            return;
+          }
+
+          data.forEach((item) => {
+            const tr = document.createElement("tr");
+            tr.className = "hover:bg-gray-50 border-b border-gray-100";
+            tr.innerHTML = `
+              <td class="px-4 py-3" data-label="Fecha">${item.fecha}</td>
+              <td class="px-4 py-3" data-label="Servicio">${item.servicio}</td>
+              <td class="px-4 py-3" data-label="Diagnóstico">${item.diagnostico || "-"}</td>
+              <td class="px-4 py-3" data-label="Tratamiento">${item.tratamiento || "-"}</td>
+              <td class="px-4 py-3" data-label="Observaciones">${item.observaciones || "-"}</td>
+            `;
+            tabla.appendChild(tr);
+          });
+        })
+        .catch((err) => {
+          document.getElementById("tablaHistorial").innerHTML = `
+            <tr>
+              <td colspan="5" class="text-red-500 text-center px-4 py-6">
+                ${err.message}
+              </td>
+            </tr>`;
+        });
+    }
+
+    function cargarAlertaDesparasitacion(petId) {
+      fetch(`/api/vet/history/${petId}/desparasitacion-alerta`)
+        .then((response) => response.text())
+        .then((data) => {
+          const alerta = document.getElementById("alertaDesparasitacion");
+          const texto = document.getElementById("textoDesparasitacion");
+
+          if (data && data !== "Desparasitación al día.") {
+            alerta.classList.remove("hidden");
+            texto.textContent = data;
+          } else {
+            alerta.classList.add("hidden");
+          }
+        })
+        .catch((error) => console.error("Error:", error));
+    }
+
+    function logout() {
+      document.cookie =
+        "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
+      window.location.href = "/";
+    }
+  </script>
+</body>
+
 </html>
