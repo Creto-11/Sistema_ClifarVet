@@ -542,7 +542,13 @@
         <!-- Mapa -->
         <div class="lg:col-span-7 aspect-[4/3] overflow-hidden shadow-xl border-4 border-white rounded-xl"
           data-aos="fade-right">
-          <div id="map" class="w-full h-full min-h-[300px] lg:min-h-[400px] rounded-xl"></div>
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3870.337222485303!2d-75.73740262402484!3d-14.074360686348637!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9110e2c366ff40cb%3A0x6bda193e2308734!2sAv.%20Cutervo%209%2C%20Ica%2011001!5e0!3m2!1ses-419!2spe!4v1716075000000!5m2!1ses-419!2spe" 
+            class="w-full h-full min-h-[300px] lg:min-h-[400px] border-0" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe> 
         </div>
 
         <!-- Información -->
@@ -580,8 +586,9 @@
 
 
   <script>
+    /* ----- MAPA DE GOOGLE MAPS CON API
     function initMap() {
-      const ubicacionClinica = { lat: -14.076819637086812, lng: -75.7389531413638 };
+      const ubicacionClinica = { lat: -14.07682300982323, lng: -75.73895271337528 };
 
       const mapa = new google.maps.Map(document.getElementById("map"), {
         zoom: 16,
@@ -595,7 +602,7 @@
         title: "Clínica Veterinaria Puente Blanco"
       });
     }
-
+*/
     document.getElementById("comentarioForm").addEventListener("submit", function (e) {
       e.preventDefault();
       const comentario = document.getElementById("comentarioTexto").value.trim();

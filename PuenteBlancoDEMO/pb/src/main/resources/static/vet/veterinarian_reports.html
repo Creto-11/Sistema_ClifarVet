@@ -1,316 +1,410 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <title>Reportes Veterinarios</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" href="/img/logo.jpeg" type="image/jpeg">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
 
-  <!-- Barra superior modificada -->
-  <header class="bg-green-600 text-white py-4 px-6 flex justify-between items-center w-full">
-    <div class="flex items-center">
-      <h1 class="text-xl font-bold">Clínica y Veterinaria Puente Blanco</h1>
+<body class="bg-gray-100 min-h-screen flex flex-col font-sans">
+
+  <header class="bg-teal-800 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20">
+    <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-paw text-2xl text-amber-400"></i>
+        <h1 class="text-xl font-bold tracking-tight">
+          CLIFARVET <span class="font-light hidden sm:inline">| Puente Blanco</span>
+        </h1>
+      </div>
     </div>
-    <div class="flex items-center space-x-3 p-2 rounded-lg bg-green-700 bg-opacity-80">
-      <i class="fas fa-user-md text-lg text-green-300"></i>
-      <span class="font-medium">Veterinario/a</span>
-      <span id="vetName" class="font-medium">Cargando...</span>
+
+    <div
+      class="flex items-center space-x-3 px-4 py-1.5 rounded-full bg-teal-900 bg-opacity-50 border border-teal-700 text-sm">
+      <span class="text-gray-300 hidden md:inline">Hola, Veterinario </span>
+      <span class="font-semibold text-white tracking-wide uppercase" id="vetName">Cargando...</span>
+      <div class="w-8 h-8 rounded-full bg-teal-700 flex items-center justify-center text-white">
+        <i class="fas fa-user-md text-sm"></i>
+      </div>
     </div>
   </header>
 
   <div class="flex flex-1">
-    <!-- Sidebar modificado -->
-    <aside class="w-64 bg-gray-800 text-white flex flex-col justify-between min-h-full">
-      <div>
-        <nav class="flex flex-col p-4 space-y-4">
-          <a href="/vet/veterinarian_dashboard.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i class="fa-solid fa-table-columns"></i> Dashboard</a>
-          <a href="/vet/veterinarian_appointments.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i class="fa-solid fa-calendar-days"></i> Citas Agendadas</a>
-          <a href="/vet/veterinarian_attend.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i class="fa-solid fa-stethoscope"></i> Atender Cita</a>
-          <a href="/vet/veterinarian_clinicalreport.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i class="fa-solid fa-user"></i> Historial del Paciente</a>
-          <a href="/vet/veterinarian_schedule.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i class="fa-solid fa-clock"></i> Horario</a>
-          <a href="/vet/vet_assign.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i class="fa-solid fa-user"></i> Asignación</a>
-          <a href="/vet/veterinarian_validate.html" class="flex items-center gap-3 p-2 rounded hover:bg-gray-700"><i class="fa-solid fa-check-double"></i> Validar Evaluaciones</a>
-          <a href="/vet/veterinarian_reports.html" class="flex items-center gap-3 p-2 rounded bg-gray-700 text-green-300"><i class="fa-solid fa-chart-pie"></i> Reportes</a>
-        </nav>
+    <aside id="sidebar"
+      class="w-64 bg-slate-900 text-gray-300 flex flex-col justify-between fixed h-full md:h-auto md:sticky md:top-0 left-0 z-30 transform-none transition-transform duration-300 overflow-y-auto border-r border-slate-800">
+      <div class="p-4 flex flex-col h-full justify-between">
+        <div>
+          <div class="text-xs font-bold text-gray-500 uppercase tracking-wider px-3 mb-4 mt-2">Menú Principal</div>
+          <nav class="flex flex-col space-y-2">
+            <a href="/vet/veterinarian_dashboard.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-table-columns text-gray-400"></i> Resumen Clinico
+            </a>
+            <a href="/vet/veterinarian_appointments.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-calendar-days text-gray-400"></i> Citas Agendadas
+            </a>
+            <a href="/vet/veterinarian_attend.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-stethoscope text-gray-400"></i> Atender Cita
+            </a>
+            <a href="/vet/veterinarian_clinicalreport.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-user text-gray-400"></i> Historial de Mascota
+            </a>
+            <a href="/vet/veterinarian_schedule.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-clock text-gray-400"></i> Horario
+            </a>
+            <a href="/vet/vet_assign.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-user text-gray-400"></i> Asignación
+            </a>
+            <a href="/vet/veterinarian_validate.html"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
+              <i class="fa-solid fa-check-double text-gray-400"></i> Validar Evaluaciones
+            </a>
+
+            <a href="/vet/veterinarian_reports.html"
+              class="flex items-center gap-3 text-amber-400 bg-slate-800 p-3 rounded-xl font-semibold border-l-4 border-amber-400 shadow-inner">
+              <i class="fa-solid fa-chart-pie text-lg"></i> Reportes
+            </a>
+          </nav>
+        </div>
+
+        <div class="pt-6 border-t border-slate-800 mt-6">
+          <button onclick="logout()"
+            class="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-red-950 hover:text-red-400 text-gray-400 px-4 py-3 rounded-xl transition-all font-medium border border-slate-700">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+          </button>
+        </div>
       </div>
-      <button onclick="logout()" class="m-4 flex items-center justify-center gap-2 bg-gray-100 text-red-500 px-4 py-2 rounded hover:bg-gray-200">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
-      </button>
     </aside>
 
-    <!-- Contenido principal -->
-    <main class="flex-1 p-8 space-y-6 overflow-y-auto">
+    <main class="flex-1 p-4 md:p-8 space-y-6 overflow-y-auto">
 
-      <!-- Contadores -->
-      <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-white p-6 rounded shadow text-center">
-          <h3 class="text-lg font-semibold text-gray-700">Citas Totales</h3>
-          <p id="totalCitas" class="text-3xl font-bold text-blue-700">--</p>
-        </div>
-        <div class="bg-white p-6 rounded shadow text-center">
-          <h3 class="text-lg font-semibold text-gray-700">Citas del Mes</h3>
-          <p id="citasMes" class="text-3xl font-bold text-green-600">--</p>
-        </div>
-        <div class="bg-white p-6 rounded shadow text-center">
-          <h3 class="text-lg font-semibold text-gray-700">Citas de la Semana</h3>
-          <p id="citasSemana" class="text-3xl font-bold text-orange-600">--</p>
-        </div>
-      </section>
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-stretch">
 
-      <!-- Gráficos -->
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-1 gap-4 lg:col-span-1">
+          <div
+            class="bg-white p-5 rounded-2xl shadow-xl border-4 border-white flex flex-col justify-center items-center text-center transition-all hover:shadow-md">
+            <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-2">
+              <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Citas Totales</h3>
+            <p id="totalCitas" class="text-3xl font-black text-slate-800 mt-1">--</p>
+          </div>
+
+          <div
+            class="bg-white p-5 rounded-2xl shadow-xl border-4 border-white flex flex-col justify-center items-center text-center transition-all hover:shadow-md">
+            <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mb-2">
+              <i class="fa-solid fa-calendar-check"></i>
+            </div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Citas del Mes</h3>
+            <p id="citasMes" class="text-3xl font-black text-emerald-600 mt-1">--</p>
+          </div>
+
+          <div
+            class="bg-white p-5 rounded-2xl shadow-xl border-4 border-white flex flex-col justify-center items-center text-center transition-all hover:shadow-md">
+            <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mb-2">
+              <i class="fa-solid fa-calendar-day"></i>
+            </div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Citas de la Semana</h3>
+            <p id="citasSemana" class="text-3xl font-black text-amber-600 mt-1">--</p>
+          </div>
+        </div>
+
+        <section
+          class="bg-white p-6 rounded-2xl shadow-xl border-4 border-white lg:col-span-3 flex flex-col justify-between">
+          <div>
+            <h2 class="text-xl font-bold text-teal-950 tracking-tight flex items-center gap-2 mb-4">
+              <i class="fa-solid fa-file-pdf text-rose-500"></i> Generar Reporte
+            </h2>
+            <form id="formReporte" onsubmit="generarReporte(event)" class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="startDate"
+                    class="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1 ml-1">Fecha de
+                    inicio</label>
+                  <input type="date" id="startDate" required
+                    class="w-full border-2 border-gray-100 bg-gray-50 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-teal-500 transition-colors shadow-inner font-medium text-gray-700" />
+                </div>
+                <div>
+                  <label for="endDate"
+                    class="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1 ml-1">Fecha de fin</label>
+                  <input type="date" id="endDate" required
+                    class="w-full border-2 border-gray-100 bg-gray-50 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-teal-500 transition-colors shadow-inner font-medium text-gray-700" />
+                </div>
+              </div>
+
+              <div>
+                <label for="tipoReporte"
+                  class="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1 ml-1">Tipo de
+                  reporte</label>
+                <select id="tipoReporte" required
+                  class="w-full border-2 border-gray-100 bg-gray-50 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-teal-500 transition-colors shadow-inner font-medium text-gray-700">
+                  <option value="citas-por-fecha">Citas por Servicio</option>
+                  <option value="citas-por-mascota">Citas por Mascota</option>
+                  <option value="citas-canceladas">Citas Canceladas</option>
+                </select>
+              </div>
+
+              <div id="filtrosDinamicos" class="space-y-4">
+                <div id="filtroTipoServicio" class="hidden transition-all duration-300">
+                  <label class="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1 ml-1">Tipo de
+                    servicio</label>
+                  <div class="relative mt-1">
+                    <button id="customSelectButton" type="button"
+                      class="w-full border-2 border-gray-100 bg-gray-50 rounded-xl px-3 py-2 text-sm text-left flex justify-between items-center transition-colors focus:border-teal-500 font-medium text-gray-700">
+                      <span id="selectedOption">Todos</span>
+                      <i class="fas fa-chevron-down text-gray-400"></i>
+                    </button>
+                    <div id="customSelectOptions"
+                      class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-xl max-h-60 overflow-y-auto transition-all duration-200">
+                      <div
+                        class="px-3 py-2.5 hover:bg-teal-50 hover:text-teal-900 cursor-pointer text-sm font-medium transition-colors"
+                        data-value="">Todos</div>
+                      <div
+                        class="px-3 py-2.5 hover:bg-teal-50 hover:text-teal-900 cursor-pointer text-sm font-medium transition-colors"
+                        data-value="Consulta General">Consulta General</div>
+                      <div
+                        class="px-3 py-2.5 hover:bg-teal-50 hover:text-teal-900 cursor-pointer text-sm font-medium transition-colors"
+                        data-value="Vacunación">Vacunación</div>
+                      <div
+                        class="px-3 py-2.5 hover:bg-teal-50 hover:text-teal-900 cursor-pointer text-sm font-medium transition-colors"
+                        data-value="Desparasitación">Desparasitación</div>
+                      <div
+                        class="px-3 py-2.5 hover:bg-teal-50 hover:text-teal-900 cursor-pointer text-sm font-medium transition-colors"
+                        data-value="Estética e Higiene">Estética e Higiene</div>
+                      <div
+                        class="px-3 py-2.5 hover:bg-teal-50 hover:text-teal-900 cursor-pointer text-sm font-medium transition-colors"
+                        data-value="Diagnóstico Especializado">Diagnóstico Especializado</div>
+                    </div>
+                    <input type="hidden" id="tipoServicio" name="tipoServicio" value="">
+                  </div>
+                </div>
+
+                <div id="filtrosMascota"
+                  class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4 transition-all duration-300">
+                  <div>
+                    <label for="tipoMascota"
+                      class="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1 ml-1">Tipo de
+                      Mascota</label>
+                    <select id="tipoMascota"
+                      class="w-full border-2 border-gray-100 bg-gray-50 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-teal-500 transition-colors shadow-inner font-medium text-gray-700">
+                      <option value="">Todos</option>
+                      <option value="Dog">Perro</option>
+                      <option value="Cat">Gato</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="cliente"
+                      class="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1 ml-1">Dueño
+                      (Correo)</label>
+                    <input type="email" id="cliente" name="cliente" placeholder="correo@ejemplo.com"
+                      class="w-full border-2 border-gray-100 bg-gray-50 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-teal-500 transition-colors shadow-inner font-medium text-gray-700" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-right pt-2">
+                <button type="submit"
+                  class="w-full sm:w-auto bg-teal-700 hover:bg-teal-800 text-white font-semibold px-6 py-2.5 rounded-xl transition-all shadow-lg shadow-teal-700/10 flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-file-arrow-down"></i> Descargar Reporte
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
+
       <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-white p-4 rounded shadow">
-          <h4 class="text-lg font-semibold text-gray-700 mb-2">Citas del Mes</h4>
+        <div class="bg-white p-5 rounded-2xl shadow-xl border-4 border-white transition-all hover:shadow-md">
+          <h4 class="text-base font-bold text-teal-950 tracking-tight mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-chart-line text-teal-600"></i> Citas del Mes
+          </h4>
           <canvas id="graficoCitasMes" height="200"></canvas>
         </div>
-        <div class="bg-white p-4 rounded shadow">
-          <h4 class="text-lg font-semibold text-gray-700 mb-2">Servicios Brindados</h4>
+        <div class="bg-white p-5 rounded-2xl shadow-xl border-4 border-white transition-all hover:shadow-md">
+          <h4 class="text-base font-bold text-teal-950 tracking-tight mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-chart-pie text-teal-600"></i> Servicios Brindados
+          </h4>
           <canvas id="graficoServicios" height="200"></canvas>
         </div>
       </section>
 
-      <!-- Historial de Usuarios Atendidos -->
-      <section class="bg-white p-6 rounded shadow">
-        <h4 class="text-lg font-semibold text-gray-700 mb-4">Historial de Usuarios Atendidos</h4>
-        <div id="historialUsuarios" class="space-y-4 text-sm text-gray-700">
-          <p class="italic text-gray-500">Cargando historial...</p>
+      <section class="bg-white p-6 rounded-2xl shadow-xl border-4 border-white transition-all hover:shadow-md">
+        <h4 class="text-base font-bold text-teal-950 tracking-tight mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-clock-rotate-left text-teal-600"></i> Historial de Usuarios Atendidos
+        </h4>
+        <div id="historialUsuarios" class="space-y-4 text-sm font-medium text-gray-700">
+          <p class="italic text-gray-400 font-normal">Cargando historial...</p>
         </div>
       </section>
 
-      <!-- Formulario Reportes -->
-      <section class="bg-white p-6 rounded shadow max-w-3xl mx-auto">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4"><i class="fa-solid fa-file-pdf mr-2"></i> Generar Reporte</h2>
-        <form id="formReporte" onsubmit="generarReporte(event)" class="space-y-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label for="startDate" class="block text-sm font-medium text-gray-700">Fecha de inicio</label>
-              <input type="date" id="startDate" required class="mt-1 block w-full border rounded px-3 py-2 shadow-sm" />
-            </div>
-            <div>
-              <label for="endDate" class="block text-sm font-medium text-gray-700">Fecha de fin</label>
-              <input type="date" id="endDate" required class="mt-1 block w-full border rounded px-3 py-2 shadow-sm" />
-            </div>
-          </div>
-
-          <div>
-            <label for="tipoReporte" class="block text-sm font-medium text-gray-700">Tipo de reporte</label>
-            <select id="tipoReporte" required class="mt-1 block w-full border rounded px-3 py-2 shadow-sm">
-              <option value="citas-por-fecha">Citas por Servicio</option>
-              <option value="citas-por-mascota">Citas por Mascota</option>
-              <option value="citas-canceladas">Citas Canceladas</option>
-            </select>
-          </div>
-
-          <!-- Contenedor para filtros dinámicos -->
-          <div id="filtrosDinamicos" class="space-y-4">
-            <!-- Filtro por tipo de servicio (personalizado) -->
-            <div id="filtroTipoServicio" class="hidden">
-              <label class="block text-sm font-medium text-gray-700">Tipo de servicio</label>
-              <div class="relative mt-1">
-                <button id="customSelectButton" type="button" class="w-full border rounded px-3 py-2 shadow-sm text-left flex justify-between items-center bg-white">
-                  <span id="selectedOption">Todos</span>
-                  <i class="fas fa-chevron-down text-gray-400"></i>
-                </button>
-                <div id="customSelectOptions" class="hidden absolute z-10 w-full mt-1 bg-white border rounded shadow-lg max-h-60 overflow-y-auto">
-                  <div class="px-3 py-2 hover:bg-gray-100 cursor-pointer" data-value="">Todos</div>
-                  <div class="px-3 py-2 hover:bg-gray-100 cursor-pointer" data-value="Consulta General">Consulta General</div>
-                  <div class="px-3 py-2 hover:bg-gray-100 cursor-pointer" data-value="Vacunación">Vacunación</div>
-                  <div class="px-3 py-2 hover:bg-gray-100 cursor-pointer" data-value="Desparasitación">Desparasitación</div>
-                  <div class="px-3 py-2 hover:bg-gray-100 cursor-pointer" data-value="Estética e Higiene">Estética e Higiene</div>
-                  <div class="px-3 py-2 hover:bg-gray-100 cursor-pointer" data-value="Diagnóstico Especializado">Diagnóstico Especializado</div>
-                </div>
-                <input type="hidden" id="tipoServicio" name="tipoServicio" value="">
-              </div>
-            </div>
-
-            <!-- Filtros para Citas por Mascota -->
-            <div id="filtrosMascota" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label for="tipoMascota" class="block text-sm font-medium text-gray-700">Tipo de Mascota</label>
-                <select id="tipoMascota" class="mt-1 block w-full border rounded px-3 py-2 shadow-sm">
-                  <option value="">Todos</option>
-                  <option value="Dog">Perro</option>
-                  <option value="Cat">Gato</option>
-                </select>
-              </div>
-              <div>
-                <label for="cliente" class="block text-sm font-medium text-gray-700">Dueño (Correo)</label>
-                <input type="email" id="cliente" name="cliente" placeholder="correo@ejemplo.com" class="mt-1 block w-full border rounded px-3 py-2 shadow-sm"/>
-              </div>
-            </div>
-          </div>
-
-          <div class="text-right">
-            <button type="submit" class="bg-blue-700 text-white px-6 py-2 rounded hover:bg-blue-800">
-              <i class="fa-solid fa-file-arrow-down mr-2"></i> Descargar Reporte
-            </button>
-          </div>
-        </form>
-      </section>
     </main>
   </div>
 
-<script>
-// Código JavaScript
-document.addEventListener("DOMContentLoaded", () => {
-  // Cargar nombre del veterinario
-  fetch('/api/vet/current-vet-name', {
-    credentials: 'include'
-  })
-  .then(response => {
-    if (!response.ok) throw new Error('Error al obtener datos del veterinario');
-    return response.json();
-  })
-  .then(data => {
-    document.getElementById('vetName').textContent = data.fullName;
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    document.getElementById('vetName').textContent = 'Veterinario';
-  });
+  <script>
+    // Código JavaScript
+    document.addEventListener("DOMContentLoaded", () => {
+      // Cargar nombre del veterinario
+      fetch('/api/vet/current-vet-name', {
+        credentials: 'include'
+      })
+        .then(response => {
+          if (!response.ok) throw new Error('Error al obtener datos del veterinario');
+          return response.json();
+        })
+        .then(data => {
+          document.getElementById('vetName').textContent = data.fullName;
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          document.getElementById('vetName').textContent = 'Veterinario';
+        });
 
-  cargarContadores();
-  cargarGraficoCitasMes();
-  cargarGraficoServicios();
-  cargarHistorialUsuarios();
+      cargarContadores();
+      cargarGraficoCitasMes();
+      cargarGraficoServicios();
+      cargarHistorialUsuarios();
 
-  const selectTipo = document.getElementById("tipoReporte");
-  const filtroServicio = document.getElementById("filtroTipoServicio");
-  const filtrosMascota = document.getElementById("filtrosMascota");
+      const selectTipo = document.getElementById("tipoReporte");
+      const filtroServicio = document.getElementById("filtroTipoServicio");
+      const filtrosMascota = document.getElementById("filtrosMascota");
 
-  selectTipo.addEventListener("change", () => {
-    const tipo = selectTipo.value;
-    filtroServicio.classList.toggle("hidden", tipo !== "citas-por-fecha");
-    filtrosMascota.classList.toggle("hidden", tipo !== "citas-por-mascota");
-  });
+      selectTipo.addEventListener("change", () => {
+        const tipo = selectTipo.value;
+        filtroServicio.classList.toggle("hidden", tipo !== "citas-por-fecha");
+        filtrosMascota.classList.toggle("hidden", tipo !== "citas-por-mascota");
+      });
 
-  selectTipo.dispatchEvent(new Event("change"));
+      selectTipo.dispatchEvent(new Event("change"));
 
-  // Configuración del select personalizado
-  const customSelectButton = document.getElementById('customSelectButton');
-  const customSelectOptions = document.getElementById('customSelectOptions');
-  const selectedOption = document.getElementById('selectedOption');
-  const tipoServicioInput = document.getElementById('tipoServicio');
+      // Configuración del select personalizado
+      const customSelectButton = document.getElementById('customSelectButton');
+      const customSelectOptions = document.getElementById('customSelectOptions');
+      const selectedOption = document.getElementById('selectedOption');
+      const tipoServicioInput = document.getElementById('tipoServicio');
 
-  customSelectButton.addEventListener('click', function(e) {
-    e.stopPropagation();
-    customSelectOptions.classList.toggle('hidden');
-  });
+      customSelectButton.addEventListener('click', function (e) {
+        e.stopPropagation();
+        customSelectOptions.classList.toggle('hidden');
+      });
 
-  document.querySelectorAll('#customSelectOptions div').forEach(option => {
-    option.addEventListener('click', function() {
-      selectedOption.textContent = this.textContent;
-      tipoServicioInput.value = this.getAttribute('data-value');
-      customSelectOptions.classList.add('hidden');
+      document.querySelectorAll('#customSelectOptions div').forEach(option => {
+        option.addEventListener('click', function () {
+          selectedOption.textContent = this.textContent;
+          tipoServicioInput.value = this.getAttribute('data-value');
+          customSelectOptions.classList.add('hidden');
+        });
+      });
+
+      // Cerrar al hacer clic fuera
+      document.addEventListener('click', function () {
+        customSelectOptions.classList.add('hidden');
+      });
     });
-  });
 
-  // Cerrar al hacer clic fuera
-  document.addEventListener('click', function() {
-    customSelectOptions.classList.add('hidden');
-  });
-});
+    async function cargarContadores() {
+      const hoy = new Date();
+      const yearMonth = hoy.toISOString().slice(0, 7);
 
-async function cargarContadores() {
-  const hoy = new Date();
-  const yearMonth = hoy.toISOString().slice(0, 7);
+      try {
+        const resDia = await fetch("/api/vet/today-appointments-count", { credentials: 'include' });
+        document.getElementById("totalCitas").textContent = await resDia.json();
 
-  try {
-    const resDia = await fetch("/api/vet/today-appointments-count", { credentials: 'include' });
-    document.getElementById("totalCitas").textContent = await resDia.json();
+        const resSemana = await fetch("/api/vet/week-patients-count", { credentials: 'include' });
+        document.getElementById("citasSemana").textContent = await resSemana.json();
 
-    const resSemana = await fetch("/api/vet/week-patients-count", { credentials: 'include' });
-    document.getElementById("citasSemana").textContent = await resSemana.json();
-
-    const resMes = await fetch(`/api/vet/appointments-by-month?ym=${yearMonth}`, { credentials: 'include' });
-    const citasMes = await resMes.json();
-    document.getElementById("citasMes").textContent = Object.keys(citasMes).length;
-  } catch (e) {
-    console.error("Error al cargar contadores:", e);
-  }
-}
-
-async function cargarGraficoCitasMes() {
-  const hoy = new Date();
-  const ym = hoy.toISOString().slice(0, 7);
-
-  try {
-    const res = await fetch(`/api/vet/appointments-by-month?ym=${ym}`, { credentials: 'include' });
-    const datos = await res.json();
-
-    const labels = Object.keys(datos).sort();
-    const values = Object.values(datos);
-
-    new Chart(document.getElementById("graficoCitasMes"), {
-      type: "line",
-      data: {
-        labels,
-        datasets: [{
-          label: "Citas",
-          data: values,
-          borderColor: "#1d4ed8",
-          backgroundColor: "rgba(29, 78, 216, 0.1)",
-          fill: true,
-          tension: 0.4
-        }]
-      },
-      options: {
-        plugins: { legend: { display: false } },
-        scales: { y: { beginAtZero: true, precision: 0 } }
+        const resMes = await fetch(`/api/vet/appointments-by-month?ym=${yearMonth}`, { credentials: 'include' });
+        const citasMes = await resMes.json();
+        document.getElementById("citasMes").textContent = Object.keys(citasMes).length;
+      } catch (e) {
+        console.error("Error al cargar contadores:", e);
       }
-    });
-  } catch (e) {
-    console.error("Error gráfico citas del mes:", e);
-  }
-}
-
-async function cargarGraficoServicios() {
-  try {
-    const res = await fetch("/api/vet/completed-services-summary", { credentials: 'include' });
-    const datos = await res.json();
-
-    new Chart(document.getElementById("graficoServicios"), {
-      type: "bar",
-      data: {
-        labels: Object.keys(datos),
-        datasets: [{
-          label: "Servicios Completados",
-          data: Object.values(datos),
-          backgroundColor: "#10b981"
-        }]
-      },
-      options: {
-        plugins: { legend: { display: false } },
-        scales: { y: { beginAtZero: true, precision: 0 } }
-      }
-    });
-  } catch (e) {
-    console.error("Error gráfico servicios:", e);
-  }
-}
-
-async function cargarHistorialUsuarios() {
-  const contenedor = document.getElementById("historialUsuarios");
-  contenedor.innerHTML = '<p class="italic text-gray-500">Cargando historial...</p>';
-
-  try {
-    const res = await fetch("/api/vet/history/clientes-atendidos", { credentials: 'include' });
-    const data = await res.json();
-
-    if (!data.length) {
-      contenedor.innerHTML = '<p class="text-gray-500">No hay usuarios atendidos.</p>';
-      return;
     }
 
-    contenedor.innerHTML = "";
-    data.forEach(cliente => {
-      const div = document.createElement("div");
-      div.className = "p-4 border rounded-lg shadow-sm bg-gray-50 hover:bg-white transition-colors";
-      div.innerHTML = `
+    async function cargarGraficoCitasMes() {
+      const hoy = new Date();
+      const ym = hoy.toISOString().slice(0, 7);
+
+      try {
+        const res = await fetch(`/api/vet/appointments-by-month?ym=${ym}`, { credentials: 'include' });
+        const datos = await res.json();
+
+        const labels = Object.keys(datos).sort();
+        const values = Object.values(datos);
+
+        new Chart(document.getElementById("graficoCitasMes"), {
+          type: "line",
+          data: {
+            labels,
+            datasets: [{
+              label: "Citas",
+              data: values,
+              borderColor: "#1d4ed8",
+              backgroundColor: "rgba(29, 78, 216, 0.1)",
+              fill: true,
+              tension: 0.4
+            }]
+          },
+          options: {
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, precision: 0 } }
+          }
+        });
+      } catch (e) {
+        console.error("Error gráfico citas del mes:", e);
+      }
+    }
+
+    async function cargarGraficoServicios() {
+      try {
+        const res = await fetch("/api/vet/completed-services-summary", { credentials: 'include' });
+        const datos = await res.json();
+
+        new Chart(document.getElementById("graficoServicios"), {
+          type: "bar",
+          data: {
+            labels: Object.keys(datos),
+            datasets: [{
+              label: "Servicios Completados",
+              data: Object.values(datos),
+              backgroundColor: "#10b981"
+            }]
+          },
+          options: {
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, precision: 0 } }
+          }
+        });
+      } catch (e) {
+        console.error("Error gráfico servicios:", e);
+      }
+    }
+
+    async function cargarHistorialUsuarios() {
+      const contenedor = document.getElementById("historialUsuarios");
+      contenedor.innerHTML = '<p class="italic text-gray-500">Cargando historial...</p>';
+
+      try {
+        const res = await fetch("/api/vet/history/clientes-atendidos", { credentials: 'include' });
+        const data = await res.json();
+
+        if (!data.length) {
+          contenedor.innerHTML = '<p class="text-gray-500">No hay usuarios atendidos.</p>';
+          return;
+        }
+
+        contenedor.innerHTML = "";
+        data.forEach(cliente => {
+          const div = document.createElement("div");
+          div.className = "p-4 border rounded-lg shadow-sm bg-gray-50 hover:bg-white transition-colors";
+          div.innerHTML = `
         <div class="flex justify-between items-start mb-2">
           <div>
             <h5 class="font-semibold text-gray-800">
@@ -342,52 +436,53 @@ async function cargarHistorialUsuarios() {
           </ul>
         </div>
       `;
-      contenedor.appendChild(div);
-    });
-  } catch (error) {
-    console.error("Error al cargar historial de usuarios:", error);
-    contenedor.innerHTML = `
+          contenedor.appendChild(div);
+        });
+      } catch (error) {
+        console.error("Error al cargar historial de usuarios:", error);
+        contenedor.innerHTML = `
       <div class="text-red-500 text-center py-8">
         <i class="fas fa-exclamation-triangle mr-2"></i>Error al cargar el historial
       </div>`;
-  }
-}
+      }
+    }
 
-function generarReporte(event) {
-  event.preventDefault();
+    function generarReporte(event) {
+      event.preventDefault();
 
-  const startDate = document.getElementById("startDate").value;
-  const endDate = document.getElementById("endDate").value;
-  const tipo = document.getElementById("tipoReporte").value;
-  const tipoServicio = document.getElementById("tipoServicio").value;
-  const tipoMascota = document.getElementById("tipoMascota")?.value;
-  const cliente = document.getElementById("cliente")?.value.trim();
+      const startDate = document.getElementById("startDate").value;
+      const endDate = document.getElementById("endDate").value;
+      const tipo = document.getElementById("tipoReporte").value;
+      const tipoServicio = document.getElementById("tipoServicio").value;
+      const tipoMascota = document.getElementById("tipoMascota")?.value;
+      const cliente = document.getElementById("cliente")?.value.trim();
 
-  if (!startDate || !endDate || !tipo) {
-    alert("Debe completar todos los campos.");
-    return;
-  }
+      if (!startDate || !endDate || !tipo) {
+        alert("Debe completar todos los campos.");
+        return;
+      }
 
-  let url = `/api/vet/reports/${tipo}/download?startDate=${startDate}&endDate=${endDate}`;
-  if (tipo === "citas-por-fecha" && tipoServicio) {
-    url += `&tipoServicio=${encodeURIComponent(tipoServicio)}`;
-  }
-  if (tipo === "citas-por-mascota") {
-    if (tipoMascota) url += `&tipoMascota=${encodeURIComponent(tipoMascota)}`;
-    if (cliente) url += `&cliente=${encodeURIComponent(cliente)}`;
-  }
+      let url = `/api/vet/reports/${tipo}/download?startDate=${startDate}&endDate=${endDate}`;
+      if (tipo === "citas-por-fecha" && tipoServicio) {
+        url += `&tipoServicio=${encodeURIComponent(tipoServicio)}`;
+      }
+      if (tipo === "citas-por-mascota") {
+        if (tipoMascota) url += `&tipoMascota=${encodeURIComponent(tipoMascota)}`;
+        if (cliente) url += `&cliente=${encodeURIComponent(cliente)}`;
+      }
 
-  const a = document.createElement("a");
-  a.href = url;
-  a.target = "_blank";
-  a.click();
-}
+      const a = document.createElement("a");
+      a.href = url;
+      a.target = "_blank";
+      a.click();
+    }
 
-function logout() {
-  document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
-  window.location.href = "/";
-}
-</script>
+    function logout() {
+      document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
+      window.location.href = "/";
+    }
+  </script>
 
 </body>
+
 </html>
