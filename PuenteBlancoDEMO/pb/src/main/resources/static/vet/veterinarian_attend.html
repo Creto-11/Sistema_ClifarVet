@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 
 <head>
@@ -24,14 +24,14 @@
       body.menu-open {
         overflow: hidden;
       }
-    }
 
-    #sidebar {
-      z-index: 50;
-    }
+      #sidebar {
+        z-index: 50;
+      }
 
-    .main-content {
-      margin-left: 200px;
+      .main-content {
+        margin-left: 200px;
+      }
     }
 
     /* Estilos para info responsive */
@@ -59,13 +59,11 @@
 
 <body class="bg-gray-100 min-h-screen flex flex-col font-sans">
 
-  <!-- Encabezado superior modificado como el primer dashboard -->
   <header class="bg-teal-800 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20">
     <div class="flex items-center gap-2">
       <button id="menuToggle" class="mr-2 md:hidden text-white hover:text-gray-300 transition-colors">
         <i class="fas fa-bars text-xl"></i>
       </button>
-
       <div class="flex items-center gap-2">
         <i class="fa-solid fa-paw text-2xl text-amber-400"></i>
         <h1 class="text-xl font-bold tracking-tight">
@@ -73,7 +71,6 @@
         </h1>
       </div>
     </div>
-
     <div
       class="flex items-center space-x-3 px-4 py-1.5 rounded-full bg-teal-900 bg-opacity-50 border border-teal-700 text-sm">
       <span class="text-gray-300 hidden md:inline">Hola, Veterinario </span>
@@ -93,65 +90,56 @@
           <nav class="flex flex-col space-y-2">
             <a href="/vet/veterinarian_dashboard.html"
               class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
-              <i class="fa-solid fa-table-columns text-gray-400"></i> Resumen Clínico
+              <i class="fa-solid fa-table-columns text-gray-400"></i>Resumen Clínico
             </a>
             <a href="/vet/veterinarian_appointments.html"
               class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
-              <i class="fa-solid fa-calendar-days text-gray-400"></i> Citas Agendadas
+              <i class="fa-solid fa-calendar-days text-gray-400"></i>Citas Agendadas
             </a>
-
             <a href="/vet/veterinarian_attend.html"
               class="flex items-center gap-3 text-amber-400 bg-slate-800 p-3 rounded-xl font-semibold border-l-4 border-amber-400 shadow-inner">
-              <i class="fa-solid fa-stethoscope text-lg"></i> Atender Cita
+              <i class="fa-solid fa-stethoscope text-lg"></i>Atender Cita
             </a>
-
             <a href="/vet/veterinarian_clinicalreport.html"
               class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
-              <i class="fa-solid fa-user text-gray-400"></i> Historial del Paciente
+              <i class="fa-solid fa-user text-gray-400"></i>Historial del Paciente
             </a>
             <a href="/vet/veterinarian_schedule.html"
               class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
-              <i class="fa-solid fa-clock text-gray-400"></i> Horario
+              <i class="fa-solid fa-clock text-gray-400"></i>Horario
             </a>
             <a href="/vet/vet_assign.html"
               class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
-              <i class="fa-solid fa-user text-gray-400"></i> Asignación
+              <i class="fa-solid fa-user text-gray-400"></i>Asignación
             </a>
             <a href="/vet/veterinarian_validate.html"
               class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
-              <i class="fa-solid fa-check-double text-gray-400"></i> Validar Evaluaciones
+              <i class="fa-solid fa-check-double text-gray-400"></i>Validar Evaluaciones
             </a>
             <a href="/vet/veterinarian_reports.html"
               class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
-              <i class="fa-solid fa-chart-pie text-gray-400"></i> Reportes
+              <i class="fa-solid fa-chart-pie text-gray-400"></i>Reportes
             </a>
           </nav>
         </div>
-
         <div class="pt-6 border-t border-slate-800 mt-6">
           <button onclick="logout()"
             class="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-red-950 hover:text-red-400 text-gray-400 px-4 py-3 rounded-xl transition-all font-medium border border-slate-700">
-            <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>Cerrar Sesión
           </button>
         </div>
       </div>
     </aside>
 
-    <!-- Overlay para móvil -->
     <div class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"></div>
 
-    <!-- Contenido -->
     <main class="flex-1 p-4 md:p-8 space-y-6 transition-all duration-300">
-
       <div class="space-y-3">
-        <h2 class="text-xl font-bold text-teal-950 flex items-center gap-2 px-1">
-          📋 Información de la Mascota
-        </h2>
-
-        <div class="bg-white rounded-2xl shadow-xl p-6 border-4 border-white info-responsive" id="infoPaciente">
+        <h2 class="text-xl font-bold text-teal-950 flex items-center gap-2 px-1">📋 Información de la Mascota</h2>
+        <div class="bg-white rounded-2xl shadow-xl p-6 border-4 border-white" id="infoPaciente">
           <p id="mensajeNoCita" class="text-center text-gray-400 font-medium py-4">
-            <i class="fa-regular fa-calendar-xmark text-2xl mb-1 block text-gray-300"></i>
-            No hay citas programadas para hoy.
+            <i class="fa-regular fa-calendar-xmark text-2xl mb-1 block text-gray-300"></i>No hay citas programadas para
+            hoy.
           </p>
 
           <div id="datosCita" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-6 text-sm">
@@ -196,10 +184,7 @@
       </div>
 
       <div class="space-y-3">
-        <h2 class="text-xl font-bold text-teal-950 flex items-center gap-2 px-1">
-          🩺 Registrar Atención Médica
-        </h2>
-
+        <h2 class="text-xl font-bold text-teal-950 flex items-center gap-2 px-1">🩺 Registrar Atención Médica</h2>
         <form id="attendForm" class="bg-white rounded-2xl shadow-xl p-6 border-4 border-white space-y-5 hidden">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="space-y-1">
@@ -209,20 +194,17 @@
                 placeholder="Escribe los síntomas observados, comportamiento o estado general..."
                 class="w-full h-32 border-2 border-gray-100 bg-gray-50 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:border-teal-500 shadow-inner transition-colors resize-none"></textarea>
             </div>
-
             <div class="space-y-1">
               <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Diagnóstico
                 definitivo</label>
               <textarea id="diagnostico" placeholder="Ingresa el diagnóstico médico de la mascota..."
                 class="w-full h-32 border-2 border-gray-100 bg-gray-50 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:border-teal-500 shadow-inner transition-colors resize-none"></textarea>
             </div>
-
             <div class="space-y-1">
               <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Tratamiento sugerido</label>
               <textarea id="tratamiento" placeholder="Detalla los procedimientos o cuidados inmediatos aplicados..."
                 class="w-full h-32 border-2 border-gray-100 bg-gray-50 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:border-teal-500 shadow-inner transition-colors resize-none"></textarea>
             </div>
-
             <div class="space-y-1">
               <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Prescripción de
                 medicamentos</label>
@@ -231,11 +213,10 @@
                 class="w-full h-32 border-2 border-gray-100 bg-gray-50 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:border-teal-500 shadow-inner transition-colors resize-none"></textarea>
             </div>
           </div>
-
           <div class="flex justify-end pt-2">
             <button type="submit"
               class="w-full sm:w-auto bg-teal-700 hover:bg-teal-800 text-white font-semibold px-6 py-3 rounded-xl transition-colors shadow-lg shadow-teal-700/20 flex items-center justify-center gap-2">
-              <i class="fa-solid fa-floppy-disk"></i> Guardar Atención Médica
+              <i class="fa-solid fa-floppy-disk"></i>Guardar Atención Médica
             </button>
           </div>
         </form>
@@ -246,23 +227,6 @@
   <script>
     const DateTime = luxon.DateTime;
     let citaId = null;
-
-    // Función para alternar el menú - versión corregida
-    function toggleMenu() {
-      const isOpen = sidebar.classList.contains('-translate-x-full');
-
-      if (isOpen) {
-        // Abrir menú
-        sidebar.classList.remove('-translate-x-full');
-        sidebarOverlay.classList.remove('hidden');
-        document.body.classList.add('overflow-hidden');
-      } else {
-        // Cerrar menú
-        sidebar.classList.add('-translate-x-full');
-        sidebarOverlay.classList.add('hidden');
-        document.body.classList.remove('overflow-hidden');
-      }
-    }
 
     document.addEventListener("DOMContentLoaded", () => {
       // Cargar nombre del veterinario
@@ -281,29 +245,50 @@
           document.getElementById('vetName').textContent = 'Veterinario';
         });
 
-      // Elementos del menú móvil
-      const menuToggle = document.getElementById('menuToggle');
-      const sidebar = document.getElementById('sidebar');
-      const sidebarOverlay = document.querySelector('.sidebar-overlay');
-
       // Eventos para el menú móvil
-      menuToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggleMenu();
-      });
+      const menuToggle = document.getElementById("menuToggle");
+      const sidebar = document.getElementById("sidebar");
+      const sidebarOverlay = document.querySelector(".sidebar-overlay");
 
-      sidebarOverlay.addEventListener('click', toggleMenu);
+      if (menuToggle && sidebar && sidebarOverlay) {
+        menuToggle.addEventListener("click", (e) => {
+          e.stopPropagation();
+          toggleMenu();
+        });
 
-      // Cerrar menú al cambiar a vista desktop
-      window.addEventListener('resize', () => {
-        if (window.innerWidth >= 768) {
-          sidebar.classList.remove('-translate-x-full');
-          sidebarOverlay.classList.add('hidden');
-          document.body.classList.remove('overflow-hidden');
-        }
-      });
+        sidebarOverlay.addEventListener("click", toggleMenu);
 
-      // Código original de la página
+        window.addEventListener("resize", () => {
+          if (window.innerWidth >= 768) {
+            sidebar.classList.remove("-translate-x-full");
+            sidebarOverlay.classList.add("hidden");
+            document.body.classList.remove("overflow-hidden");
+          }
+        });
+      }
+
+      cargarCitaParaAtencion();
+    });
+
+    function toggleMenu() {
+      const sidebar = document.getElementById("sidebar");
+      const sidebarOverlay = document.querySelector(".sidebar-overlay");
+      if (!sidebar || !sidebarOverlay) return;
+
+      const isOpen = !sidebar.classList.contains("-translate-x-full");
+
+      if (!isOpen) {
+        sidebar.classList.remove("-translate-x-full");
+        sidebarOverlay.classList.remove("hidden");
+        document.body.classList.add("overflow-hidden");
+      } else {
+        sidebar.classList.add("-translate-x-full");
+        sidebarOverlay.classList.add("hidden");
+        document.body.classList.remove("overflow-hidden");
+      }
+    }
+
+    function cargarCitaParaAtencion() {
       const today = DateTime.now().toISODate();
 
       fetch(`/api/vet/appointments?date=${today}`, {
@@ -314,47 +299,56 @@
           const programadas = appointments.filter(app => app.estado === 'PROGRAMADA');
 
           if (programadas.length === 0) {
-            document.getElementById("mensajeNoCita").classList.remove("hidden");
-            document.getElementById("datosCita").classList.add("hidden");
-            document.getElementById("attendForm").classList.add("hidden");
+            mostrarMensajeSinCita("No hay citas programadas para hoy.");
             return;
           }
 
           const first = programadas[0];
           citaId = first.id;
 
-          fetch(`/api/vet/appointments/${citaId}`, {
+          return fetch(`/api/vet/appointments/${citaId}`, {
             credentials: 'include'
-          })
-            .then(res => res.json())
-            .then(data => {
-              document.getElementById("clienteNombre").textContent = data.nombreCliente;
-              document.getElementById("clienteEmail").textContent = data.emailCliente;
-              document.getElementById("nombreMascota").textContent = data.nombreMascota;
-              document.getElementById("tipoMascota").textContent = data.tipoMascota;
-              document.getElementById("razaMascota").textContent = data.razaMascota;
-              document.getElementById("edadMascota").textContent = data.edadMascota + " años";
-              document.getElementById("servicio").textContent = data.servicio;
-              document.getElementById("fecha").textContent = data.fecha;
-              document.getElementById("hora").textContent = data.hora;
+          });
+        })
+        .then(res => {
+          if (res) return res.json();
+        })
+        .then(data => {
+          if (!data) return;
+          document.getElementById("clienteNombre").textContent = data.nombreCliente;
+          document.getElementById("clienteEmail").textContent = data.emailCliente;
+          document.getElementById("nombreMascota").textContent = data.nombreMascota;
+          document.getElementById("tipoMascota").textContent = data.tipoMascota;
+          document.getElementById("razaMascota").textContent = data.razaMascota;
+          document.getElementById("edadMascota").textContent = data.edadMascota + " años";
+          document.getElementById("servicio").textContent = data.servicio;
+          document.getElementById("fecha").textContent = data.fecha;
+          document.getElementById("hora").textContent = data.hora;
 
-              document.getElementById("mensajeNoCita").classList.add("hidden");
-              document.getElementById("datosCita").classList.remove("hidden");
-              document.getElementById("attendForm").classList.remove("hidden");
-            });
+          document.getElementById("mensajeNoCita").classList.add("hidden");
+          document.getElementById("datosCita").classList.remove("hidden");
+          document.getElementById("attendForm").classList.remove("hidden");
         })
         .catch(err => {
           console.error("Error al obtener citas:", err);
-          document.getElementById("mensajeNoCita").textContent = "Error al cargar las citas.";
-          document.getElementById("mensajeNoCita").classList.remove("hidden");
+          mostrarMensajeSinCita("Error al cargar las citas.");
         });
-    });
+    }
+
+    function mostrarMensajeSinCita(mensaje) {
+      const mensajeNoCita = document.getElementById("mensajeNoCita");
+      if (!mensajeNoCita) return;
+      mensajeNoCita.textContent = mensaje;
+      mensajeNoCita.classList.remove("hidden");
+      document.getElementById("datosCita").classList.add("hidden");
+      document.getElementById("attendForm").classList.add("hidden");
+    }
 
     document.getElementById("attendForm").addEventListener("submit", function (e) {
       e.preventDefault();
 
       if (!citaId) {
-        alert("No se puede registrar atención sin cita válida.");
+        alert("No hay una cita activa para atender.");
         return;
       }
 
@@ -380,6 +374,10 @@
           } else {
             alert("Error al registrar atención.");
           }
+        })
+        .catch(err => {
+          console.error("Error al enviar formulario:", err);
+          alert("Ocurrió un error en el servidor.");
         });
     });
 

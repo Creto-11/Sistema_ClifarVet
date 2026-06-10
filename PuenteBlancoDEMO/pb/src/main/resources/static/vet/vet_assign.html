@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Asignar Cita a Practicante</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
@@ -24,10 +24,6 @@
       body.menu-open {
         overflow: hidden;
       }
-    }
-
-    #sidebar {
-      z-index: 50;
     }
 
     /* Estilos para tabla responsive con curvas premium */
@@ -129,12 +125,10 @@
               class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
               <i class="fa-solid fa-clock text-gray-400"></i> Horario
             </a>
-
             <a href="/vet/vet_assign.html"
               class="flex items-center gap-3 text-amber-400 bg-slate-800 p-3 rounded-xl font-semibold border-l-4 border-amber-400 shadow-inner">
               <i class="fa-solid fa-user text-lg"></i> Asignación
             </a>
-
             <a href="/vet/veterinarian_validate.html"
               class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 hover:text-white transition-colors">
               <i class="fa-solid fa-check-double text-gray-400"></i> Validar Evaluaciones
@@ -158,14 +152,14 @@
     <div class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"></div>
 
     <main class="flex-1 p-4 md:p-8 space-y-6 transition-all duration-300">
-
       <div
         class="bg-white rounded-2xl shadow-xl p-6 border-l-4 border-teal-600 flex flex-col justify-between items-start gap-1">
         <h2 class="text-2xl sm:text-3xl font-bold text-teal-950 tracking-tight flex items-center gap-2">
           🤝 Derivar Citas a Practicante
         </h2>
         <p class="text-sm text-gray-500">
-          Si deseas asignar alguna cita para un practicante completa por fecha y hora especifica</p>
+          Si deseas asignar alguna cita para un practicante completa por fecha y hora especifica
+        </p>
       </div>
 
       <div
@@ -241,6 +235,11 @@
     const DateTime = luxon.DateTime;
     let interns = [];
 
+    // Referencias a los elementos del DOM globales
+    const sidebar = document.getElementById('sidebar');
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebarOverlay = document.querySelector('.sidebar-overlay');
+
     document.addEventListener("DOMContentLoaded", async () => {
       // Cargar nombre del veterinario
       fetch('/api/vet/current-vet-name', {
@@ -258,45 +257,43 @@
           document.getElementById('vetName').textContent = 'Veterinario';
         });
 
-      // Elementos del menú móvil
-      const menuToggle = document.getElementById('menuToggle');
-      const sidebar = document.getElementById('sidebar');
-      const sidebarOverlay = document.querySelector('.sidebar-overlay');
-
-      // Eventos para el menú móvil
-      menuToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggleMenu();
-      });
-
-      sidebarOverlay.addEventListener('click', toggleMenu);
+      // Configurar eventos para el menú móvil
+      if (menuToggle && sidebar && sidebarOverlay) {
+        menuToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleMenu();
+        });
+        sidebarOverlay.addEventListener('click', toggleMenu);
+      }
 
       // Cargar datos iniciales
       const dateInput = document.getElementById("appointmentDate");
       const today = DateTime.now().toISODate();
-      dateInput.value = today;
+      if (dateInput) {
+        dateInput.value = today;
+        dateInput.addEventListener("change", async () => {
+          await loadAppointments(dateInput.value);
+        });
+      }
+
+      const searchInput = document.getElementById("searchInput");
+      if (searchInput) {
+        searchInput.addEventListener("input", filterAppointments);
+      }
+
       await loadInterns();
       await loadAppointments(today);
-
-      // Event listeners
-      dateInput.addEventListener("change", async () => {
-        await loadAppointments(dateInput.value);
-      });
-
-      document.getElementById("searchInput").addEventListener("input", filterAppointments);
     });
 
     // Función para alternar el menú
     function toggleMenu() {
-      const isOpen = sidebar.classList.contains('-translate-x-full');
+      const isClosed = sidebar.classList.contains('-translate-x-full');
 
-      if (isOpen) {
-        // Abrir menú
+      if (isClosed) {
         sidebar.classList.remove('-translate-x-full');
         sidebarOverlay.classList.remove('hidden');
         document.body.classList.add('overflow-hidden');
       } else {
-        // Cerrar menú
         sidebar.classList.add('-translate-x-full');
         sidebarOverlay.classList.add('hidden');
         document.body.classList.remove('overflow-hidden');
@@ -305,12 +302,14 @@
 
     async function loadInterns() {
       try {
-        const res = await fetch('/api/vet/interns', { credentials: 'include' });
-        if (!res.ok) throw new Error('Error al cargar practicantes');
+        const res = await fetch("/api/vet/interns", {
+          credentials: "include",
+        });
+        if (!res.ok) throw new Error("Error al cargar practicantes");
         interns = await res.json();
       } catch (error) {
-        console.error('Error:', error);
-        alert('Error al cargar la lista de practicantes');
+        console.error("Error:", error);
+        alert("Error al cargar la lista de practicantes");
       }
     }
 
@@ -325,55 +324,60 @@
       } catch (error) {
         console.error('Error:', error);
         document.getElementById("appointmentTableBody").innerHTML = `
-          <tr>
-            <td colspan="7" class="text-red-500 text-center py-6">
-              Error al cargar las citas
-            </td>
-          </tr>`;
+        <tr>
+          <td colspan="7" class="text-red-500 text-center py-6">
+            Error al cargar las citas
+          </td>
+        </tr>`;
       }
     }
 
     function renderTable(appointments) {
       const tbody = document.getElementById("appointmentTableBody");
+      if (!tbody) return;
       tbody.innerHTML = "";
 
       if (appointments.length === 0) {
         tbody.innerHTML = `
-          <tr>
-            <td colspan="7" class="text-center py-6 text-gray-500">
-              No se encontraron citas para esta fecha.
-            </td>
-          </tr>`;
+        <tr>
+          <td colspan="7" class="text-center py-6 text-gray-500">
+            No se encontraron citas para esta fecha.
+          </td>
+        </tr>`;
         return;
       }
 
-      appointments.forEach(app => {
+      appointments.forEach((app) => {
         const row = document.createElement("tr");
         row.className = "hover:bg-gray-50 border-b border-gray-100";
         row.innerHTML = `
-          <td class="px-4 py-3" data-label="Hora">${app.hora}</td>
-          <td class="px-4 py-3" data-label="Mascota">${app.mascota}</td>
-          <td class="px-4 py-3" data-label="Raza">${app.raza}</td>
-          <td class="px-4 py-3" data-label="Cliente">${app.cliente}</td>
-          <td class="px-4 py-3" data-label="Servicio">${app.servicio}</td>
-          <td class="px-4 py-3" data-label="Practicante">
-            <select class="border rounded-lg px-3 py-1.5 w-full focus:ring-green-500 focus:border-green-500" 
-                    id="intern-select-${app.id}">
-              <option value="">Seleccionar</option>
-              ${interns.map(intern => `
-                <option value="${intern.id}" ${app.practicanteId === intern.id ? 'selected' : ''}>
-                  ${intern.nombres} ${intern.apellidoPaterno}
-                </option>
-              `).join('')}
-            </select>
-          </td>
-          <td class="px-4 py-3 action-cell" data-label="Acción">
-            <button class="bg-green-600 text-white px-4 py-1.5 rounded-lg hover:bg-green-700 transition-colors" 
-                    onclick="assignIntern(${app.id})">
-              <i class="fas fa-share-square mr-1"></i> Derivar
-            </button>
-          </td>
-        `;
+        <td class="px-4 py-3" data-label="Hora">${app.hora}</td>
+        <td class="px-4 py-3" data-label="Mascota">${app.mascota}</td>
+        <td class="px-4 py-3" data-label="Raza">${app.raza}</td>
+        <td class="px-4 py-3" data-label="Cliente">${app.cliente}</td>
+        <td class="px-4 py-3" data-label="Servicio">${app.servicio}</td>
+        <td class="px-4 py-3" data-label="Practicante">
+          <select class="border rounded-lg px-3 py-1.5 w-full focus:ring-green-500 focus:border-green-500" 
+                  id="intern-select-${app.id}">
+            <option value="">Seleccionar</option>
+            ${interns
+            .map(
+              (intern) => `
+              <option value="${intern.id}" ${app.practicanteId === intern.id ? "selected" : ""}>
+                ${intern.nombres} ${intern.apellidoPaterno}
+              </option>
+            `,
+            )
+            .join("")}
+          </select>
+        </td>
+        <td class="px-4 py-3 action-cell" data-label="Acción">
+          <button class="bg-green-600 text-white px-4 py-1.5 rounded-lg hover:bg-green-700 transition-colors" 
+                  onclick="assignIntern(${app.id})">
+            <i class="fas fa-share-square mr-1"></i> Derivar
+          </button>
+        </td>
+      `;
         tbody.appendChild(row);
       });
     }
@@ -412,26 +416,31 @@
           const date = document.getElementById("appointmentDate").value;
           await loadAppointments(date);
         } else {
-          throw new Error('Error en la respuesta del servidor');
+          const errorText = await res.text();
+          throw new Error(errorText || "Error en la respuesta del servidor");
         }
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
         alert("Ocurrió un error al derivar la cita. Por favor intenta nuevamente.");
       }
     }
 
     function showSuccessModal() {
       const modal = document.getElementById("successModal");
+      if (!modal) return;
       modal.classList.remove("hidden");
 
       setTimeout(() => {
-        modal.querySelector("div").classList.add("scale-100");
+        const innerDiv = modal.querySelector("div");
+        if (innerDiv) innerDiv.classList.add("scale-100");
       }, 10);
     }
 
     function closeSuccessModal() {
       const modal = document.getElementById("successModal");
-      modal.querySelector("div").classList.remove("scale-100");
+      if (!modal) return;
+      const innerDiv = modal.querySelector("div");
+      if (innerDiv) innerDiv.classList.remove("scale-100");
 
       setTimeout(() => {
         modal.classList.add("hidden");
