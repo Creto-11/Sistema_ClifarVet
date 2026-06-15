@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-   <link rel="icon" href="https://res.cloudinary.com/dtqf08fo5/image/upload/f_auto,q_auto/LOGO_CLIFARVET_onqjmj">
+  <link rel="icon" href="https://res.cloudinary.com/dtqf08fo5/image/upload/f_auto,q_auto/LOGO_CLIFARVET_onqjmj">
 </head>
 
 <body class="bg-gray-100 min-h-screen flex flex-col">
@@ -21,8 +21,7 @@
         <i class="fa-solid fa-bars text-xl"></i>
       </button>
       <img class="w-12 object-contain"
-        src="https://res.cloudinary.com/dtqf08fo5/image/upload/f_auto,q_auto/LOGO_CLIFARVET_onqjmj"
-        alt="">
+        src="https://res.cloudinary.com/dtqf08fo5/image/upload/f_auto,q_auto/LOGO_CLIFARVET_onqjmj" alt="">
       <h1 class="text-xl md:text-2xl font-bold tracking-tight">CLIFARVET |</h1>
       <h2 class="font-light text-base hidden sm:inline">Clínica y Veterinaria Puente Blanco</h2>
     </div>
@@ -59,10 +58,10 @@
         </a>
 
         <!--<a href="/intern/intern_attend.html"
-          class="flex items-center gap-3 p-3 rounded-lg text-clifarAccent bg-clifarBase/30 border-l-4 border-clifarAccent transition-all shadow-inner">
-          <i class="fa-solid fa-stethoscope w-5 text-center text-xl"></i>
-          <span class="font-medium">Atender Cita</span>
-        </a>-->
+            class="flex items-center gap-3 p-3 rounded-lg text-clifarAccent bg-clifarBase/30 border-l-4 border-clifarAccent transition-all shadow-inner">
+            <i class="fa-solid fa-stethoscope w-5 text-center text-xl"></i>
+            <span class="font-medium">Atender Cita</span>
+          </a>-->
 
         <a href="/intern/intern_validated.html"
           class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all">
@@ -252,6 +251,38 @@
 
       </section>
 
+      <!-- Modal -->
+      <div id="customModal"
+        class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-[9999]">
+
+        <div
+          class="bg-white w-[90%] max-w-md rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-300 scale-100">
+          <!-- Encabezado -->
+          <div id="modalHeader" class="bg-teal-600 text-white flex flex-col items-center py-6">
+
+            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+              <i id="modalIcon" class="fa-solid fa-paw text-3xl"></i>
+            </div>
+
+            <h3 id="modalTitle" class="mt-3 text-xl font-bold">
+              CLIFARVET
+            </h3>
+          </div>
+
+          <!-- Contenido -->
+          <div class="p-6 text-center">
+            <p id="modalMessage" class="text-gray-600 text-lg">
+            </p>
+
+            <button onclick="cerrarModal()"
+              class="mt-6 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-xl font-semibold transition">
+              Entendido
+            </button>
+          </div>
+
+        </div>
+      </div>
+
     </main>
 
   </div>
@@ -310,7 +341,11 @@
       e.preventDefault();
 
       if (!citaId) {
-        alert("No se puede registrar atención sin cita válida.");
+        mostrarModal(
+          "Cita no disponible",
+          "No se puede registrar una atención médica sin una cita válida.",
+          "warning"
+        );
         return;
       }
 
@@ -320,7 +355,22 @@
         tratamiento: document.getElementById("tratamiento").value,
         prescripcion: document.getElementById("prescripcion").value
       };
+      
+      if (
+        !dto.observacionesClinicas.trim() ||
+        !dto.diagnostico.trim() ||
+        !dto.tratamiento.trim() ||
+        !dto.prescripcion.trim()
+      ) {
 
+        mostrarModal(
+          "Campos incompletos",
+          "Por favor completa toda la evaluación médica.",
+          "warning"
+        );
+
+        return;
+      }
       fetch(`/api/intern/appointments/${citaId}/attend`, {
         method: "POST",
         headers: {
@@ -331,13 +381,78 @@
       })
         .then(res => {
           if (res.ok) {
-            alert("Evaluación médica registrada correctamente.");
-            window.location.href = "/intern/intern_dashboard.html";
+            mostrarModal(
+              "Evaluación Registrada",
+              "La evaluación médica fue registrada correctamente.",
+              "success"
+            );
+
+            setTimeout(() => {
+              window.location.href = "/intern/intern_dashboard.html";
+            }, 2000);
           } else {
-            alert("Error al guardar la evaluación.");
+            mostrarModal(
+              "Error",
+              "Ocurrió un problema al guardar la evaluación médica.",
+              "error"
+            );
           }
         });
     });
+
+    function mostrarModal(titulo, mensaje, tipo = "success") {
+
+      const modal = document.getElementById("customModal");
+      const header = document.getElementById("modalHeader");
+      const icon = document.getElementById("modalIcon");
+
+      document.getElementById("modalTitle").textContent = titulo;
+      document.getElementById("modalMessage").textContent = mensaje;
+
+      if (tipo === "success") {
+        header.className =
+          "bg-emerald-600 text-white flex flex-col items-center py-6";
+
+        icon.className =
+          icon.className =
+          "fa-solid fa-circle-check text-3xl";
+      }
+
+      if (tipo === "error") {
+        header.className =
+          "bg-red-500 text-white flex flex-col items-center py-6";
+
+        icon.className =
+          "fa-solid fa-triangle-exclamation text-3xl";
+      }
+
+      if (tipo === "warning") {
+        header.className =
+          "bg-amber-500 text-white flex flex-col items-center py-6";
+
+        icon.className =
+          "fa-solid fa-stethoscope text-3xl";
+      }
+
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    function cerrarModal() {
+      const modal = document.getElementById("customModal");
+
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    document.getElementById("customModal")
+      .addEventListener("click", function (e) {
+
+        if (e.target === this) {
+          cerrarModal();
+        }
+
+      });
 
     function logout() {
       document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
