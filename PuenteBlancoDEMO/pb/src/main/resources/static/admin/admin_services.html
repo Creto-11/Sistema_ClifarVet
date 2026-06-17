@@ -1,114 +1,244 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8" />
-  <title>Gestión de Servicios</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLIFARVET | Gestión de Servicios</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            clifarBase: '#1C8C7A',    
+            clifarDark: '#0F5E52',    
+            clifarLight: '#6FC3B2',   
+            clifarCTA: '#F26A4B',     
+            clifarAccent: '#F6B44B',  
+            clifarBg: '#F2F4F3',      
+            textMain: '#1F2933',      
+            textSec: '#6B7280',       
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<body class="bg-clifarBg font-sans antialiased text-textMain min-h-screen">
 
   <!-- Barra superior -->
-  <header class="bg-green-600 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20">
-    <h1 class="text-xl font-bold">Clínica y Veterinaria Puente Blanco</h1>
-    <span>Gestión de Servicios</span>
+  <header class="h-16 bg-clifarDark text-white px-6 flex justify-between items-center w-full fixed top-0 z-30 shadow-md">
+    <div class="flex items-center gap-4">
+      <button onclick="toggleSidebar()" class="md:hidden text-white focus:outline-none p-1">
+        <i class="fa-solid fa-bars text-xl"></i>
+      </button>
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-paw text-2xl text-clifarAccent"></i>
+        <h1 class="text-xl font-bold tracking-tight">CLIFARVET <span class="font-light hidden sm:inline">| Puente Blanco</span></h1>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 md:gap-3">
+      <span class="text-sm font-medium opacity-90">Panel del Administrador</span>
+      <div class="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center border border-white/20">
+        <i class="fa-solid fa-user-gear text-sm text-white/90"></i>
+      </div>
+    </div>
   </header>
 
-  <div class="flex flex-1">
+  <div class="flex w-full pt-16">
     <!-- Sidebar -->
-    <aside class="w-64 bg-gray-800 text-white flex flex-col justify-between min-h-full">
-      <nav class="flex flex-col p-4 space-y-4">
-        <a href="/admin/admin_dashboard.html" class="flex items-center gap-3 hover:text-blue-300">
-          <i class="fa-solid fa-chart-line"></i> Dashboard
+    <aside id="sidebar" class="fixed top-16 left-0 w-64 h-[calc(100vh-64px)] bg-[#111827] text-gray-300 flex flex-col justify-between z-40
+        transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
+      
+      <div class="py-6 flex flex-col px-3 space-y-2">
+        <p class="text-[11px] uppercase tracking-widest text-gray-500 font-extrabold px-3 mb-3">Administración</p>
+        
+        <a href="/admin/admin_dashboard.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all text-gray-400 font-medium">
+          <i class="fa-solid fa-chart-line w-5 text-center text-xl"></i>
+          <span>Dashboard</span>
         </a>
-        <a href="/admin/admin_users.html" class="flex items-center gap-3 hover:text-blue-300">
-          <i class="fa-solid fa-users"></i> Usuarios
-        </a>
-        <a href="/admin/admin_services.html" class="flex items-center gap-3 text-blue-300">
-          <i class="fa-solid fa-gear"></i> Servicios
-        </a>
-        <a href="/admin/admin_appointments.html" class="flex items-center gap-3 hover:text-blue-300">
-          <i class="fa-solid fa-calendar-days"></i> Citas
-        <a href="/admin/admin_payments.html" class="flex items-center gap-3 hover:text-blue-300">
-          <i class="fa-solid fa-dollar-sign"></i> Pagos
-        </a>
-      </nav>
-      <button onclick="logout()" class="m-4 flex items-center justify-center gap-2 bg-gray-100 text-red-500 px-4 py-2 rounded hover:bg-gray-200">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
-      </button>
-    </aside>
 
-    <!-- Contenido principal -->
-    <main class="flex-1 p-6">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-2xl font-semibold">Gestión de Servicios</h2>
-        <button id="addServiceBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-          + Agregar Servicio
+        <a href="/admin/admin_users.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all text-gray-400 font-medium">
+          <i class="fa-solid fa-users w-5 text-center text-xl"></i>
+          <span>Usuarios</span>
+        </a>
+
+        <a href="/admin/admin_services.html" class="flex items-center gap-3 p-3 rounded-lg text-clifarAccent bg-clifarBase/30 border-l-4 border-clifarAccent transition-all shadow-inner">
+          <i class="fa-solid fa-gear w-5 text-center text-xl"></i>
+          <span class="font-bold">Servicios</span>
+        </a>
+
+        <a href="/admin/admin_appointments.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all text-gray-400 font-medium">
+          <i class="fa-solid fa-calendar-days w-5 text-center text-xl"></i>
+          <span>Citas Globales</span>
+        </a>
+
+        <a href="/admin/admin_payments.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all text-gray-400 font-medium">
+          <i class="fa-solid fa-dollar-sign w-5 text-center text-xl"></i>
+          <span>Caja y Pagos</span>
+        </a>
+      </div>
+
+      <div class="p-4 border-t border-gray-700/50">
+        <button onclick="logout()" class="w-full flex items-center justify-center gap-2.5 bg-gray-700/60 text-red-400 hover:bg-red-500 hover:text-white px-4 py-3 rounded-xl transition-all duration-200">
+          <i class="fa-solid fa-power-off text-lg"></i> 
+          <span class="font-semibold">Cerrar Sesión</span>
         </button>
       </div>
+    </aside>
 
-      <!-- Filtros -->
-      <div class="flex flex-wrap items-center gap-4 mb-4">
-        <input id="searchInput" type="text" placeholder="Buscar por nombre..." class="flex-1 p-2 border border-gray-300 rounded" />
-        <select id="filterCategory" class="p-2 border border-gray-300 rounded">
-          <option value="">Todas las categorías</option>
-        </select>
+    <!-- Contenido Principal -->
+    <main class="flex-1 p-4 md:p-8 ml-0 md:ml-64 transition-all duration-300">
+      
+      <!-- Título de sección -->
+      <div class="mb-8 p-6 bg-white rounded-2xl shadow-sm border-l-4 border-clifarBase flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+        <div>
+          <h2 class="text-3xl font-extrabold text-clifarDark tracking-tight">Catálogo de Servicios</h2>
+          <p class="text-textSec text-base flex items-center gap-2.5 mt-2">
+            <i class="fa-solid fa-hand-holding-medical text-clifarAccent"></i> 
+            Configura las prestaciones médicas, tarifas base y disponibilidad del catálogo clínico
+          </p>
+        </div>
+        <div>
+          <button id="addServiceBtn" class="w-full sm:w-auto bg-clifarBase hover:bg-clifarDark text-white font-bold px-5 py-3 rounded-xl transition shadow-md hover:shadow-clifarBase/20 flex items-center justify-center gap-2 text-sm">
+            <i class="fa-solid fa-plus"></i> Agregar Servicio
+          </button>
+        </div>
       </div>
 
-      <div class="bg-white shadow-md rounded overflow-x-auto">
-        <table class="w-full">
-          <thead class="bg-gray-100 text-left">
-            <tr>
-              <th class="p-3">Nombre</th>
-              <th class="p-3">Precio</th>
-              <th class="p-3">Categoría</th>
-              <th class="p-3">Estado</th>
-              <th class="p-3">Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="serviceTableBody" class="text-sm">
-            <!-- Servicios dinámicos -->
-          </tbody>
-        </table>
+      <!-- Bloque de Filtros -->
+      <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm mb-8">
+        <h3 class="text-sm font-bold text-clifarDark uppercase tracking-wider mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-filter text-clifarBase"></i> Motores de Filtrado
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="sm:col-span-2 flex flex-col gap-1">
+            <label class="text-xs font-bold text-textSec uppercase">Término de búsqueda</label>
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-textSec text-xs"></i>
+              <input id="searchInput" type="text" placeholder="Buscar por el nombre del servicio clínico..." class="w-full border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 focus:border-clifarBase focus:ring-4 focus:ring-clifarBase/10 outline-none text-sm transition-all" />
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-bold text-textSec uppercase">Categoría Médica</label>
+            <div class="relative">
+              <select id="filterCategory" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:border-clifarBase focus:ring-4 focus:ring-clifarBase/10 outline-none text-sm transition-all bg-white appearance-none">
+                <option value="">Todas las categorías</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-textSec">
+                <i class="fa-solid fa-chevron-down text-xs"></i>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <!-- Listado de Servicios -->
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100 flex flex-col">
+        <div class="bg-clifarBg/70 px-6 py-4 border-b border-gray-100">
+          <h3 class="text-lg font-bold text-clifarDark flex items-center gap-2.5">
+            <i class="fa-solid fa-layer-group text-clifarBase"></i> Servicios Habilitados
+          </h3>
+        </div>
+        
+        <div class="overflow-x-auto w-full">
+          <table class="w-full text-sm text-left border-collapse">
+            <thead>
+              <tr class="bg-gray-50 border-b border-gray-100 text-textSec font-bold text-xs uppercase tracking-wider">
+                <th class="p-4">Nombre del Servicio</th>
+                <th class="p-4">Precio Estándar</th>
+                <th class="p-4">Categoría de Atención</th>
+                <th class="p-4 text-center">Estado</th>
+                <th class="p-4 text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="serviceTableBody" class="divide-y divide-gray-50">
+              <tr>
+                <td colspan="5" class="p-6 text-center text-textSec font-medium">
+                  <i class="fa-solid fa-spinner animate-spin text-clifarBase text-base mr-2"></i> Cargando catálogo operacional...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="bg-clifarDark text-gray-100 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4 mt-8 opacity-95 shadow-inner">              
+        <div class="text-center md:text-left">
+          <p class="text-xs font-black text-clifarAccent uppercase mb-0.5">Clínica Veterinaria</p>
+          <p class="text-sm opacity-80">Urb. Puente Blanco J-9, Ica</p>
+        </div>
+        <div class="text-center md:text-right">
+          <p class="text-xs font-black text-clifarAccent uppercase mb-0.5">Soporte Operativo</p>
+          <p class="text-sm opacity-80">clifarveteirl@hotmail.com</p>
+        </div>
+      </footer>
+
     </main>
   </div>
 
-  <!-- Modal -->
-  <div id="serviceModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
-      <h3 id="modalTitle" class="text-xl font-bold mb-2">Agregar Servicio</h3>
-      <p class="text-gray-600 mb-4">Completa los campos para registrar un nuevo servicio.</p>
-      <form id="serviceForm" class="space-y-4">
-        <div>
-          <label class="block text-sm font-semibold">Nombre del Servicio</label>
-          <input id="serviceName" type="text" class="w-full border rounded px-3 py-2" required>
+  <!-- Modal Rediseñado -->
+  <div id="serviceModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4 transition-all">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-gray-100 transform transition-transform animate-in fade-in zoom-in-95 duration-200">
+      <div class="bg-clifarDark p-5 text-white flex justify-between items-center">
+        <h3 id="modalTitle" class="text-lg font-bold tracking-tight flex items-center gap-2">
+          <i class="fa-solid fa-circle-plus text-clifarAccent"></i> Agregar Servicio
+        </h3>
+        <button id="closeModalCross" type="button" class="text-white/80 hover:text-white transition p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      
+      <form id="serviceForm" class="p-6 space-y-5">
+        <p class="text-sm text-textSec -mt-2">Completa los campos estructurados para registrar o actualizar el servicio.</p>
+        
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs font-bold text-textSec uppercase">Nombre descriptivo del Servicio</label>
+          <input id="serviceName" type="text" placeholder="Ej. Ecografía abdominal completa" class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:border-clifarBase focus:ring-4 focus:ring-clifarBase/10 outline-none text-sm transition-all" required>
         </div>
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-semibold">Precio (S/)</label>
-            <input id="servicePrice" type="number" step="0.01" class="w-full border rounded px-3 py-2" required>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-bold text-textSec uppercase">Precio Base (S/)</label>
+            <input id="servicePrice" type="number" step="0.01" min="0" placeholder="0.00" class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:border-clifarBase focus:ring-4 focus:ring-clifarBase/10 outline-none text-sm transition-all" required>
           </div>
-          <div>
-            <label class="block text-sm font-semibold">Categoría</label>
-            <select id="serviceCategory" class="w-full border rounded px-3 py-2" required>
-              <option value="">Seleccionar...</option>
-            </select>
+          
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-bold text-textSec uppercase">Categoría</label>
+            <div class="relative">
+              <select id="serviceCategory" class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:border-clifarBase focus:ring-4 focus:ring-clifarBase/10 outline-none text-sm transition-all bg-white appearance-none" required>
+                <option value="">Seleccionar...</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-textSec">
+                <i class="fa-solid fa-chevron-down text-xs"></i>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="flex justify-end space-x-2 pt-4">
-          <button type="button" id="cancelModal" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded">Cancelar</button>
-          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Guardar</button>
+
+        <!-- Botones de Acción -->
+        <div class="flex justify-end gap-3 pt-3 border-t border-gray-100">
+          <button type="button" id="cancelModal" class="bg-gray-100 hover:bg-gray-200 text-textMain font-bold px-5 py-2.5 rounded-xl transition text-sm">
+            Cancelar
+          </button>
+          <button type="submit" class="bg-clifarBase hover:bg-clifarDark text-white font-bold px-5 py-2.5 rounded-xl transition shadow-md hover:shadow-clifarBase/20 text-sm">
+            Guardar Configuración
+          </button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Script -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const apiBase = "/api/admin/services";
+      const sidebar = document.getElementById("sidebar");
+      
       const tiposEstaticos = [
         { id: 1, nombre: "Consulta General" },
         { id: 2, nombre: "Vacunación" },
@@ -123,23 +253,34 @@
       const addServiceBtn = document.getElementById("addServiceBtn");
       const modal = document.getElementById("serviceModal");
       const cancelModal = document.getElementById("cancelModal");
+      const closeModalCross = document.getElementById("closeModalCross");
       const serviceForm = document.getElementById("serviceForm");
       const serviceCategory = document.getElementById("serviceCategory");
       const filterCategory = document.getElementById("filterCategory");
       const searchInput = document.getElementById("searchInput");
 
       let editingServiceId = null;
+      let allServicios = []; // Guarda el estado local de datos para evitar romper las comillas en los strings HTML
+
+      window.toggleSidebar = function() {
+        sidebar.classList.toggle("-translate-x-full");
+      }
+
+      window.logout = function() {
+        document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+        window.location.href = "/";
+      }
 
       function toggleModal(show, servicio = null) {
         modal.classList.toggle("hidden", !show);
         if (show && servicio) {
-          document.getElementById("modalTitle").innerText = "Editar Servicio";
+          document.getElementById("modalTitle").innerHTML = '<i class="fa-solid fa-user-pen text-clifarAccent"></i> Editar Servicio';
           document.getElementById("serviceName").value = servicio.nombre;
           document.getElementById("servicePrice").value = servicio.precio;
           document.getElementById("serviceCategory").value = tiposEstaticos.find(t => t.nombre === servicio.categoria)?.id || "";
           editingServiceId = servicio.id;
         } else {
-          document.getElementById("modalTitle").innerText = "Agregar Servicio";
+          document.getElementById("modalTitle").innerHTML = '<i class="fa-solid fa-circle-plus text-clifarAccent"></i> Agregar Servicio';
           serviceForm.reset();
           editingServiceId = null;
         }
@@ -165,45 +306,98 @@
         fetch(apiBase)
           .then(res => res.json())
           .then(servicios => {
-            const nombreFiltro = searchInput.value.toLowerCase();
-            const categoriaFiltro = filterCategory.value;
-
-            const filtrados = servicios.filter(s =>
-              s.nombre.toLowerCase().includes(nombreFiltro) &&
-              (categoriaFiltro === "" || s.categoria === categoriaFiltro)
-            );
-
-            serviceTableBody.innerHTML = "";
-            filtrados.forEach(serv => {
-              const tr = document.createElement("tr");
-              tr.innerHTML = `
-                <td class="p-2">${serv.nombre}</td>
-                <td class="p-2">S/ ${serv.precio.toFixed(2)}</td>
-                <td class="p-2">${serv.categoria}</td>
-                <td class="p-2">
-                  <span class="inline-block px-2 py-1 text-xs rounded-full ${serv.estado ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}">
-                    ${serv.estado ? 'Activo' : 'Inactivo'}
-                  </span>
+            allServicios = servicios; // Persistencia en memoria
+            renderTabla();
+          })
+          .catch(err => {
+            console.error("Error crítico al mapear servicios:", err);
+            serviceTableBody.innerHTML = `
+              <tr>
+                <td colspan="5" class="p-6 text-center text-red-500 font-semibold">
+                  <i class="fa-solid fa-circle-exclamation mr-2"></i> Error al conectar con el servidor de catálogo.
                 </td>
-                <td class="p-2 flex gap-2">
-                  <button onclick='editarServicio(${JSON.stringify(serv)})' class="text-blue-600 hover:text-blue-800">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button onclick='cambiarEstado(${serv.id})' class="text-yellow-600 hover:text-yellow-800">
-                    <i class="fas fa-toggle-on"></i>
-                  </button>
-                </td>
-              `;
-              serviceTableBody.appendChild(tr);
-            });
+              </tr>`;
           });
       }
 
-      window.editarServicio = (servicio) => toggleModal(true, servicio);
+      function renderTabla() {
+        const nombreFiltro = searchInput.value.toLowerCase();
+        const categoriaFiltro = filterCategory.value;
+
+        const filtrados = allServicios.filter(s =>
+          s.nombre.toLowerCase().includes(nombreFiltro) &&
+          (categoriaFiltro === "" || s.categoria === categoriaFiltro)
+        );
+
+        serviceTableBody.innerHTML = "";
+
+        if (filtrados.length === 0) {
+          serviceTableBody.innerHTML = `
+            <tr>
+              <td colspan="5" class="p-8 text-center text-textSec font-medium bg-white">
+                No se registran servicios bajo los criterios de búsqueda actuales.
+              </td>
+            </tr>`;
+          return;
+        }
+
+        filtrados.forEach(serv => {
+          const tr = document.createElement("tr");
+          tr.className = "hover:bg-clifarBg/40 transition-all border-b border-gray-100";
+          
+          const statusBadge = serv.estado 
+            ? `<span class="px-2.5 py-1 text-xs font-bold rounded-lg border bg-emerald-50 text-emerald-700 border-emerald-200 inline-block tracking-wide">Activo</span>`
+            : `<span class="px-2.5 py-1 text-xs font-bold rounded-lg border bg-rose-50 text-rose-700 border-rose-200 inline-block tracking-wide">Inactivo</span>`;
+
+          tr.innerHTML = `
+            <td class="p-4 font-bold text-clifarDark">${serv.nombre}</td>
+            <td class="p-4 font-black text-textMain">S/ ${serv.precio.toFixed(2)}</td>
+            <td class="p-4 font-semibold text-textSec text-xs">${serv.categoria}</td>
+            <td class="p-4 text-center">${statusBadge}</td>
+            <td class="p-4">
+              <div class="flex items-center justify-center gap-3">
+                <button onclick="dispararEditar(${serv.id})" class="text-clifarBase hover:text-clifarDark p-1 transition-colors" title="Modificar datos">
+                  <i class="fas fa-edit text-base"></i>
+                </button>
+                <button onclick="cambiarEstado(${serv.id})" class="text-clifarCTA hover:text-red-700 p-1 transition-colors" title="Alternar disponibilidad">
+                  <i class="fas fa-toggle-on text-base"></i>
+                </button>
+              </div>
+            </td>
+          `;
+          serviceTableBody.appendChild(tr);
+        });
+      }
+
+      // Puentes globales para invocar las funciones evitando el stringify dentro de HTML
+      window.dispararEditar = (id) => {
+        const item = allServicios.find(s => s.id === id);
+        if (item) toggleModal(true, item);
+      };
 
       window.cambiarEstado = (id) => {
         fetch(`${apiBase}/${id}/estado`, { method: "PATCH" })
-          .then(() => cargarServicios());
+          .then(res => {
+            if (!res.ok) throw new Error();
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Estado actualizado',
+              showConfirmButton: false,
+              timer: 2000,
+              background: '#F2F4F3'
+            });
+            cargarServicios();
+          })
+          .catch(() => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error operacional',
+              text: 'No se pudo conmutar el estado del servicio médico.',
+              confirmButtonColor: '#F26A4B'
+            });
+          });
       };
 
       serviceForm.addEventListener("submit", (e) => {
@@ -227,28 +421,39 @@
           method,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
-        }).then(() => {
+        })
+        .then(res => {
+          if (!res.ok) throw new Error();
           toggleModal(false);
+          Swal.fire({
+            title: '¡Operación Exitosa!',
+            text: 'El catálogo clínico ha sido actualizado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#1C8C7A',
+            background: '#F2F4F3'
+          });
           cargarServicios();
+        })
+        .catch(() => {
+          Swal.fire({
+            title: 'Fallo al Guardar',
+            text: 'Verifica los parámetros e intenta nuevamente.',
+            icon: 'error',
+            confirmButtonColor: '#F26A4B'
+          });
         });
       });
 
       addServiceBtn.addEventListener("click", () => toggleModal(true));
       cancelModal.addEventListener("click", () => toggleModal(false));
-      searchInput.addEventListener("input", cargarServicios);
-      filterCategory.addEventListener("change", cargarServicios);
+      closeModalCross.addEventListener("click", () => toggleModal(false));
+      
+      searchInput.addEventListener("input", renderTabla);
+      filterCategory.addEventListener("change", renderTabla);
 
       cargarTiposServicio();
       cargarServicios();
-
     });
   </script>
-  <script>
-  function logout() {
-    document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-    window.location.href = "/";
-  }
-</script>
-
 </body>
 </html>

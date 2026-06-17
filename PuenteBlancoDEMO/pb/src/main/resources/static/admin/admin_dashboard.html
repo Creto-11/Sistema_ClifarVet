@@ -1,170 +1,312 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8" />
-  <title>Dashboard Administrador</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLIFARVET | Dashboard Administrador</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            clifarBase: '#1C8C7A',    
+            clifarDark: '#0F5E52',    
+            clifarLight: '#6FC3B2',   
+            clifarCTA: '#F26A4B',     
+            clifarAccent: '#F6B44B',  
+            clifarBg: '#F2F4F3',      
+            textMain: '#1F2933',      
+            textSec: '#6B7280',       
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<body class="bg-clifarBg font-sans antialiased text-textMain min-h-screen">
 
   <!-- Barra superior -->
-  <header class="bg-green-600 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20">
-    <h1 class="text-xl font-bold">Clínica y Veterinaria Puente Blanco</h1>
-    <span>Panel del Administrador</span>
+  <header class="h-16 bg-clifarDark text-white px-6 flex justify-between items-center w-full fixed top-0 z-30 shadow-md">
+    <div class="flex items-center gap-4">
+      <button onclick="toggleSidebar()" class="md:hidden text-white focus:outline-none p-1">
+        <i class="fa-solid fa-bars text-xl"></i>
+      </button>
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-paw text-2xl text-clifarAccent"></i>
+        <h1 class="text-xl font-bold tracking-tight">CLIFARVET <span class="font-light hidden sm:inline">| Puente Blanco</span></h1>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 md:gap-3">
+      <span class="text-sm font-medium opacity-90">Panel del Administrador</span>
+      <div class="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center border border-white/20">
+        <i class="fa-solid fa-user-gear text-sm text-white/90"></i>
+      </div>
+    </div>
   </header>
 
-  <div class="flex flex-1">
+  <div class="flex w-full pt-16">
     <!-- Sidebar -->
-    <aside class="w-64 bg-gray-800 text-white flex flex-col justify-between min-h-full">
-      <nav class="flex flex-col p-4 space-y-4">
-        <a href="/admin/admin_dashboard.html" class="flex items-center gap-3 text-blue-300">
-          <i class="fa-solid fa-chart-line"></i> Dashboard
+    <aside id="sidebar" class="fixed top-16 left-0 w-64 h-[calc(100vh-64px)] bg-[#111827] text-gray-300 flex flex-col justify-between z-40
+        transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
+      
+      <div class="py-6 flex flex-col px-3 space-y-2">
+        <p class="text-[11px] uppercase tracking-widest text-gray-500 font-extrabold px-3 mb-3">Administración</p>
+        
+        <a href="/admin/admin_dashboard.html" class="flex items-center gap-3 p-3 rounded-lg text-clifarAccent bg-clifarBase/30 border-l-4 border-clifarAccent transition-all shadow-inner">
+          <i class="fa-solid fa-chart-line w-5 text-center text-xl"></i>
+          <span class="font-bold">Dashboard</span>
         </a>
-        <a href="/admin/admin_users.html" class="flex items-center gap-3 hover:text-blue-300">
-          <i class="fa-solid fa-users"></i> Usuarios
+
+        <a href="/admin/admin_users.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all text-gray-400 font-medium">
+          <i class="fa-solid fa-users w-5 text-center text-xl"></i>
+          <span>Usuarios</span>
         </a>
-        <a href="/admin/admin_services.html" class="flex items-center gap-3 hover:text-blue-300">
-          <i class="fa-solid fa-gear"></i> Servicios
+
+        <a href="/admin/admin_services.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all text-gray-400 font-medium">
+          <i class="fa-solid fa-gear w-5 text-center text-xl"></i>
+          <span>Servicios</span>
         </a>
-        <a href="/admin/admin_appointments.html" class="flex items-center gap-3 hover:text-blue-300">
-          <i class="fa-solid fa-calendar-days"></i> Citas
+
+        <a href="/admin/admin_appointments.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all text-gray-400 font-medium">
+          <i class="fa-solid fa-calendar-days w-5 text-center text-xl"></i>
+          <span>Citas Globales</span>
         </a>
-        <a href="/admin/admin_payments.html" class="flex items-center gap-3 hover:text-blue-300">
-          <i class="fa-solid fa-dollar-sign"></i> Pagos
+
+        <a href="/admin/admin_payments.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all text-gray-400 font-medium">
+          <i class="fa-solid fa-dollar-sign w-5 text-center text-xl"></i>
+          <span>Caja y Pagos</span>
         </a>
-      </nav>
-      <button onclick="logout()" class="m-4 flex items-center justify-center gap-2 bg-gray-100 text-red-500 px-4 py-2 rounded hover:bg-gray-200">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
-      </button>
+      </div>
+
+      <div class="p-4 border-t border-gray-700/50">
+        <button onclick="logout()" class="w-full flex items-center justify-center gap-2.5 bg-gray-700/60 text-red-400 hover:bg-red-500 hover:text-white px-4 py-3 rounded-xl transition-all duration-200">
+          <i class="fa-solid fa-power-off text-lg"></i> 
+          <span class="font-semibold">Cerrar Sesión</span>
+        </button>
+      </div>
     </aside>
 
-    <!-- Contenido -->
-    <main class="flex-1 p-8 space-y-8">
-      <h2 class="text-2xl font-bold text-gray-800">Resumen General</h2>
+    <!-- Contenido Principal -->
+    <main class="flex-1 p-4 md:p-8 ml-0 md:ml-64 transition-all duration-300">
+      
+      <!-- Título de sección -->
+      <div class="mb-8 p-6 bg-white rounded-2xl shadow-sm border-l-4 border-clifarBase">
+        <h2 class="text-3xl font-extrabold text-clifarDark tracking-tight">Resumen General</h2>
+        <p class="text-textSec text-base flex items-center gap-2.5 mt-2">
+          <i class="fa-solid fa-chart-pie text-clifarAccent"></i> 
+          Métricas clave e ingresos globales de la clínica en tiempo real
+        </p>
+      </div>
 
-      <!-- Tarjetas resumen -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white p-6 rounded-lg shadow-md flex items-center gap-4">
-          <i class="fa-solid fa-calendar-day text-3xl text-blue-600"></i>
+      <!-- Tarjetas de indicadores -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        
+        <!-- Citas Hoy -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-5 hover:shadow-md transition-all duration-200">
+          <div class="p-4 bg-clifarBase/10 text-clifarBase rounded-xl">
+            <i class="fa-solid fa-calendar-day text-2xl"></i>
+          </div>
           <div>
-            <p class="text-sm text-gray-500">Citas Hoy</p>
-            <p id="countToday" class="text-2xl font-bold text-gray-800">--</p>
+            <p class="text-xs uppercase tracking-widest font-black text-textSec">Citas Hoy</p>
+            <p id="countToday" class="text-3xl font-black text-clifarDark mt-1">--</p>
           </div>
         </div>
-        <div class="bg-white p-6 rounded-lg shadow-md flex items-center gap-4">
-          <i class="fa-solid fa-dollar-sign text-3xl text-green-600"></i>
+
+        <!-- Ingresos Semana -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-5 hover:shadow-md transition-all duration-200">
+          <div class="p-4 bg-clifarAccent/10 text-clifarAccent rounded-xl">
+            <i class="fa-solid fa-money-bill-trend-up text-2xl"></i>
+          </div>
           <div>
-            <p class="text-sm text-gray-500">Ingresos Esta Semana</p>
-            <p id="revenueWeek" class="text-2xl font-bold text-gray-800">--</p>
+            <p class="text-xs uppercase tracking-widest font-black text-textSec">Ingresos Semanales</p>
+            <p id="revenueWeek" class="text-3xl font-black text-clifarDark mt-1">--</p>
           </div>
         </div>
-        <div class="bg-white p-6 rounded-lg shadow-md flex items-center gap-4">
-          <i class="fa-solid fa-circle-xmark text-3xl text-red-600"></i>
+
+        <!-- Cancelaciones -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-5 hover:shadow-md transition-all duration-200">
+          <div class="p-4 bg-clifarCTA/10 text-clifarCTA rounded-xl">
+            <i class="fa-solid fa-circle-xmark text-2xl"></i>
+          </div>
           <div>
-            <p class="text-sm text-gray-500">Cancelaciones Esta Semana</p>
-            <p id="cancelWeek" class="text-2xl font-bold text-gray-800">--</p>
+            <p class="text-xs uppercase tracking-widest font-black text-textSec">Cancelaciones (Semana)</p>
+            <p id="cancelWeek" class="text-3xl font-black text-clifarDark mt-1">--</p>
           </div>
         </div>
+
       </div>
 
       <!-- Gráfico + Alertas -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Gráfico -->
-        <section class="lg:col-span-2 bg-white rounded-lg shadow p-6">
-          <h3 class="text-lg font-semibold text-gray-800 mb-4">Ingresos Mensuales</h3>
-          <canvas id="monthlyRevenueChart" height="100"></canvas>
-        </section>
-
-        <!-- Alertas -->
-        <section class="bg-white rounded-lg shadow p-6">
-          <h3 class="text-lg font-semibold text-gray-800 mb-4">Alertas Recientes</h3>
-          <div id="alertsContainer" class="space-y-2">
-            <p class="text-gray-500">Cargando alertas...</p>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        
+        <!-- Contenedor del Gráfico -->
+        <section class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between">
+          <div class="mb-4">
+            <h3 class="text-lg font-bold text-clifarDark flex items-center gap-2">
+              <i class="fa-solid fa-chart-line text-clifarBase"></i> Historial de Ingresos Mensuales
+            </h3>
+          </div>
+          <div class="w-full relative min-h-[220px]">
+            <canvas id="monthlyRevenueChart" class="w-full"></canvas>
           </div>
         </section>
+
+        <!-- Contenedor de Alertas -->
+        <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
+          <div class="mb-4">
+            <h3 class="text-lg font-bold text-clifarDark flex items-center gap-2">
+              <i class="fa-solid fa-bell text-clifarCTA"></i> Alertas Recientes
+            </h3>
+          </div>
+          <div id="alertsContainer" class="space-y-3 overflow-y-auto max-h-[300px] flex-1 pr-1">
+            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl shadow-sm text-sm text-textSec border border-gray-100">
+              <i class="fa-solid fa-spinner animate-spin text-clifarBase"></i> Cargando eventos del sistema...
+            </div>
+          </div>
+        </section>
+
       </div>
+
+      <!-- Footer Corporativo -->
+      <footer class="bg-clifarDark text-gray-100 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4 mt-8 opacity-95 shadow-inner">              
+        <div class="text-center md:text-left">
+          <p class="text-xs font-black text-clifarAccent uppercase mb-0.5">Clínica Veterinaria</p>
+          <p class="text-sm opacity-80">Urb. Puente Blanco J-9, Ica</p>
+        </div>
+        <div class="text-center md:text-right">
+          <p class="text-xs font-black text-clifarAccent uppercase mb-0.5">Soporte Operativo</p>
+          <p class="text-sm opacity-80">clifarveteirl@hotmail.com</p>
+        </div>
+      </footer>
+
     </main>
   </div>
 
-<script>
-  let chartInstance = null; // para evitar duplicados
+  <script>
+    let chartInstance = null;
+    const sidebar = document.getElementById("sidebar");
 
-  function logout() {
-    document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-    window.location.href = "/";
-  }
-
-  async function cargarDashboardAdmin() {
-    const [resCitas, resIngresos, resCancelaciones, resMensual, resAlertas] = await Promise.all([
-      fetch("/api/admin/dashboard/appointments/today", { credentials: 'include' }),
-      fetch("/api/admin/dashboard/revenue/week", { credentials: 'include' }),
-      fetch("/api/admin/dashboard/cancellations/week", { credentials: 'include' }),
-      fetch("/api/admin/dashboard/revenue/monthly", { credentials: 'include' }),
-      fetch("/api/admin/dashboard/alerts", { credentials: 'include' })
-    ]);
-
-    const countToday = await resCitas.json();
-    const revenueWeek = await resIngresos.json();
-    const cancelWeek = await resCancelaciones.json();
-    const revenueData = await resMensual.json();
-    const alerts = await resAlertas.json();
-
-    document.getElementById("countToday").textContent = countToday;
-    document.getElementById("revenueWeek").textContent = `S/ ${parseFloat(revenueWeek).toFixed(2)}`;
-    document.getElementById("cancelWeek").textContent = cancelWeek;
-
-    renderChart(revenueData);
-    renderAlerts(alerts);
-  }
-
-  function renderChart(data) {
-    const ctx = document.getElementById("monthlyRevenueChart").getContext("2d");
-    const labels = data.map(d => d.mes); // Ej: ["May", "Jun"]
-    const values = data.map(d => parseFloat(d.monto)); // asegúrate de que sea número
-
-    if (chartInstance) chartInstance.destroy(); // evita duplicados
-
-    chartInstance = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels,
-        datasets: [{
-          label: 'Ingresos',
-          data: values,
-          borderColor: '#22c55e',
-          backgroundColor: 'rgba(34, 197, 94, 0.2)',
-          fill: true,
-          tension: 0.4,
-          pointBackgroundColor: '#22c55e'
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: { beginAtZero: true }
-        }
-      }
-    });
-  }
-
-  function renderAlerts(alerts) {
-    const container = document.getElementById("alertsContainer");
-    container.innerHTML = "";
-    if (alerts.length === 0) {
-      container.innerHTML = "<p class='text-gray-500'>No hay alertas recientes.</p>";
-      return;
+    function toggleSidebar() {
+      sidebar.classList.toggle("-translate-x-full");
     }
-    alerts.forEach(alert => {
-      const div = document.createElement("div");
-      div.className = "bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-3 rounded";
-      div.innerHTML = `<strong>${alert.titulo}</strong><p class="text-sm">${alert.descripcion}</p>`;
-      container.appendChild(div);
-    });
-  }
 
-  cargarDashboardAdmin();
-</script>
+    function logout() {
+      document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      window.location.href = "/";
+    }
+
+    async function cargarDashboardAdmin() {
+      try {
+        const [resCitas, resIngresos, resCancelaciones, resMensual, resAlertas] = await Promise.all([
+          fetch("/api/admin/dashboard/appointments/today", { credentials: 'include' }),
+          fetch("/api/admin/dashboard/revenue/week", { credentials: 'include' }),
+          fetch("/api/admin/dashboard/cancellations/week", { credentials: 'include' }),
+          fetch("/api/admin/dashboard/revenue/monthly", { credentials: 'include' }),
+          fetch("/api/admin/dashboard/alerts", { credentials: 'include' })
+        ]);
+
+        const countToday = await resCitas.json();
+        const revenueWeek = await resIngresos.json();
+        const cancelWeek = await resCancelaciones.json();
+        const revenueData = await resMensual.json();
+        const alerts = await resAlertas.json();
+
+        document.getElementById("countToday").textContent = countToday;
+        document.getElementById("revenueWeek").textContent = `S/ ${parseFloat(revenueWeek).toFixed(2)}`;
+        document.getElementById("cancelWeek").textContent = cancelWeek;
+
+        renderChart(revenueData);
+        renderAlerts(alerts);
+      } catch (error) {
+        console.error("Error cargando componentes del backend administrativo:", error);
+      }
+    }
+
+    function renderChart(data) {
+      const ctx = document.getElementById("monthlyRevenueChart").getContext("2d");
+      const labels = data.map(d => d.mes);
+      const values = data.map(d => parseFloat(d.monto));
+
+      if (chartInstance) chartInstance.destroy();
+
+      // Ajustado milimétricamente para sincronizar con la paleta de CLIFARVET
+      chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Ingresos Mensuales (S/)',
+            data: values,
+            borderColor: '#1C8C7A', // clifarBase
+            backgroundColor: 'rgba(28, 140, 122, 0.12)', // clifarBase con opacidad suave
+            fill: true,
+            tension: 0.35,
+            pointBackgroundColor: '#F6B44B', // clifarAccent para destacar los nodos
+            pointBorderColor: '#0F5E52',
+            pointHoverRadius: 7,
+            borderWidth: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                font: { family: 'sans-serif', weight: '600' }
+              }
+            }
+          },
+          scales: {
+            y: { 
+              beginAtZero: true,
+              grid: { color: '#E5E7EB' }
+            },
+            x: {
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    function renderAlerts(alerts) {
+      const container = document.getElementById("alertsContainer");
+      container.innerHTML = "";
+      
+      if (alerts.length === 0) {
+        container.innerHTML = `
+          <div class="p-4 text-center text-textSec text-sm font-medium bg-gray-50 rounded-xl border border-gray-100">
+            No hay alertas críticas registradas en este turno.
+          </div>`;
+        return;
+      }
+      
+      alerts.forEach(alert => {
+        const div = document.createElement("div");
+        // Diseño de alertas refinado usando el clifarAccent/clifarCTA para evitar colores planos planos
+        div.className = "bg-orange-50 border-l-4 border-clifarCTA p-3.5 rounded-xl shadow-sm text-sm";
+        div.innerHTML = `
+          <div class="flex items-start gap-2.5">
+            <i class="fa-solid fa-triangle-exclamation text-clifarCTA mt-0.5"></i>
+            <div>
+              <strong class="text-textMain font-bold block">${alert.titulo}</strong>
+              <p class="text-textSec text-xs mt-0.5 font-medium leading-relaxed">${alert.descripcion}</p>
+            </div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    cargarDashboardAdmin();
+  </script>
 </body>
+
 </html>

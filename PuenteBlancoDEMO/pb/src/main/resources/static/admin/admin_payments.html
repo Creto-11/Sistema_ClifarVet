@@ -1,85 +1,200 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8" />
-  <title>Pagos - Puente Blanco</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLIFARVET | Caja y Pagos</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            clifarBase: '#1C8C7A',    
+            clifarDark: '#0F5E52',    
+            clifarLight: '#6FC3B2',   
+            clifarCTA: '#F26A4B',     
+            clifarAccent: '#F6B44B',  
+            clifarBg: '#F2F4F3',      
+            textMain: '#1F2933',      
+            textSec: '#6B7280',       
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
+
+<body class="bg-clifarBg font-sans antialiased text-textMain min-h-screen">
 
   <!-- Barra superior -->
-  <header class="bg-green-600 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20">
-    <h1 class="text-xl font-bold">Clínica y Veterinaria Puente Blanco</h1>
-    <span>Gestión de Pagos</span>
+  <header class="h-16 bg-clifarDark text-white px-6 flex justify-between items-center w-full fixed top-0 z-30 shadow-md">
+    <div class="flex items-center gap-4">
+      <button onclick="toggleSidebar()" class="md:hidden text-white focus:outline-none p-1">
+        <i class="fa-solid fa-bars text-xl"></i>
+      </button>
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-paw text-2xl text-clifarAccent"></i>
+        <h1 class="text-xl font-bold tracking-tight">CLIFARVET <span class="font-light hidden sm:inline">| Puente Blanco</span></h1>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 md:gap-3">
+      <span class="text-sm font-medium opacity-90">Panel del Administrador</span>
+      <div class="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center border border-white/20">
+        <i class="fa-solid fa-user-gear text-sm text-white/90"></i>
+      </div>
+    </div>
   </header>
 
-  <div class="flex flex-1">
+  <div class="flex w-full pt-16">
     <!-- Sidebar -->
-    <aside class="w-64 bg-gray-800 text-white flex flex-col justify-between min-h-full">
-      <nav class="flex flex-col p-4 space-y-4">
-        <a href="/admin/admin_dashboard.html" class="flex items-center gap-3 hover:text-blue-300">
-          <i class="fa-solid fa-chart-line"></i> Dashboard
+    <aside id="sidebar" class="fixed top-16 left-0 w-64 h-[calc(100vh-64px)] bg-[#111827] text-gray-300 flex flex-col justify-between z-40
+        transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
+      
+      <div class="py-6 flex flex-col px-3 space-y-2">
+        <p class="text-[11px] uppercase tracking-widest text-gray-500 font-extrabold px-3 mb-3">Administración</p>
+        
+        <a href="/admin/admin_dashboard.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all text-gray-400 font-medium">
+          <i class="fa-solid fa-chart-line w-5 text-center text-xl"></i>
+          <span>Dashboard</span>
         </a>
-        <a href="/admin/admin_users.html" class="flex items-center gap-3 hover:text-blue-300">
-          <i class="fa-solid fa-users"></i> Usuarios
+
+        <a href="/admin/admin_users.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all text-gray-400 font-medium">
+          <i class="fa-solid fa-users w-5 text-center text-xl"></i>
+          <span>Usuarios</span>
         </a>
-        <a href="/admin/admin_services.html" class="flex items-center gap-3 hover:text-blue-300">
-          <i class="fa-solid fa-gear"></i> Servicios
+
+        <a href="/admin/admin_services.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all text-gray-400 font-medium">
+          <i class="fa-solid fa-gear w-5 text-center text-xl"></i>
+          <span>Servicios</span>
         </a>
-        <a href="/admin/admin_appointments.html" class="flex items-center gap-3 hover:text-blue-300">
-          <i class="fa-solid fa-calendar-days"></i> Citas
+
+        <a href="/admin/admin_appointments.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all text-gray-400 font-medium">
+          <i class="fa-solid fa-calendar-days w-5 text-center text-xl"></i>
+          <span>Citas Globales</span>
         </a>
-        <a href="/admin/admin_payments.html" class="flex items-center gap-3 text-blue-300">
-          <i class="fa-solid fa-dollar-sign"></i> Pagos
+
+        <a href="/admin/admin_payments.html" class="flex items-center gap-3 p-3 rounded-lg text-clifarAccent bg-clifarBase/30 border-l-4 border-clifarAccent transition-all shadow-inner">
+          <i class="fa-solid fa-dollar-sign w-5 text-center text-xl"></i>
+          <span class="font-bold">Caja y Pagos</span>
         </a>
-      </nav>
-      <button onclick="logout()" class="m-4 flex items-center justify-center gap-2 bg-gray-100 text-red-500 px-4 py-2 rounded hover:bg-gray-200">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
-      </button>
+      </div>
+
+      <div class="p-4 border-t border-gray-700/50">
+        <button onclick="logout()" class="w-full flex items-center justify-center gap-2.5 bg-gray-700/60 text-red-400 hover:bg-red-500 hover:text-white px-4 py-3 rounded-xl transition-all duration-200">
+          <i class="fa-solid fa-power-off text-lg"></i> 
+          <span class="font-semibold">Cerrar Sesión</span>
+        </button>
+      </div>
     </aside>
 
-    <!-- Contenido principal -->
-    <main class="flex-1 p-6 overflow-x-auto">
-      <h2 class="text-2xl font-semibold mb-6">Historial de Pagos</h2>
-
-      <!-- Filtros -->
-      <div class="flex flex-wrap gap-4 mb-4">
-        <input type="month" id="filtroMes" class="border border-gray-300 rounded px-3 py-2 text-sm" />
-        <input type="text" id="filtroTexto" placeholder="🔍 Buscar por cliente o servicio..." class="border border-gray-300 rounded px-3 py-2 text-sm w-64" />
+    <!-- Contenido Principal -->
+    <main class="flex-1 p-4 md:p-8 ml-0 md:ml-64 transition-all duration-300">
+      
+      <!-- Título de sección -->
+      <div class="mb-8 p-6 bg-white rounded-2xl shadow-sm border-l-4 border-clifarBase flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+        <div>
+          <h2 class="text-3xl font-extrabold text-clifarDark tracking-tight">Historial y Control de Caja</h2>
+          <p class="text-textSec text-base flex items-center gap-2.5 mt-2">
+            <i class="fa-solid fa-cash-register text-clifarAccent"></i> 
+            Auditoría de transacciones monetarias, servicios liquidados y métodos de pago
+          </p>
+        </div>
+        
+        <!-- Tarjeta integrada de Total Acumulado -->
+        <div class="bg-gradient-to-br from-clifarDark to-clifarBase text-white rounded-xl px-6 py-3 shadow-md flex items-center gap-4 min-w-[200px]">
+          <div class="p-2.5 bg-white/10 rounded-lg text-clifarAccent text-xl">
+            <i class="fa-solid fa-wallet"></i>
+          </div>
+          <div>
+            <p class="text-2xl font-black tracking-tight">S/ <span id="totalPagos">0.00</span></p>
+            <p class="text-[11px] uppercase tracking-wider text-clifarLight font-bold">Total Acumulado</p>
+          </div>
+        </div>
       </div>
 
-      <!-- Resumen de Total -->
-      <div class="bg-white shadow rounded p-4 mb-6">
-        <p class="text-2xl font-bold text-green-700">S/ <span id="totalPagos">0.00</span></p>
-        <p class="text-gray-500 text-sm">Total acumulado</p>
+      <!-- Bloque de Filtros -->
+      <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm mb-8">
+        <h3 class="text-sm font-bold text-clifarDark uppercase tracking-wider mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-filter text-clifarBase"></i> Restringir transacciones
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-bold text-textSec uppercase">Periodo Mensual</label>
+            <input type="month" id="filtroMes" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:border-clifarBase focus:ring-4 focus:ring-clifarBase/10 outline-none text-sm transition-all bg-white" />
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-bold text-textSec uppercase">Criterio Global</label>
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-textSec text-xs"></i>
+              <input type="text" id="filtroTexto" placeholder="Buscar por cliente o servicio..." class="w-full border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 focus:border-clifarBase focus:ring-4 focus:ring-clifarBase/10 outline-none text-sm transition-all" />
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Tabla de pagos -->
-      <div class="bg-white shadow-md rounded">
-        <table class="w-full text-sm">
-          <thead class="bg-gray-100 text-left">
-            <tr>
-              <th class="p-3">Fecha de Pago</th>
-              <th class="p-3">Cliente</th>
-              <th class="p-3">Servicio</th>
-              <th class="p-3">Monto</th>
-              <th class="p-3">Método</th>
-              <th class="p-3">Estado</th>
-            </tr>
-          </thead>
-          <tbody id="paymentsTableBody">
-            <!-- Datos dinámicos -->
-          </tbody>
-        </table>
+      <!-- Listado de Pagos -->
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100 flex flex-col">
+        <div class="bg-clifarBg/70 px-6 py-4 border-b border-gray-100">
+          <h3 class="text-lg font-bold text-clifarDark flex items-center gap-2.5">
+            <i class="fa-solid fa-receipt text-clifarBase"></i> Libro de Operaciones Diarias
+          </h3>
+        </div>
+        
+        <div class="overflow-x-auto w-full">
+          <table class="w-full text-sm text-left border-collapse">
+            <thead>
+              <tr class="bg-gray-50 border-b border-gray-100 text-textSec font-bold text-xs uppercase tracking-wider">
+                <th class="p-4">Fecha de Pago</th>
+                <th class="p-4">Cliente / Titular</th>
+                <th class="p-4">Servicio Relacionado</th>
+                <th class="p-4">Monto Liquidado</th>
+                <th class="p-4">Medio de Pago</th>
+                <th class="p-4 text-center">Estado</th>
+              </tr>
+            </thead>
+            <tbody id="paymentsTableBody" class="divide-y divide-gray-50">
+              <tr>
+                <td colspan="6" class="p-6 text-center text-textSec font-medium">
+                  <i class="fa-solid fa-spinner animate-spin text-clifarBase text-base mr-2"></i> Procesando registros de caja...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      <!-- Footer -->
+      <footer class="bg-clifarDark text-gray-100 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4 mt-8 opacity-95 shadow-inner">              
+        <div class="text-center md:text-left">
+          <p class="text-xs font-black text-clifarAccent uppercase mb-0.5">Clínica Veterinaria</p>
+          <p class="text-sm opacity-80">Urb. Puente Blanco J-9, Ica</p>
+        </div>
+        <div class="text-center md:text-right">
+          <p class="text-xs font-black text-clifarAccent uppercase mb-0.5">Soporte Operativo</p>
+          <p class="text-sm opacity-80">clifarveteirl@hotmail.com</p>
+        </div>
+      </footer>
+
     </main>
   </div>
 
-  <!-- Script -->
   <script>
     let allPagos = [];
+    const sidebar = document.getElementById("sidebar");
+
+    function toggleSidebar() {
+      sidebar.classList.toggle("-translate-x-full");
+    }
+
+    function logout() {
+      document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      window.location.href = "/";
+    }
 
     document.addEventListener("DOMContentLoaded", () => {
       const tableBody = document.getElementById("paymentsTableBody");
@@ -93,60 +208,88 @@
           allPagos = data;
           renderTabla();
         })
-        .catch(() => {
-          tableBody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-red-500">Error al cargar pagos.</td></tr>';
+        .catch(err => {
+          console.error("Error al mapear flujo de pagos:", err);
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="6" class="p-6 text-center text-red-500 font-semibold">
+                <i class="fa-solid fa-circle-exclamation mr-2"></i> Error al conectar con la pasarela de pagos interna.
+              </td>
+            </tr>`;
         });
 
       filtroMes.addEventListener("change", renderTabla);
       filtroTexto.addEventListener("input", renderTabla);
 
+      function obtenerBadgeEstado(estado) {
+        const est = (estado || "COMPLETADO").toUpperCase();
+        let estilos = "bg-emerald-50 text-emerald-700 border-emerald-200";
+        
+        if (est === "PENDIENTE") estilos = "bg-amber-50 text-amber-700 border-amber-200";
+        else if (est === "CANCELADO" || est === "EXTORNADO") estilos = "bg-rose-50 text-rose-700 border-rose-200";
+
+        return `<span class="px-2.5 py-1 text-xs font-bold rounded-lg border ${estilos} inline-block tracking-wide">${est}</span>`;
+      }
+
+      function obtenerIconoMetodo(metodo) {
+        const met = (metodo || "Tarjeta de crédito").toLowerCase();
+        if (met.includes("tarjeta") || met.includes("visa") || met.includes("mastercard")) {
+          return `<span class="flex items-center gap-2 text-textMain font-medium"><i class="fa-solid fa-credit-card text-clifarBase"></i> Tarjeta de Crédito</span>`;
+        } else if (met.includes("yape") || met.includes("plin") || met.includes("billetera")) {
+          return `<span class="flex items-center gap-2 text-textMain font-medium"><i class="fa-solid fa-mobile-screen-button text-purple-600"></i> Billetera Digital</span>`;
+        } else {
+          return `<span class="flex items-center gap-2 text-textMain font-medium"><i class="fa-solid fa-money-bill-wave text-emerald-600"></i> Efectivo</span>`;
+        }
+      }
+
       function renderTabla() {
         const mesSeleccionado = filtroMes.value;
         const texto = filtroTexto.value.toLowerCase();
 
-        const pagosFiltrados = allPagos.filter(pago => {
-          const fechaPago = pago.fechaPago || "";
-          const coincideMes = !mesSeleccionado || fechaPago.startsWith(mesSeleccionado);
-          const coincideTexto = pago.cliente.toLowerCase().includes(texto) || pago.servicio.toLowerCase().includes(texto);
-          return coincideMes && coincideTexto;
-        });
+        const pagosFiltrados = allPagos
+          .sort((a, b) => new Date(b.fechaPago) - new Date(a.fechaPago))
+          .filter(pago => {
+            const fechaPago = pago.fechaPago || "";
+            const coincideMes = !mesSeleccionado || fechaPago.startsWith(mesSeleccionado);
+            const coincideTexto = pago.cliente.toLowerCase().includes(texto) || pago.servicio.toLowerCase().includes(texto);
+            return coincideMes && coincideTexto;
+          });
 
         let total = 0;
         tableBody.innerHTML = "";
 
         if (pagosFiltrados.length === 0) {
-          tableBody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">No hay pagos.</td></tr>';
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="6" class="p-8 text-center text-textSec font-medium bg-white">
+                No se registran transacciones bajo los criterios de búsqueda seleccionados.
+              </td>
+            </tr>`;
           totalPagos.textContent = "0.00";
           return;
         }
 
+        // Construcción optimizada mediante fragmento de strings
+        let filasHtml = "";
         pagosFiltrados.forEach(pago => {
-          const estadoLabel = "COMPLETADO";
-          const badgeColor = "bg-green-200 text-green-800";
-          const metodo = "Tarjeta de crédito";
-
           total += pago.monto;
-
-          tableBody.innerHTML += `
-            <tr>
-              <td class="p-3">${pago.fechaPago}</td>
-              <td class="p-3">${pago.cliente}</td>
-              <td class="p-3">${pago.servicio}</td>
-              <td class="p-3">S/ ${pago.monto.toFixed(2)}</td>
-              <td class="p-3">${metodo}</td>
-              <td class="p-3"><span class="inline-block px-2 py-1 text-xs font-semibold rounded-full ${badgeColor}">${estadoLabel}</span></td>
+          
+          filasHtml += `
+            <tr class="hover:bg-clifarBg/40 transition-all border-b border-gray-100">
+              <td class="p-4 font-semibold text-clifarDark">${pago.fechaPago}</td>
+              <td class="p-4 font-bold text-textMain">${pago.cliente}</td>
+              <td class="p-4 text-xs font-semibold text-textSec max-w-[260px] truncate" title="${pago.servicio}">${pago.servicio}</td>
+              <td class="p-4 font-black text-textMain">S/ ${pago.monto.toFixed(2)}</td>
+              <td class="p-4">${obtenerIconoMetodo(pago.metodoPago)}</td>
+              <td class="p-4 text-center">${obtenerBadgeEstado(pago.estado)}</td>
             </tr>
           `;
         });
 
+        tableBody.innerHTML = filasHtml;
         totalPagos.textContent = total.toFixed(2);
       }
     });
-
-    function logout() {
-    document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-    window.location.href = "/";
-  }
   </script>
 </body>
 </html>
