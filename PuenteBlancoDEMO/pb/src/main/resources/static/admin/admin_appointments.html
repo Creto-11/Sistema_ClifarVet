@@ -1,142 +1,271 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8" />
-  <title>Gestión de Citas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLIFARVET | Gestión de Citas</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            clifarBase: '#1C8C7A',    
+            clifarDark: '#0F5E52',    
+            clifarLight: '#6FC3B2',   
+            clifarCTA: '#F26A4B',     
+            clifarAccent: '#F6B44B',  
+            clifarBg: '#F2F4F3',      
+            textMain: '#1F2933',      
+            textSec: '#6B7280',       
+          }
+        }
+      }
+    }
+  </script>
 </head>
 
-<body class="bg-gray-100 min-h-screen flex flex-col">
+<body class="bg-clifarBg font-sans antialiased text-textMain min-h-screen">
 
   <!-- Barra superior -->
-  <header class="bg-green-600 text-white py-4 px-4 sm:px-6 flex justify-between items-center w-full shadow-md z-20">
-    <h1 class="text-xl font-bold">Clínica y Veterinaria Puente Blanco</h1>
-    <span>Gestión de Citas</span>
+  <header class="h-16 bg-clifarDark text-white px-6 flex justify-between items-center w-full fixed top-0 z-30 shadow-md">
+    <div class="flex items-center gap-4">
+      <button onclick="toggleSidebar()" class="md:hidden text-white focus:outline-none p-1">
+        <i class="fa-solid fa-bars text-xl"></i>
+      </button>
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-paw text-2xl text-clifarAccent"></i>
+        <h1 class="text-xl font-bold tracking-tight">CLIFARVET <span class="font-light hidden sm:inline">| Puente Blanco</span></h1>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 md:gap-3">
+      <span class="text-sm font-medium opacity-90">Panel del Administrador</span>
+      <div class="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center border border-white/20">
+        <i class="fa-solid fa-user-gear text-sm text-white/90"></i>
+      </div>
+    </div>
   </header>
 
-  <div class="flex flex-1">
+  <div class="flex w-full pt-16">
     <!-- Sidebar -->
-    <aside class="w-64 bg-gray-800 text-white flex flex-col justify-between min-h-full">
-      <nav class="flex flex-col p-4 space-y-4">
-        <a href="/admin/admin_dashboard.html" class="flex items-center gap-3 hover:text-blue-300">
-          <i class="fa-solid fa-chart-line"></i> Dashboard
+    <aside id="sidebar" class="fixed top-16 left-0 w-64 h-[calc(100vh-64px)] bg-[#111827] text-gray-300 flex flex-col justify-between z-40
+        transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
+      
+      <div class="py-6 flex flex-col px-3 space-y-2">
+        <p class="text-[11px] uppercase tracking-widest text-gray-500 font-extrabold px-3 mb-3">Administración</p>
+        
+        <a href="/admin/admin_dashboard.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all text-gray-400 font-medium">
+          <i class="fa-solid fa-chart-line w-5 text-center text-xl"></i>
+          <span>Dashboard</span>
         </a>
-        <a href="/admin/admin_users.html" class="flex items-center gap-3 hover:text-blue-300">
-          <i class="fa-solid fa-users"></i> Usuarios
+
+        <a href="/admin/admin_users.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all text-gray-400 font-medium">
+          <i class="fa-solid fa-users w-5 text-center text-xl"></i>
+          <span>Usuarios</span>
         </a>
-        <a href="/admin/admin_services.html" class="flex items-center gap-3 hover:text-blue-300">
-          <i class="fa-solid fa-gear"></i> Servicios
+
+        <a href="/admin/admin_services.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all text-gray-400 font-medium">
+          <i class="fa-solid fa-gear w-5 text-center text-xl"></i>
+          <span>Servicios</span>
         </a>
-        <a href="/admin/admin_appointments.html" class="flex items-center gap-3 text-blue-300">
-          <i class="fa-solid fa-calendar-days"></i> Citas
+
+        <a href="/admin/admin_appointments.html" class="flex items-center gap-3 p-3 rounded-lg text-clifarAccent bg-clifarBase/30 border-l-4 border-clifarAccent transition-all shadow-inner">
+          <i class="fa-solid fa-calendar-days w-5 text-center text-xl"></i>
+          <span class="font-bold">Citas Globales</span>
         </a>
-        <a href="/admin/admin_payments.html" class="flex items-center gap-3 hover:text-blue-300">
-          <i class="fa-solid fa-dollar-sign"></i> Pagos
+
+        <a href="/admin/admin_payments.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all text-gray-400 font-medium">
+          <i class="fa-solid fa-dollar-sign w-5 text-center text-xl"></i>
+          <span>Caja y Pagos</span>
         </a>
-      </nav>
-      <button onclick="logout()"
-        class="m-4 flex items-center justify-center gap-2 bg-gray-100 text-red-500 px-4 py-2 rounded hover:bg-gray-200">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
-      </button>
+      </div>
+
+      <div class="p-4 border-t border-gray-700/50">
+        <button onclick="logout()" class="w-full flex items-center justify-center gap-2.5 bg-gray-700/60 text-red-400 hover:bg-red-500 hover:text-white px-4 py-3 rounded-xl transition-all duration-200">
+          <i class="fa-solid fa-power-off text-lg"></i> 
+          <span class="font-semibold">Cerrar Sesión</span>
+        </button>
+      </div>
     </aside>
 
-    <!-- Contenido principal -->
-    <main class="flex-1 p-6">
-      <h2 class="text-2xl font-semibold mb-4">Gestión de Citas</h2>
-
-      <!-- Filtros -->
-      <div class="flex flex-wrap gap-4 mb-6">
-        <input type="date" id="filtroFecha" class="border rounded px-3 py-2" />
-        <select id="filtroEstado" class="border rounded px-3 py-2">
-          <option value="">Todos los estados</option>
-          <option value="PROGRAMADA">Programada</option>
-          <option value="COMPLETADA">Completada</option>
-          <option value="CANCELADA">Cancelada</option>
-          <option value="DERIVADA">Derivada</option>
-          <option value="VALIDADA">Validada</option>
-          <option value="PAGADA">Pagada</option>
-        </select>
-        <input type="text" id="filtroDoctor" placeholder="Buscar doctor..." class="border rounded px-3 py-2" />
-        <input type="text" id="filtroClienteMascota" placeholder="Buscar cliente o mascota..."
-          class="border rounded px-3 py-2" />
+    <!-- Contenido Principal -->
+    <main class="flex-1 p-4 md:p-8 ml-0 md:ml-64 transition-all duration-300">
+      
+      <!-- Título de sección -->
+      <div class="mb-8 p-6 bg-white rounded-2xl shadow-sm border-l-4 border-clifarBase">
+        <h2 class="text-3xl font-extrabold text-clifarDark tracking-tight">Gestión General de Citas</h2>
+        <p class="text-textSec text-base flex items-center gap-2.5 mt-2">
+          <i class="fa-solid fa-sliders text-clifarAccent"></i> 
+          Filtra, busca y actualiza las asignaciones de servicios y profesionales médicos
+        </p>
       </div>
 
-      <h2 class="text-xl font-semibold mb-4">Lista de Citas Programadas</h2>
+      <!-- Bloque de Filtros -->
+      <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm mb-8">
+        <h3 class="text-sm font-bold text-clifarDark uppercase tracking-wider mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-filter text-clifarBase"></i> Criterios de Búsqueda
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-bold text-textSec uppercase">Fecha de Cita</label>
+            <input type="date" id="filtroFecha" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:border-clifarBase focus:ring-4 focus:ring-clifarBase/10 outline-none text-sm transition-all" />
+          </div>
 
-      <div class="bg-white shadow-md rounded overflow-x-auto">
-        <!-- Fragmento de la tabla modificado -->
-        <table class="w-full text-sm">
-          <thead class="bg-gray-100 text-left">
-            <tr>
-              <th class="p-3">Fecha</th>
-              <th class="p-3">Hora</th>
-              <th class="p-3">Cliente</th>
-              <th class="p-3">Mascota</th>
-              <th class="p-3">Servicio</th>
-              <th class="p-3">Profesional</th>
-              <th class="p-3">Estado</th>
-            </tr>
-          </thead>
-          <tbody id="appointmentsTableBody">
-            <!-- Citas dinámicas -->
-          </tbody>
-        </table>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-bold text-textSec uppercase">Estado Interno</label>
+            <select id="filtroEstado" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:border-clifarBase focus:ring-4 focus:ring-clifarBase/10 outline-none text-sm transition-all bg-white">
+              <option value="">Todos los estados</option>
+              <option value="PROGRAMADA">Programada</option>
+              <option value="COMPLETADA">Completada</option>
+              <option value="CANCELADA">Cancelada</option>
+              <option value="DERIVADA">Derivada</option>
+              <option value="VALIDADA">Validada</option>
+              <option value="PAGADA">Pagada</option>
+            </select>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-bold text-textSec uppercase">Médico Veterinario</label>
+            <div class="relative">
+              <i class="fa-solid fa-user-user-md absolute left-3.5 top-3.5 text-textSec text-xs"></i>
+              <input type="text" id="filtroDoctor" placeholder="Buscar doctor..." class="w-full border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 focus:border-clifarBase focus:ring-4 focus:ring-clifarBase/10 outline-none text-sm transition-all" />
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-bold text-textSec uppercase">Paciente / Titular</label>
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-textSec text-xs"></i>
+              <input type="text" id="filtroClienteMascota" placeholder="Nombre dueño o mascota..." class="w-full border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 focus:border-clifarBase focus:ring-4 focus:ring-clifarBase/10 outline-none text-sm transition-all" />
+            </div>
+          </div>
+        </div>
       </div>
+
+      <!-- Listado de Citas -->
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100 flex flex-col">
+        <div class="bg-clifarBg/70 px-6 py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <h3 class="text-lg font-bold text-clifarDark flex items-center gap-2.5">
+            <i class="fa-solid fa-list-check text-clifarBase"></i> Historial Integrado de Citas
+          </h3>
+          <span class="text-xs text-textSec font-medium italic"><i class="fa-solid fa-circle-info text-clifarBase mr-1"></i> Haz clic sobre una fila para modificar médico o servicio</span>
+        </div>
+        
+        <div class="overflow-x-auto w-full">
+          <table class="w-full text-sm text-left border-collapse">
+            <thead>
+              <tr class="bg-gray-50 border-b border-gray-100 text-textSec font-bold text-xs uppercase tracking-wider">
+                <th class="p-4">Fecha</th>
+                <th class="p-4">Hora</th>
+                <th class="p-4">Cliente / Dueño</th>
+                <th class="p-4">Mascota</th>
+                <th class="p-4">Servicio requerido</th>
+                <th class="p-4">Profesional asignado</th>
+                <th class="p-4 text-center">Estado</th>
+              </tr>
+            </thead>
+            <tbody id="appointmentsTableBody" class="divide-y divide-gray-50">
+              <!-- Elementos dinámicos cargados por JS -->
+              <tr>
+                <td colspan="7" class="p-6 text-center text-textSec font-medium">
+                  <i class="fa-solid fa-spinner animate-spin text-clifarBase text-base mr-2"></i> Cargando base de datos de citas...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="bg-clifarDark text-gray-100 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4 mt-8 opacity-95 shadow-inner">              
+        <div class="text-center md:text-left">
+          <p class="text-xs font-black text-clifarAccent uppercase mb-0.5">Clínica Veterinaria</p>
+          <p class="text-sm opacity-80">Urb. Puente Blanco J-9, Ica</p>
+        </div>
+        <div class="text-center md:text-right">
+          <p class="text-xs font-black text-clifarAccent uppercase mb-0.5">Soporte Operativo</p>
+          <p class="text-sm opacity-80">clifarveteirl@hotmail.com</p>
+        </div>
+      </footer>
+
     </main>
   </div>
 
-  <!-- Modal edición solo veterinario y servicio -->
-  <div id="editModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden z-50">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
-      <h3 class="text-xl font-bold mb-4">Editar Cita</h3>
-      <form id="editForm" class="space-y-4">
+  <!-- Modal Rediseñado -->
+  <div id="editModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4 transition-all">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-gray-100 transform transition-transform animate-in fade-in zoom-in-95 duration-200">
+      <div class="bg-clifarDark p-5 text-white flex justify-between items-center">
+        <h3 class="text-lg font-bold tracking-tight flex items-center gap-2">
+          <i class="fa-solid fa-user-pen text-clifarAccent"></i> Modificar Parámetros de la Cita
+        </h3>
+        <button id="closeModalCross" class="text-white/80 hover:text-white transition p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      
+      <form id="editForm" class="p-6 space-y-5">
         <input type="hidden" id="editId">
 
         <!-- Veterinario -->
-        <div>
-          <label class="block text-sm font-semibold mb-1">Nuevo Veterinario</label>
-          <select id="editProfesional" class="w-full border rounded px-3 py-2" required>
-            <option value="1">Dr. Luis Perez Gutierrez</option>
-            <option value="2">Dra. Carla Mendoza Ramirez</option>
-            <option value="2">Dra. Kiara Monzon Ramirez</option>
-
-            <!-- Agrega más dinámicamente si lo deseas -->
-          </select>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs font-bold text-textSec uppercase">Asignar Médico Veterinario</label>
+          <div class="relative">
+            <select id="editProfesional" class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:border-clifarBase focus:ring-4 focus:ring-clifarBase/10 outline-none text-sm transition-all bg-white appearance-none" required>
+              <option value="1">Dr. Luis Perez Gutierrez</option>
+              <option value="2">Dra. Carla Mendoza Ramirez</option>
+              <option value="3">Dra. Kiara Monzon Ramirez</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-textSec">
+              <i class="fa-solid fa-chevron-down text-xs"></i>
+            </div>
+          </div>
         </div>
 
         <!-- Servicio -->
-        <div>
-          <label class="block text-sm font-semibold mb-1">Nuevo Servicio</label>
-          <select id="editService" class="w-full border rounded px-3 py-2" required>
-            <option value="1">Consulta médica general para revisión de mascotas</option>
-            <option value="2">Aplicación de vacuna antirrábica</option>
-            <option value="3">Desparasitación interna y externa </option>
-            <option value="4">Limpieza de oídos y corte de uñas </option>
-            <option value="5">Evaluación prequirúrgica especializada </option>
-
-            <!-- Agrega más servicios si deseas -->
-          </select>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs font-bold text-textSec uppercase">Actualizar Servicio Médico</label>
+          <div class="relative">
+            <select id="editService" class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:border-clifarBase focus:ring-4 focus:ring-clifarBase/10 outline-none text-sm transition-all bg-white appearance-none" required>
+              <option value="1">Consulta médica general para revisión de mascotas</option>
+              <option value="2">Aplicación de vacuna antirrábica</option>
+              <option value="3">Desparasitación interna y externa</option>
+              <option value="4">Limpieza de oídos y corte de uñas</option>
+              <option value="5">Evaluación prequirúrgica especializada</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-textSec">
+              <i class="fa-solid fa-chevron-down text-xs"></i>
+            </div>
+          </div>
         </div>
 
-        <!-- Botones -->
-        <div class="flex justify-end gap-2 pt-4">
-          <button type="button" id="cancelEdit"
-            class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded">Cancelar</button>
-          <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Guardar
-            Cambios</button>
+        <!-- Botones de Acción -->
+        <div class="flex justify-end gap-3 pt-3 border-t border-gray-100">
+          <button type="button" id="cancelEdit" class="bg-gray-100 hover:bg-gray-200 text-textMain font-bold px-5 py-2.5 rounded-xl transition text-sm">
+            Cancelar
+          </button>
+          <button type="submit" class="bg-clifarBase hover:bg-clifarDark text-white font-bold px-5 py-2.5 rounded-xl transition shadow-md hover:shadow-clifarBase/20 text-sm">
+            Guardar Cambios
+          </button>
         </div>
       </form>
     </div>
   </div>
 
-
-  <!-- Script con filtros y edición -->
   <script>
     const apiUrl = "/api/admin/appointments";
     let todasLasCitas = [];
+    const sidebar = document.getElementById("sidebar");
+
+    function toggleSidebar() {
+      sidebar.classList.toggle("-translate-x-full");
+    }
+
+    function logout() {
+      document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      window.location.href = "/";
+    }
 
     function cargarCitas() {
       fetch(apiUrl)
@@ -144,56 +273,95 @@
         .then(citas => {
           todasLasCitas = citas;
           mostrarCitasFiltradas();
+        })
+        .catch(err => {
+          console.error("Error al sincronizar listado de citas:", err);
+          document.getElementById("appointmentsTableBody").innerHTML = `
+            <tr>
+              <td colspan="7" class="p-6 text-center text-red-500 font-semibold">
+                <i class="fa-solid fa-circle-exclamation mr-2"></i> Error al conectar con el servidor.
+              </td>
+            </tr>`;
         });
     }
 
-   // Código JS modificado para no incluir columna de acciones
-function mostrarCitasFiltradas() {
-  const fecha = document.getElementById("filtroFecha").value;
-  const estado = document.getElementById("filtroEstado").value.toLowerCase();
-  const doctor = document.getElementById("filtroDoctor").value.toLowerCase();
-  const clienteMascota = document.getElementById("filtroClienteMascota").value.toLowerCase();
+    function obtenerBadgeEstado(estado) {
+      const est = estado.toUpperCase();
+      let estilos = "bg-gray-100 text-gray-700 border-gray-200";
+      
+      if (est === "PROGRAMADA") estilos = "bg-blue-50 text-blue-700 border-blue-200";
+      else if (est === "COMPLETADA" || est === "VALIDADA") estilos = "bg-emerald-50 text-emerald-700 border-emerald-200";
+      else if (est === "CANCELADA") estilos = "bg-rose-50 text-rose-700 border-rose-200";
+      else if (est === "DERIVADA") estilos = "bg-amber-50 text-amber-700 border-amber-200";
+      else if (est === "PAGADA") estilos = "bg-purple-50 text-purple-700 border-purple-200";
 
-  const tbody = document.getElementById("appointmentsTableBody");
-  tbody.innerHTML = "";
+      return `<span class="px-2.5 py-1 text-xs font-bold rounded-lg border ${estilos} inline-block tracking-wide">${estado}</span>`;
+    }
 
-  todasLasCitas
-    .sort((a, b) => new Date(b.fecha + 'T' + b.hora) - new Date(a.fecha + 'T' + a.hora))
-    .filter(cita => {
-      const coincideFecha = !fecha || cita.fecha === fecha;
-      const coincideEstado = !estado || cita.estadoCita.toLowerCase() === estado;
-      const coincideDoctor = !doctor || cita.doctor.toLowerCase().includes(doctor);
-      const coincideClienteMascota = !clienteMascota ||
-        cita.cliente.toLowerCase().includes(clienteMascota) ||
-        cita.mascota.toLowerCase().includes(clienteMascota);
-      return coincideFecha && coincideEstado && coincideDoctor && coincideClienteMascota;
-    })
-    .forEach(cita => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td class="p-2">${cita.fecha}</td>
-        <td class="p-2">${cita.hora}</td>
-        <td class="p-2">${cita.cliente}</td>
-        <td class="p-2">${cita.mascota}</td>
-        <td class="p-2">${cita.servicio}</td>
-        <td class="p-2">${cita.doctor}</td>
-        <td class="p-2">${cita.estadoCita}</td>`;
-      tbody.appendChild(tr);
-    });
-}
+    function mostrarCitasFiltradas() {
+      const fecha = document.getElementById("filtroFecha").value;
+      const estado = document.getElementById("filtroEstado").value.toLowerCase();
+      const doctor = document.getElementById("filtroDoctor").value.toLowerCase();
+      const clienteMascota = document.getElementById("filtroClienteMascota").value.toLowerCase();
 
+      const tbody = document.getElementById("appointmentsTableBody");
+      tbody.innerHTML = "";
+
+      const filtradas = todasLasCitas
+        .sort((a, b) => new Date(b.fecha + 'T' + b.hora) - new Date(a.fecha + 'T' + a.hora))
+        .filter(cita => {
+          const coincideFecha = !fecha || cita.fecha === fecha;
+          const coincideEstado = !estado || cita.estadoCita.toLowerCase() === estado;
+          const coincideDoctor = !doctor || cita.doctor.toLowerCase().includes(doctor);
+          const coincideClienteMascota = !clienteMascota ||
+            cita.cliente.toLowerCase().includes(clienteMascota) ||
+            cita.mascota.toLowerCase().includes(clienteMascota);
+          return coincideFecha && coincideEstado && coincideDoctor && coincideClienteMascota;
+        });
+
+      if (filtradas.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="p-8 text-center text-textSec font-medium bg-white">
+              No se encontraron registros de citas que coincidan con los criterios de búsqueda.
+            </td>
+          </tr>`;
+        return;
+      }
+
+      filtradas.forEach(cita => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-clifarBg/50 transition-all cursor-pointer border-b border-gray-100 group";
+        
+        // Hacemos interactiva toda la fila asignando el evento click
+        tr.addEventListener("click", () => editarCita(cita));
+
+        tr.innerHTML = `
+          <td class="p-4 font-semibold text-clifarDark">${cita.fecha}</td>
+          <td class="p-4 font-medium text-textMain">${cita.hora}</td>
+          <td class="p-4 font-bold text-textMain group-hover:text-clifarBase transition-colors">${cita.cliente}</td>
+          <td class="p-4 font-medium text-textMain">${cita.mascota}</td>
+          <td class="p-4 text-xs font-semibold text-textSec max-w-[220px] truncate" title="${cita.servicio}">${cita.servicio}</td>
+          <td class="p-4 font-medium text-textMain">${cita.doctor}</td>
+          <td class="p-4 text-center">${obtenerBadgeEstado(cita.estadoCita)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
 
     function editarCita(cita) {
       document.getElementById("editId").value = cita.id;
-      document.getElementById("editProfesional").value = cita.idProfesional;
-      document.getElementById("editService").value = cita.idServicio;
+      document.getElementById("editProfesional").value = cita.idProfesional || "1";
+      document.getElementById("editService").value = cita.idServicio || "1";
       document.getElementById("editModal").classList.remove("hidden");
     }
 
-
-    document.getElementById("cancelEdit").addEventListener("click", () => {
+    function ocultarModal() {
       document.getElementById("editModal").classList.add("hidden");
-    });
+    }
+
+    document.getElementById("cancelEdit").addEventListener("click", ocultarModal);
+    document.getElementById("closeModalCross").addEventListener("click", ocultarModal);
 
     document.getElementById("editForm").addEventListener("submit", (e) => {
       e.preventDefault();
@@ -203,42 +371,45 @@ function mostrarCitasFiltradas() {
         servicioId: Number(document.getElementById("editService").value),
       };
 
-      console.log("Enviando DTO:", dto);
-
       fetch(`${apiUrl}/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dto),
       })
         .then(res => {
-          if (!res.ok) throw new Error("Error al guardar");
-          return res.text(); // como el backend devuelve 204 No Content
-        })
-        .then(() => {
-          document.getElementById("editModal").classList.add("hidden");
+          if (!res.ok) throw new Error("Error en la actualización");
+          ocultarModal();
+          
+          // Reemplazo del alert nativo por SweetAlert2
+          Swal.fire({
+            title: '¡Cita Actualizada!',
+            text: 'Los parámetros médicos han sido guardados con éxito en la base de datos.',
+            icon: 'success',
+            confirmButtonColor: '#1C8C7A',
+            background: '#F2F4F3'
+          });
+
           cargarCitas();
         })
         .catch(err => {
-          alert("Hubo un error al actualizar la cita.");
           console.error(err);
+          Swal.fire({
+            title: 'Error de Servidor',
+            text: 'Hubo un inconveniente al intentar actualizar el registro.',
+            icon: 'error',
+            confirmButtonColor: '#F26A4B',
+            background: '#F2F4F3'
+          });
         });
     });
 
-
-
-
+    // Escuchadores de eventos para los inputs de filtrado
     ["filtroFecha", "filtroEstado", "filtroDoctor", "filtroClienteMascota"].forEach(id => {
       document.getElementById(id).addEventListener("input", mostrarCitasFiltradas);
     });
 
     document.addEventListener("DOMContentLoaded", cargarCitas);
-
-    function logout() {
-      document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-      window.location.href = "/";
-    }
   </script>
 
 </body>
-
 </html>
