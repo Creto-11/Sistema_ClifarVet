@@ -12,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/client/appointments")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*") //MODIFICACIÓN POR CRETO: Habilita flutter
 public class AppointmentController {
 
     private final AppointmentShowClientService appointmentShowClientService;
