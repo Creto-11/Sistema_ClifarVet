@@ -1,152 +1,218 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Citas Validadas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      href="https://res.cloudinary.com/dtqf08fo5/image/upload/f_auto,q_auto/LOGO_CLIFARVET_onqjmj"
+    />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Citas Validadas</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-   <link rel="icon" href="https://res.cloudinary.com/dtqf08fo5/image/upload/f_auto,q_auto/LOGO_CLIFARVET_onqjmj">
-</head>
-
-<body class="bg-gray-100 min-h-screen flex flex-col overflow-x-hidden">
-
-  <!-- Barra superior -->
-  <header
-    class="h-16 bg-[#0F5E52] text-white px-4 md:px-6 flex justify-between items-center w-full fixed top-0 z-50 shadow-md">
-    <div class="flex items-center gap-4">
-      <button onclick="toggleSidebar()"
-        class="md:hidden text-white focus:outline-none hover:bg-white/10 p-1 rounded-md transition">
-        <i class="fa-solid fa-bars text-xl"></i>
-      </button>
-      <img class="w-12 object-contain"
-        src="https://res.cloudinary.com/dtqf08fo5/image/upload/f_auto,q_auto/LOGO_CLIFARVET_onqjmj"
-        alt="">
-      <h1 class="text-xl md:text-2xl font-bold tracking-tight">CLIFARVET |</h1>
-      <h2 class="font-light text-base hidden sm:inline">Clínica y Veterinaria Puente Blanco</h2>
-    </div>
-
-    <!--Usuario-->
-    <div class="flex items-center gap-2 md:gap-3">
-      <span th:text="'Hola, ' + ${dashboard.fullName}"
-        class="text-base font-light  opacity-90 truncate max-w-[150px] md:max-w-[250px]">Shamira Shantal</span>
-      <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center border border-white overflow-hidden">
-        <img class="w-full h-full object-cover"
-          src="https://i.pinimg.com/1200x/7b/5c/43/7b5c43a2cc8ec0bc71416746a5798a2d.jpg" alt="">
-      </div>
-    </div>
-
-  </header>
-
-  <div class="pt-16">
-    <!-- Sidebar -->
-    <aside id="sidebar"
-      class="fixed top-16 left-0 w-64 h-[calc(100vh-64px)] bg-[#111827] text-gray-300 flex flex-col justify-between z-40 transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
-
-      <div class="py-6 flex flex-col px-3 space-y-2">
-
-        <a href="/intern/intern_dashboard.html"
-          class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all">
-          <i class="fa-solid fa-table-columns w-5 text-center text-xl"></i>
-          <span class="font-bold">Dashboard</span>
-        </a>
-
-        <a href="/intern/intern_appointments.html"
-          class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all">
-          <i class="fa-solid fa-calendar-check w-5 text-center text-xl"></i>
-          <span class="font-medium">Citas derivadas</span>
-        </a>
-
-
-        <a href="/intern/intern_validated.html"
-          class="flex items-center gap-3 p-3 rounded-lg text-clifarAccent bg-clifarBase/30 border-l-4 border-clifarAccent transition-all shadow-inner">
-          <i class="fa-solid fa-check-double w-5 text-center text-xl"></i>
-          <span class="font-medium">Citas Validadas</span>
-        </a>
-      </div>
-
-      <div class="p-4 border-t border-gray-700/50">
-        <button onclick="logout()"
-          class="w-full flex items-center justify-center gap-2.5 bg-gray-700/60 text-red-400 hover:bg-red-500 hover:text-white px-4 py-3 rounded-xl transition-all duration-200">
-          <i class="fa-solid fa-power-off text-lg"></i>
-          <span class="font-semibold">Cerrar Sesión</span>
+  <body class="bg-gray-100 min-h-screen flex flex-col overflow-x-hidden">
+    <!-- Barra superior -->
+    <header
+      class="h-16 bg-[#0F5E52] text-white px-4 md:px-6 flex justify-between items-center w-full fixed top-0 z-50 shadow-md"
+    >
+      <div class="flex items-center gap-4">
+        <button
+          onclick="toggleSidebar()"
+          class="md:hidden text-white focus:outline-none hover:bg-white/10 p-1 rounded-md transition"
+        >
+          <i class="fa-solid fa-bars text-xl"></i>
         </button>
-      </div>
-    </aside>
-
-
-    <!-- Contenido principal -->
-    <main class="max-w-full md:ml-64 p-4 md:p-8 transition-all duration-300">
-      <div class="space-y-2">
-        <h2 class="text-4xl font-bold text-gray-800">
-          Historial de Citas Validadas
+        <img
+          class="w-12 object-contain"
+          src="https://res.cloudinary.com/dtqf08fo5/image/upload/f_auto,q_auto/LOGO_CLIFARVET_onqjmj"
+          alt=""
+        />
+        <h1 class="text-xl md:text-2xl font-bold tracking-tight">
+          CLIFARVET |
+        </h1>
+        <h2 class="font-light text-base hidden sm:inline">
+          Clínica y Veterinaria Puente Blanco
         </h2>
       </div>
 
-      <!-- Filtros -->
-      <div class="m-6 p-8 bg-white shadow-lg border rounded-xl grid grid-cols-1 md:grid-cols-3 gap-4 ">
-        <input type="text" id="filtroTexto" placeholder="Buscar por mascota, servicio o veterinario..."
-          class="w-full px-4 py-2  border-2 border-teal-600 rounded shadow-sm" />
-        <input type="date" id="filtroDesde" class="w-full px-4 py-2 border-2 border-teal-600 rounded shadow-sm" />
-        <input type="date" id="filtroHasta" class="w-full px-4 py-2 border-2 border-teal-600 rounded shadow-sm" />
-
-        <input type="hidden" id="ordenValor" value="desc">
+      <!--Usuario-->
+      <div class="flex items-center gap-2 md:gap-3">
+        <span
+          id="nombre-usuario-header"
+          th:text="'Hola, ' + ${dashboard.fullName}"
+          class="text-base font-light opacity-90 truncate max-w-[150px] md:max-w-[250px]"
+          >Cargando perfil...</span
+        >
+        <div
+          class="w-10 h-10 bg-white rounded-full flex items-center justify-center border border-white overflow-hidden"
+        >
+          <img
+            class="w-full h-full object-cover"
+            src="https://i.pinimg.com/1200x/7b/5c/43/7b5c43a2cc8ec0bc71416746a5798a2d.jpg"
+            alt=""
+          />
+        </div>
       </div>
+    </header>
 
-      <!-- Tabla -->
-      <div class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
-        <table class="min-w-full divide-y  divide-gray-200">
-          <thead class="bg-teal-600">
-            <tr class="text-center text-sm font-bold text-white">
-              <th class="px-6 py-3 uppercase tracking-wider">Fecha y Hora</th>
-              <th class="px-6 py-3 uppercase tracking-wider">Mascota</th>
-              <th class="px-6 py-3 uppercase tracking-wider">Servicio</th>
-              <th class="px-6 py-3 uppercase tracking-wider">Veterinario</th>
-              <th class="px-6 py-3 uppercase tracking-wider">Estado</th>
-              <th class="px-6 py-3 uppercase tracking-wider">Cliente</th>
-            </tr>
-          </thead>
-          <tbody id="tablaCitasValidadas" class="divide-y divide-gray-100 text-sm text-gray-800">
-          </tbody>
-        </table>
-      </div>
-    </main>
-  </div>
+    <div class="pt-16">
+      <!-- Sidebar -->
+      <aside
+        id="sidebar"
+        class="fixed top-16 left-0 w-64 h-[calc(100vh-64px)] bg-[#111827] text-gray-300 flex flex-col justify-between z-40 transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none"
+      >
+        <div class="py-6 flex flex-col px-3 space-y-2">
+          <a
+            href="/intern/intern_dashboard.html"
+            class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all"
+          >
+            <i class="fa-solid fa-table-columns w-5 text-center text-xl"></i>
+            <span class="font-bold">Dashboard</span>
+          </a>
 
-  <script>
-    function logout() {
-      document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-      window.location.href = "/";
-    }
+          <a
+            href="/intern/intern_appointments.html"
+            class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all"
+          >
+            <i class="fa-solid fa-calendar-check w-5 text-center text-xl"></i>
+            <span class="font-medium">Citas derivadas</span>
+          </a>
 
-    //-----
-    document.addEventListener("DOMContentLoaded", () => {
-      const tbody = document.getElementById("tablaCitasValidadas");
-      const filtroTexto = document.getElementById("filtroTexto");
-      const filtroDesde = document.getElementById("filtroDesde");
-      const filtroHasta = document.getElementById("filtroHasta");
-      const hiddenInput = document.getElementById("ordenValor");
+          <a
+            href="/intern/intern_validated.html"
+            class="flex items-center gap-3 p-3 rounded-lg text-clifarAccent bg-clifarBase/30 border-l-4 border-clifarAccent transition-all shadow-inner"
+          >
+            <i class="fa-solid fa-check-double w-5 text-center text-xl"></i>
+            <span class="font-medium">Citas Validadas</span>
+          </a>
+        </div>
 
-      let citasOriginales = [];
+        <div class="p-4 border-t border-gray-700/50">
+          <button
+            onclick="logout()"
+            class="w-full flex items-center justify-center gap-2.5 bg-gray-700/60 text-red-400 hover:bg-red-500 hover:text-white px-4 py-3 rounded-xl transition-all duration-200"
+          >
+            <i class="fa-solid fa-power-off text-lg"></i>
+            <span class="font-semibold">Cerrar Sesión</span>
+          </button>
+        </div>
+      </aside>
 
-      fetch("/api/intern/appointments/aprobadas", {
-        credentials: 'include'
-      })
-        .then(res => res.json())
-        .then(data => {
-          citasOriginales = data || [];
-          aplicarFiltros();
+      <!-- Contenido principal -->
+      <main class="max-w-full md:ml-64 p-4 md:p-8 transition-all duration-300">
+        <div class="space-y-2">
+          <h2 class="text-4xl font-bold text-gray-800">
+            Historial de Citas Validadas
+          </h2>
+        </div>
+
+        <!-- Filtros -->
+        <div
+          class="m-6 p-8 bg-white shadow-lg border rounded-xl grid grid-cols-1 md:grid-cols-3 gap-4"
+        >
+          <input
+            type="text"
+            id="filtroTexto"
+            placeholder="Buscar por mascota, servicio o veterinario..."
+            class="w-full px-4 py-2 border-2 border-teal-600 rounded shadow-sm"
+          />
+          <input
+            type="date"
+            id="filtroDesde"
+            class="w-full px-4 py-2 border-2 border-teal-600 rounded shadow-sm"
+          />
+          <input
+            type="date"
+            id="filtroHasta"
+            class="w-full px-4 py-2 border-2 border-teal-600 rounded shadow-sm"
+          />
+
+          <input type="hidden" id="ordenValor" value="desc" />
+        </div>
+
+        <!-- Tabla -->
+        <div
+          class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200"
+        >
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-teal-600">
+              <tr class="text-center text-sm font-bold text-white">
+                <th class="px-6 py-3 uppercase tracking-wider">Fecha y Hora</th>
+                <th class="px-6 py-3 uppercase tracking-wider">Mascota</th>
+                <th class="px-6 py-3 uppercase tracking-wider">Servicio</th>
+                <th class="px-6 py-3 uppercase tracking-wider">Veterinario</th>
+                <th class="px-6 py-3 uppercase tracking-wider">Estado</th>
+                <th class="px-6 py-3 uppercase tracking-wider">Cliente</th>
+              </tr>
+            </thead>
+            <tbody
+              id="tablaCitasValidadas"
+              class="divide-y divide-gray-100 text-sm text-gray-800"
+            ></tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      function logout() {
+        document.cookie =
+          "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+        window.location.href = "/";
+      }
+
+      function logout() {
+        document.cookie =
+          "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+        window.location.href = "/";
+      }
+
+      // CAMBIO AQUÍ: Nueva función para renderizar el nombre
+      function cargarPerfil() {
+        const nombreGuardado = localStorage.getItem("nombreInternoGuardado");
+        const spanNombre = document.getElementById("nombre-usuario-header");
+
+        if (spanNombre) {
+          spanNombre.textContent = nombreGuardado
+            ? "Hola, " + nombreGuardado
+            : "Hola, Practicante";
+        }
+      }
+
+      //-----
+      document.addEventListener("DOMContentLoaded", () => {
+        cargarPerfil(); // <--- CAMBIO AQUÍ: Inyecta el nombre
+
+        const tbody = document.getElementById("tablaCitasValidadas");
+        const filtroTexto = document.getElementById("filtroTexto");
+        const filtroDesde = document.getElementById("filtroDesde");
+        const filtroHasta = document.getElementById("filtroHasta");
+        const hiddenInput = document.getElementById("ordenValor");
+
+        let citasOriginales = [];
+
+        fetch("/api/intern/appointments/aprobadas", {
+          credentials: "include",
         })
-        .catch(error => {
-          tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-4 text-center text-red-500">Error al cargar citas.</td></tr>`;
-          console.error(error);
-        });
+          .then((res) => res.json())
+          .then((data) => {
+            citasOriginales = data || [];
+            aplicarFiltros();
+          })
+          .catch((error) => {
+            tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-4 text-center text-red-500">Error al cargar citas.</td></tr>`;
+            console.error(error);
+          });
 
-      function renderizarTabla(citas) {
-        tbody.innerHTML = "";
+        function renderizarTabla(citas) {
+          tbody.innerHTML = "";
 
-        if (citas.length === 0) {
-          tbody.innerHTML = `
+          if (citas.length === 0) {
+            tbody.innerHTML = `
             <tr>
                 <td colspan="6" class="py-12">
 
@@ -165,20 +231,20 @@
 
                 </td>
               </tr>`;
-          return;
-        }
+            return;
+          }
 
-        citas.forEach(cita => {
-          const row = document.createElement("tr");
+          citas.forEach((cita) => {
+            const row = document.createElement("tr");
 
-          row.classList.add(
-            "hover:bg-blue-50",
-            "transition-all",
-            "duration-200",
-            "fila-cita"
-          );
+            row.classList.add(
+              "hover:bg-blue-50",
+              "transition-all",
+              "duration-200",
+              "fila-cita",
+            );
 
-          row.innerHTML = `
+            row.innerHTML = `
       <td class="px-4 py-3 text-center">${cita.fechaHora}</td>
       <td class="px-4 py-3 text-center font-medium">${cita.mascota}</td>
       <td class="px-4 py-3 text-center">${cita.servicio}</td>
@@ -191,42 +257,46 @@
       <td class="px-4 py-3 text-center">${cita.cliente}</td>
     `;
 
-          tbody.appendChild(row);
-        });
-      }
+            tbody.appendChild(row);
+          });
+        }
 
-      function aplicarFiltros() {
-        const texto = filtroTexto.value.toLowerCase();
-        const desde = filtroDesde.value;
-        const hasta = filtroHasta.value;
-        const orden = hiddenInput.value;
+        function aplicarFiltros() {
+          const texto = filtroTexto.value.toLowerCase();
+          const desde = filtroDesde.value;
+          const hasta = filtroHasta.value;
+          const orden = hiddenInput.value;
 
-        let filtradas = citasOriginales.filter(cita => {
-          const textoCita = (cita.mascota + " " + cita.servicio + " " + cita.veterinario).toLowerCase();
-          const cumpleTexto = textoCita.includes(texto);
+          let filtradas = citasOriginales.filter((cita) => {
+            const textoCita = (
+              cita.mascota +
+              " " +
+              cita.servicio +
+              " " +
+              cita.veterinario
+            ).toLowerCase();
+            const cumpleTexto = textoCita.includes(texto);
 
-          const fechaCita = cita.fechaHora.split(" ")[0]; // formato YYYY-MM-DD
-          const cumpleDesde = !desde || fechaCita >= desde;
-          const cumpleHasta = !hasta || fechaCita <= hasta;
+            const fechaCita = cita.fechaHora.split(" ")[0]; // formato YYYY-MM-DD
+            const cumpleDesde = !desde || fechaCita >= desde;
+            const cumpleHasta = !hasta || fechaCita <= hasta;
 
-          return cumpleTexto && cumpleDesde && cumpleHasta;
-        });
+            return cumpleTexto && cumpleDesde && cumpleHasta;
+          });
 
-        filtradas.sort((a, b) => {
-          const fechaA = new Date(a.fechaHora);
-          const fechaB = new Date(b.fechaHora);
-          return orden === "asc" ? fechaA - fechaB : fechaB - fechaA;
-        });
+          filtradas.sort((a, b) => {
+            const fechaA = new Date(a.fechaHora);
+            const fechaB = new Date(b.fechaHora);
+            return orden === "asc" ? fechaA - fechaB : fechaB - fechaA;
+          });
 
-        renderizarTabla(filtradas);
-      }
+          renderizarTabla(filtradas);
+        }
 
-      filtroTexto.addEventListener("input", aplicarFiltros);
-      filtroDesde.addEventListener("change", aplicarFiltros);
-      filtroHasta.addEventListener("change", aplicarFiltros);
-    });
-  </script>
-
-</body>
-
+        filtroTexto.addEventListener("input", aplicarFiltros);
+        filtroDesde.addEventListener("change", aplicarFiltros);
+        filtroHasta.addEventListener("change", aplicarFiltros);
+      });
+    </script>
+  </body>
 </html>

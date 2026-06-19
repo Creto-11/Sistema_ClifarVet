@@ -1386,6 +1386,9 @@ tipoDocSelect.addEventListener('change', () => {
         const saludo = `¡Bienvenido ${roles[data.rol]} ${data.nombreCompleto || ''}!`;
         showNotification(saludo, 'success');
 
+        // 👇 AÑADE ÚNICAMENTE ESTA LÍNEA AQUÍ 👇
+        localStorage.setItem('nombreInternoGuardado', data.nombreCompleto || 'Practicante');
+
         const redirecciones = {
           CLIENT: '/dashboard',
           VETERINARIAN: '/vet/veterinarian_dashboard.html',

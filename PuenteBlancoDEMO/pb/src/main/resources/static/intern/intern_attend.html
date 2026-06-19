@@ -1,349 +1,423 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Atención Médica - Practicante</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      href="https://res.cloudinary.com/dtqf08fo5/image/upload/f_auto,q_auto/LOGO_CLIFARVET_onqjmj"
+    />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Atención Médica - Practicante</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-   <link rel="icon" href="https://res.cloudinary.com/dtqf08fo5/image/upload/f_auto,q_auto/LOGO_CLIFARVET_onqjmj">
-</head>
-
-<body class="bg-gray-100 min-h-screen flex flex-col">
-
-  <!-- Barra superior -->
-  <header
-    class="h-16 bg-[#0F5E52] text-white px-4 md:px-6 flex justify-between items-center w-full fixed top-0 z-50 shadow-md">
-    <div class="flex items-center gap-4">
-      <button onclick="toggleSidebar()"
-        class="md:hidden text-white focus:outline-none hover:bg-white/10 p-1 rounded-md transition">
-        <i class="fa-solid fa-bars text-xl"></i>
-      </button>
-      <img class="w-12 object-contain"
-        src="https://res.cloudinary.com/dtqf08fo5/image/upload/f_auto,q_auto/LOGO_CLIFARVET_onqjmj"
-        alt="">
-      <h1 class="text-xl md:text-2xl font-bold tracking-tight">CLIFARVET |</h1>
-      <h2 class="font-light text-base hidden sm:inline">Clínica y Veterinaria Puente Blanco</h2>
-    </div>
-
-    <!--Usuario-->
-    <div class="flex items-center gap-2 md:gap-3">
-      <span th:text="'Hola, ' + ${dashboard.fullName}"
-        class="text-base font-light  opacity-90 truncate max-w-[150px] md:max-w-[250px]">Shamira Shantal</span>
-      <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center border border-white overflow-hidden">
-        <img class="w-full h-full object-cover"
-          src="https://i.pinimg.com/1200x/7b/5c/43/7b5c43a2cc8ec0bc71416746a5798a2d.jpg" alt="">
+  <body class="bg-gray-100 min-h-screen flex flex-col">
+    <!-- Barra superior -->
+    <header
+      class="h-16 bg-[#0F5E52] text-white px-4 md:px-6 flex justify-between items-center w-full fixed top-0 z-50 shadow-md"
+    >
+      <div class="flex items-center gap-4">
+        <button
+          onclick="toggleSidebar()"
+          class="md:hidden text-white focus:outline-none hover:bg-white/10 p-1 rounded-md transition"
+        >
+          <i class="fa-solid fa-bars text-xl"></i>
+        </button>
+        <img
+          class="w-12 object-contain"
+          src="https://res.cloudinary.com/dtqf08fo5/image/upload/f_auto,q_auto/LOGO_CLIFARVET_onqjmj"
+          alt=""
+        />
+        <h1 class="text-xl md:text-2xl font-bold tracking-tight">
+          CLIFARVET |
+        </h1>
+        <h2 class="font-light text-base hidden sm:inline">
+          Clínica y Veterinaria Puente Blanco
+        </h2>
       </div>
-    </div>
 
-  </header>
+      <!--Usuario-->
+      <div class="flex items-center gap-2 md:gap-3">
+        <span
+          id="nombre-usuario-header"
+          th:text="'Hola, ' + ${dashboard.fullName}"
+          class="text-base font-light opacity-90 truncate max-w-[150px] md:max-w-[250px]"
+          >Cargando perfil...</span
+        >
+        <div
+          class="w-10 h-10 bg-white rounded-full flex items-center justify-center border border-white overflow-hidden"
+        >
+          <img
+            class="w-full h-full object-cover"
+            src="https://i.pinimg.com/1200x/7b/5c/43/7b5c43a2cc8ec0bc71416746a5798a2d.jpg"
+            alt=""
+          />
+        </div>
+      </div>
+    </header>
 
-  <div class="pt-16">
-    <!-- Sidebar -->
-    <aside id="sidebar"
-      class="fixed top-16 left-0 w-64 h-[calc(100vh-64px)] bg-[#111827] text-gray-300 flex flex-col justify-between z-40 transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
+    <div class="pt-16">
+      <!-- Sidebar -->
+      <aside
+        id="sidebar"
+        class="fixed top-16 left-0 w-64 h-[calc(100vh-64px)] bg-[#111827] text-gray-300 flex flex-col justify-between z-40 transform md:translate-x-0 -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none"
+      >
+        <div class="py-6 flex flex-col px-3 space-y-2">
+          <a
+            href="/intern/intern_dashboard.html"
+            class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all"
+          >
+            <i class="fa-solid fa-table-columns w-5 text-center text-xl"></i>
+            <span class="font-bold">Dashboard</span>
+          </a>
 
-      <div class="py-6 flex flex-col px-3 space-y-2">
+          <a
+            href="/intern/intern_appointments.html"
+            class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all"
+          >
+            <i class="fa-solid fa-calendar-check w-5 text-center text-xl"></i>
+            <span class="font-medium">Citas derivadas</span>
+          </a>
 
-        <a href="/intern/intern_dashboard.html"
-          class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all">
-          <i class="fa-solid fa-table-columns w-5 text-center text-xl"></i>
-          <span class="font-bold">Dashboard</span>
-        </a>
-
-        <a href="/intern/intern_appointments.html"
-          class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all">
-          <i class="fa-solid fa-calendar-check w-5 text-center text-xl"></i>
-          <span class="font-medium">Citas derivadas</span>
-        </a>
-
-        <!--<a href="/intern/intern_attend.html"
+          <!--<a href="/intern/intern_attend.html"
           class="flex items-center gap-3 p-3 rounded-lg text-clifarAccent bg-clifarBase/30 border-l-4 border-clifarAccent transition-all shadow-inner">
           <i class="fa-solid fa-stethoscope w-5 text-center text-xl"></i>
           <span class="font-medium">Atender Cita</span>
         </a>-->
 
-        <a href="/intern/intern_validated.html"
-          class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all">
-          <i class="fa-solid fa-check-double w-5 text-center text-xl"></i>
-          <span class="font-medium">Citas Validadas</span>
-        </a>
-      </div>
-
-      <div class="p-4 border-t border-gray-700/50">
-        <button onclick="logout()"
-          class="w-full flex items-center justify-center gap-2.5 bg-gray-700/60 text-red-400 hover:bg-red-500 hover:text-white px-4 py-3 rounded-xl transition-all duration-200">
-          <i class="fa-solid fa-power-off text-lg"></i>
-          <span class="font-semibold">Cerrar Sesión</span>
-        </button>
-      </div>
-    </aside>
-
-    <!-- Contenido -->
-    <main class="max-w-full md:ml-64 p-4 md:p-8 transition-all duration-300">
-
-      <!-- Información de la Mascota -->
-      <section class="mb-8">
-
-        <!-- título -->
-        <div class="flex items-center gap-4 mb-6">
-          <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center">
-            <i class="fa-solid fa-paw text-blue-600 text-2xl"></i>
-          </div>
-
-          <div>
-            <h2 class="text-2xl font-bold text-gray-800">
-              Información de la Mascota
-            </h2>
-            <p class="text-gray-500">
-              Detalles de la cita asignada
-            </p>
-          </div>
+          <a
+            href="/intern/intern_validated.html"
+            class="sidebar-link flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 hover:text-white transition-all"
+          >
+            <i class="fa-solid fa-check-double w-5 text-center text-xl"></i>
+            <span class="font-medium">Citas Validadas</span>
+          </a>
         </div>
 
-        <!-- card -->
-        <div id="infoPaciente" class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
-
-          <!-- mensaje vacío -->
-          <div id="mensajeNoCita" class="hidden flex flex-col items-center justify-center py-14 text-gray-400">
-
-            <div class="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-4">
-              <i class="fa-solid fa-calendar-xmark text-4xl text-blue-400"></i>
-            </div>
-
-            <p class="text-lg font-semibold">
-              No hay citas derivadas pendientes
-            </p>
-
-            <span class="text-sm">
-              Cuando llegue una nueva cita aparecerá aquí
-            </span>
-          </div>
-
-          <!-- datos -->
-          <div id="datosCita" class="hidden grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-
-            <div class="bg-gray-50 rounded-xl p-4">
-              <p class="text-sm text-gray-500">Cliente</p>
-              <span id="clienteNombre" class="font-bold text-gray-800"></span>
-            </div>
-
-            <div class="bg-gray-50 rounded-xl p-4">
-              <p class="text-sm text-gray-500">Veterinario</p>
-              <span id="VeterinarioACargo" class="font-bold text-gray-800"></span>
-            </div>
-
-            <div class="bg-blue-50 rounded-xl p-4">
-              <p class="text-sm text-blue-500">Mascota</p>
-              <span id="nombreMascota" class="font-bold text-blue-700"></span>
-            </div>
-
-            <div class="bg-gray-50 rounded-xl p-4">
-              <p class="text-sm text-gray-500">Tipo</p>
-              <span id="tipoMascota" class="font-bold text-gray-800"></span>
-            </div>
-
-            <div class="bg-gray-50 rounded-xl p-4">
-              <p class="text-sm text-gray-500">Raza</p>
-              <span id="razaMascota" class="font-bold text-gray-800"></span>
-            </div>
-
-            <div class="bg-gray-50 rounded-xl p-4">
-              <p class="text-sm text-gray-500">Edad</p>
-              <span id="edadMascota" class="font-bold text-gray-800"></span>
-            </div>
-
-            <div class="bg-emerald-50 rounded-xl p-4">
-              <p class="text-sm text-emerald-500">Servicio</p>
-              <span id="servicio" class="font-bold text-emerald-700"></span>
-            </div>
-
-            <div class="bg-yellow-50 rounded-xl p-4">
-              <p class="text-sm text-yellow-500">Fecha</p>
-              <span id="fecha" class="font-bold text-yellow-700"></span>
-            </div>
-
-            <div class="bg-purple-50 rounded-xl p-4">
-              <p class="text-sm text-purple-500">Hora</p>
-              <span id="hora" class="font-bold text-purple-700"></span>
-            </div>
-
-          </div>
-
+        <div class="p-4 border-t border-gray-700/50">
+          <button
+            onclick="logout()"
+            class="w-full flex items-center justify-center gap-2.5 bg-gray-700/60 text-red-400 hover:bg-red-500 hover:text-white px-4 py-3 rounded-xl transition-all duration-200"
+          >
+            <i class="fa-solid fa-power-off text-lg"></i>
+            <span class="font-semibold">Cerrar Sesión</span>
+          </button>
         </div>
+      </aside>
 
-      </section>
-      <!-- Registrar Atención Médica -->
-      <section class="mt-12">
+      <!-- Contenido -->
+      <main class="max-w-full md:ml-64 p-4 md:p-8 transition-all duration-300">
+        <!-- Información de la Mascota -->
+        <section class="mb-8">
+          <!-- título -->
+          <div class="flex items-center gap-4 mb-6">
+            <div
+              class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center"
+            >
+              <i class="fa-solid fa-paw text-blue-600 text-2xl"></i>
+            </div>
 
-        <!-- Encabezado -->
-        <div class="flex items-center gap-4 mb-8">
+            <div>
+              <h2 class="text-2xl font-bold text-gray-800">
+                Información de la Mascota
+              </h2>
+              <p class="text-gray-500">Detalles de la cita asignada</p>
+            </div>
+          </div>
+
+          <!-- card -->
           <div
-            class="w-16 h-16 bg-gradient-to-br from-blue-100 to-teal-100 rounded-full flex items-center justify-center shadow-sm">
-            <i class="fa-solid fa-notes-medical text-blue-600 text-2xl"></i>
-          </div>
+            id="infoPaciente"
+            class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8"
+          >
+            <!-- mensaje vacío -->
+            <div
+              id="mensajeNoCita"
+              class="hidden flex flex-col items-center justify-center py-14 text-gray-400"
+            >
+              <div
+                class="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-4"
+              >
+                <i
+                  class="fa-solid fa-calendar-xmark text-4xl text-blue-400"
+                ></i>
+              </div>
 
-          <div>
-            <h2 class="text-2xl font-bold text-gray-800">
-              Registrar Atención Médica
-            </h2>
-            <p class="text-gray-500">
-              Completa la evaluación clínica del paciente
-            </p>
-          </div>
-        </div>
+              <p class="text-lg font-semibold">
+                No hay citas derivadas pendientes
+              </p>
 
-        <!-- Formulario -->
-        <form id="attendForm" class="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 md:p-10">
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-            <!-- Observaciones -->
-            <div>
-              <label class="block text-lg font-semibold text-gray-700 mb-3">
-                Observaciones Clínicas
-              </label>
-              <textarea id="observacionesClinicas" rows="5" placeholder="Describe hallazgos clínicos relevantes..."
-                class="w-full border border-gray-200 rounded-2xl px-5 py-4 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none resize-none transition-all"></textarea>
+              <span class="text-sm">
+                Cuando llegue una nueva cita aparecerá aquí
+              </span>
             </div>
 
-            <!-- Diagnóstico -->
-            <div>
-              <label class="block text-lg font-semibold text-gray-700 mb-3">
-                Diagnóstico
-              </label>
-              <textarea id="diagnostico" rows="5" placeholder="Diagnóstico preliminar o definitivo..."
-                class="w-full border border-gray-200 rounded-2xl px-5 py-4 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none resize-none transition-all"></textarea>
+            <!-- datos -->
+            <div
+              id="datosCita"
+              class="hidden grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"
+            >
+              <div class="bg-gray-50 rounded-xl p-4">
+                <p class="text-sm text-gray-500">Cliente</p>
+                <span id="clienteNombre" class="font-bold text-gray-800"></span>
+              </div>
+
+              <div class="bg-gray-50 rounded-xl p-4">
+                <p class="text-sm text-gray-500">Veterinario</p>
+                <span
+                  id="VeterinarioACargo"
+                  class="font-bold text-gray-800"
+                ></span>
+              </div>
+
+              <div class="bg-blue-50 rounded-xl p-4">
+                <p class="text-sm text-blue-500">Mascota</p>
+                <span id="nombreMascota" class="font-bold text-blue-700"></span>
+              </div>
+
+              <div class="bg-gray-50 rounded-xl p-4">
+                <p class="text-sm text-gray-500">Tipo</p>
+                <span id="tipoMascota" class="font-bold text-gray-800"></span>
+              </div>
+
+              <div class="bg-gray-50 rounded-xl p-4">
+                <p class="text-sm text-gray-500">Raza</p>
+                <span id="razaMascota" class="font-bold text-gray-800"></span>
+              </div>
+
+              <div class="bg-gray-50 rounded-xl p-4">
+                <p class="text-sm text-gray-500">Edad</p>
+                <span id="edadMascota" class="font-bold text-gray-800"></span>
+              </div>
+
+              <div class="bg-emerald-50 rounded-xl p-4">
+                <p class="text-sm text-emerald-500">Servicio</p>
+                <span id="servicio" class="font-bold text-emerald-700"></span>
+              </div>
+
+              <div class="bg-yellow-50 rounded-xl p-4">
+                <p class="text-sm text-yellow-500">Fecha</p>
+                <span id="fecha" class="font-bold text-yellow-700"></span>
+              </div>
+
+              <div class="bg-purple-50 rounded-xl p-4">
+                <p class="text-sm text-purple-500">Hora</p>
+                <span id="hora" class="font-bold text-purple-700"></span>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Registrar Atención Médica -->
+        <section class="mt-12">
+          <!-- Encabezado -->
+          <div class="flex items-center gap-4 mb-8">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-blue-100 to-teal-100 rounded-full flex items-center justify-center shadow-sm"
+            >
+              <i class="fa-solid fa-notes-medical text-blue-600 text-2xl"></i>
             </div>
 
-            <!-- Tratamiento -->
             <div>
-              <label class="block text-lg font-semibold text-gray-700 mb-3">
-                Tratamiento
-              </label>
-              <textarea id="tratamiento" rows="5" placeholder="Indica tratamiento aplicado..."
-                class="w-full border border-gray-200 rounded-2xl px-5 py-4 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none resize-none transition-all"></textarea>
+              <h2 class="text-2xl font-bold text-gray-800">
+                Registrar Atención Médica
+              </h2>
+              <p class="text-gray-500">
+                Completa la evaluación clínica del paciente
+              </p>
             </div>
-
-            <!-- Prescripción -->
-            <div>
-              <label class="block text-lg font-semibold text-gray-700 mb-3">
-                Prescripción
-              </label>
-              <textarea id="prescripcion" rows="5" placeholder="Medicamentos y recomendaciones..."
-                class="w-full border border-gray-200 rounded-2xl px-5 py-4 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none resize-none transition-all"></textarea>
-            </div>
-
           </div>
 
-          <!-- Botón -->
-          <div class="mt-10 pt-6 border-t border-gray-100 flex justify-end">
-            <button type="submit"
-              class="bg-teal-600  hover:scale-105 hover:shadow-xl text-white px-8 py-4 rounded-2xl font-semibold flex items-center gap-3 transition-all duration-300">
+          <!-- Formulario -->
+          <form
+            id="attendForm"
+            class="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 md:p-10"
+          >
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <!-- Observaciones -->
+              <div>
+                <label class="block text-lg font-semibold text-gray-700 mb-3">
+                  Observaciones Clínicas
+                </label>
+                <textarea
+                  id="observacionesClinicas"
+                  rows="5"
+                  placeholder="Describe hallazgos clínicos relevantes..."
+                  class="w-full border border-gray-200 rounded-2xl px-5 py-4 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none resize-none transition-all"
+                ></textarea>
+              </div>
 
-              <i class="fa-solid fa-paper-plane"></i>
-              Solicitar Evaluación
+              <!-- Diagnóstico -->
+              <div>
+                <label class="block text-lg font-semibold text-gray-700 mb-3">
+                  Diagnóstico
+                </label>
+                <textarea
+                  id="diagnostico"
+                  rows="5"
+                  placeholder="Diagnóstico preliminar o definitivo..."
+                  class="w-full border border-gray-200 rounded-2xl px-5 py-4 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none resize-none transition-all"
+                ></textarea>
+              </div>
 
-            </button>
-          </div>
+              <!-- Tratamiento -->
+              <div>
+                <label class="block text-lg font-semibold text-gray-700 mb-3">
+                  Tratamiento
+                </label>
+                <textarea
+                  id="tratamiento"
+                  rows="5"
+                  placeholder="Indica tratamiento aplicado..."
+                  class="w-full border border-gray-200 rounded-2xl px-5 py-4 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none resize-none transition-all"
+                ></textarea>
+              </div>
 
-        </form>
+              <!-- Prescripción -->
+              <div>
+                <label class="block text-lg font-semibold text-gray-700 mb-3">
+                  Prescripción
+                </label>
+                <textarea
+                  id="prescripcion"
+                  rows="5"
+                  placeholder="Medicamentos y recomendaciones..."
+                  class="w-full border border-gray-200 rounded-2xl px-5 py-4 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-400 outline-none resize-none transition-all"
+                ></textarea>
+              </div>
+            </div>
 
-      </section>
+            <!-- Botón -->
+            <div class="mt-10 pt-6 border-t border-gray-100 flex justify-end">
+              <button
+                type="submit"
+                class="bg-teal-600 hover:scale-105 hover:shadow-xl text-white px-8 py-4 rounded-2xl font-semibold flex items-center gap-3 transition-all duration-300"
+              >
+                <i class="fa-solid fa-paper-plane"></i>
+                Solicitar Evaluación
+              </button>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
 
-    </main>
+    <script>
+      const DateTime = luxon.DateTime;
+      let citaId = null;
 
-  </div>
+      document.addEventListener("DOMContentLoaded", () => {
+        cargarPerfil(); // <--- AGREGAR nombre usuario logeado
+        const today = DateTime.now().toISODate();
 
-  <script>
-    const DateTime = luxon.DateTime;
-    let citaId = null;
+        fetch(`/api/intern/appointments`, {
+          credentials: "include",
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (!data || data.length === 0) {
+              document
+                .getElementById("mensajeNoCita")
+                .classList.remove("hidden");
+              return;
+            }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const today = DateTime.now().toISODate();
+            const cita = data[0]; // Selecciona la primera cita derivada
+            citaId = cita.citaId;
 
-      fetch(`/api/intern/appointments`, {
-        credentials: 'include'
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (!data || data.length === 0) {
+            const traduccionesTipo = {
+              Dog: "Perro",
+              Cat: "Gato",
+              Bird: "Ave",
+              Rabbit: "Conejo",
+              Other: "Otro",
+            };
+
+            const tipoTraducido =
+              traduccionesTipo[cita.tipoMascota] || cita.tipoMascota || "---";
+
+            document.getElementById("clienteNombre").textContent =
+              cita.nombreCliente ?? "---";
+            document.getElementById("VeterinarioACargo").textContent =
+              cita.veterinarioACargo ?? "---";
+            document.getElementById("nombreMascota").textContent =
+              cita.nombreMascota;
+            document.getElementById("tipoMascota").textContent = tipoTraducido;
+            document.getElementById("razaMascota").textContent =
+              cita.razaMascota ?? "---";
+            document.getElementById("edadMascota").textContent =
+              cita.edadMascota ? cita.edadMascota + " años" : "---";
+            document.getElementById("servicio").textContent = cita.servicio;
+            document.getElementById("fecha").textContent = cita.fecha;
+            document.getElementById("hora").textContent = cita.hora;
+
+            document.getElementById("datosCita").classList.remove("hidden");
+            document.getElementById("attendForm").classList.remove("hidden");
+          })
+          .catch((err) => {
+            console.error("Error al obtener la cita derivada:", err);
+            document.getElementById("mensajeNoCita").textContent =
+              "Error al cargar la cita derivada.";
             document.getElementById("mensajeNoCita").classList.remove("hidden");
+          });
+      });
+
+      document
+        .getElementById("attendForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          if (!citaId) {
+            alert("No se puede registrar atención sin cita válida.");
             return;
           }
 
-          const cita = data[0]; // Selecciona la primera cita derivada
-          citaId = cita.citaId;
-
-          const traduccionesTipo = {
-            "Dog": "Perro",
-            "Cat": "Gato",
-            "Bird": "Ave",
-            "Rabbit": "Conejo",
-            "Other": "Otro"
+          const dto = {
+            observacionesClinicas: document.getElementById(
+              "observacionesClinicas",
+            ).value,
+            diagnostico: document.getElementById("diagnostico").value,
+            tratamiento: document.getElementById("tratamiento").value,
+            prescripcion: document.getElementById("prescripcion").value,
           };
 
-          const tipoTraducido = traduccionesTipo[cita.tipoMascota] || cita.tipoMascota || "---";
-
-          document.getElementById("clienteNombre").textContent = cita.nombreCliente ?? "---";
-          document.getElementById("VeterinarioACargo").textContent = cita.veterinarioACargo ?? "---";
-          document.getElementById("nombreMascota").textContent = cita.nombreMascota;
-          document.getElementById("tipoMascota").textContent = tipoTraducido;
-          document.getElementById("razaMascota").textContent = cita.razaMascota ?? "---";
-          document.getElementById("edadMascota").textContent = cita.edadMascota ? cita.edadMascota + " años" : "---";
-          document.getElementById("servicio").textContent = cita.servicio;
-          document.getElementById("fecha").textContent = cita.fecha;
-          document.getElementById("hora").textContent = cita.hora;
-
-          document.getElementById("datosCita").classList.remove("hidden");
-          document.getElementById("attendForm").classList.remove("hidden");
-        })
-        .catch(err => {
-          console.error("Error al obtener la cita derivada:", err);
-          document.getElementById("mensajeNoCita").textContent = "Error al cargar la cita derivada.";
-          document.getElementById("mensajeNoCita").classList.remove("hidden");
+          fetch(`/api/intern/appointments/${citaId}/attend`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify(dto),
+          }).then((res) => {
+            if (res.ok) {
+              alert("Evaluación médica registrada correctamente.");
+              window.location.href = "/intern/intern_dashboard.html";
+            } else {
+              alert("Error al guardar la evaluación.");
+            }
+          });
         });
-    });
 
-    document.getElementById("attendForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      if (!citaId) {
-        alert("No se puede registrar atención sin cita válida.");
-        return;
+      function logout() {
+        document.cookie =
+          "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+        window.location.href = "/";
       }
 
-      const dto = {
-        observacionesClinicas: document.getElementById("observacionesClinicas").value,
-        diagnostico: document.getElementById("diagnostico").value,
-        tratamiento: document.getElementById("tratamiento").value,
-        prescripcion: document.getElementById("prescripcion").value
-      };
+      // Nueva función para obtener el nombre del usuario logueado
+      function cargarPerfil() {
+        const nombreGuardado = localStorage.getItem("nombreInternoGuardado");
+        const spanNombre = document.getElementById("nombre-usuario-header");
 
-      fetch(`/api/intern/appointments/${citaId}/attend`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: 'include',
-        body: JSON.stringify(dto)
-      })
-        .then(res => {
-          if (res.ok) {
-            alert("Evaluación médica registrada correctamente.");
-            window.location.href = "/intern/intern_dashboard.html";
-          } else {
-            alert("Error al guardar la evaluación.");
-          }
-        });
-    });
-
-    function logout() {
-      document.cookie = "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-      window.location.href = "/";
-    }
-  </script>
-</body>
-
+        if (spanNombre) {
+          spanNombre.textContent = nombreGuardado
+            ? "Hola, " + nombreGuardado
+            : "Hola, Practicante";
+        }
+      }
+    </script>
+  </body>
 </html>
