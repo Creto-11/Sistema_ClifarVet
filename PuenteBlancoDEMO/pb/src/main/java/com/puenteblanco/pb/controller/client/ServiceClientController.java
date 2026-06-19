@@ -10,7 +10,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/client/services")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*") //MODIFICACIÓN POR CRETO: Habilita flutter
 public class ServiceClientController {
 
     private final ServiceClientService serviceClientService;

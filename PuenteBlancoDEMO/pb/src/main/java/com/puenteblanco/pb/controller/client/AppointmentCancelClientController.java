@@ -12,7 +12,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/client/reschedule-appointments")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*") //MODIFICACIÓN POR CRETO: Habilita flutter
 public class AppointmentCancelClientController {
 
     private final AppointmentCancelClientService appointmentCancelClientService;
