@@ -28,9 +28,8 @@
 
     <!--Usuario-->
     <div class="flex items-center gap-2 md:gap-3">
-      <span th:text="'Hola, ' + ${dashboard.fullName}"
-        class="text-base font-light  opacity-90 truncate max-w-[150px] md:max-w-[250px]">Shamira Shantal</span>
-      <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center border border-white overflow-hidden">
+      <span id="nombre-usuario-header" th:text="'Hola, ' + ${dashboard.fullName}"
+        class="text-base font-light  opacity-90 truncate max-w-[150px] md:max-w-[250px]">Cargando perfil...</span>
         <img class="w-full h-full object-cover"
           src="https://i.pinimg.com/1200x/7b/5c/43/7b5c43a2cc8ec0bc71416746a5798a2d.jpg" alt="">
       </div>
@@ -119,8 +118,22 @@
       window.location.href = "/";
     }
 
+    // CAMBIO AQUÍ: Nueva función insertada para actualizar el nombre dinámicamente
+    function cargarPerfil() {
+      const nombreGuardado = localStorage.getItem("nombreInternoGuardado");
+      const spanNombre = document.getElementById("nombre-usuario-header");
+
+      if (spanNombre) {
+        spanNombre.textContent = nombreGuardado
+          ? "Hola, " + nombreGuardado
+          : "Hola, Practicante";
+      }
+    }
+
     //-----
     document.addEventListener("DOMContentLoaded", () => {
+      cargarPerfil();
+
       const tbody = document.getElementById("tablaCitasValidadas");
       const filtroTexto = document.getElementById("filtroTexto");
       const filtroDesde = document.getElementById("filtroDesde");
