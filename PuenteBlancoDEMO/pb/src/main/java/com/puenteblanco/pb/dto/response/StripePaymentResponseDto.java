@@ -8,4 +8,5 @@ import lombok.Data;
 public class StripePaymentResponseDto {
     private String paymentIntentId;
     private String status;
+    private String clientSecret; // agregado por CRETO para Flutter por seguridad
 }
