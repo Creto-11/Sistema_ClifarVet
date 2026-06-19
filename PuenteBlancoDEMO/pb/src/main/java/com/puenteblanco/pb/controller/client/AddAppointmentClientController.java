@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/client/appointments")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*") //MODIFICACIÓN POR CRETO: Habilita flutter
 public class AddAppointmentClientController {
 
     private final AppointmentClientService appointmentClientService;
