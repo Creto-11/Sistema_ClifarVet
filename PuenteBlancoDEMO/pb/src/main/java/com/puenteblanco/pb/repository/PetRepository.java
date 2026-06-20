@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface PetRepository extends JpaRepository<Pet, Long> {
     boolean existsByPetId(String petId);
-    Optional<Pet> findTopByOrderByPetIdDesc(); // Para obtener el último petId registrado
+    Optional<Pet> findTopByPetIdStartingWithOrderByPetIdDesc(String prefix); // Para obtener el último petId registrado que empiece con PET-
     List<Pet> findByOwnerEmail(String email);
     List<Pet> findByOwnerEmailAndEstado(String email, Integer estado);
     void deleteById(Long Id);
