@@ -25,7 +25,7 @@ public class PetService {
     }
 
     private String generateNextPetId() {
-        Optional<Pet> lastPet = petRepository.findTopByOrderByPetIdDesc();
+        Optional<Pet> lastPet = petRepository.findTopByPetIdStartingWithOrderByPetIdDesc("PET-");
         int nextNumber = 1;
 
         if (lastPet.isPresent()) {
