@@ -60,6 +60,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                     "/api/auth/**",
                     "/api/reniec/**",
                     "/api/recovery/**",
+                    "/api/password/**",
                     "/vet/veterinarian_dashboard.html",
                     "/.well-known/**"
                 ).permitAll()
