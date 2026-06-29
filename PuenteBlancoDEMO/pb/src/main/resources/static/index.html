@@ -1188,21 +1188,41 @@ tipoDocSelect.addEventListener('change', () => {
   }
 
   // Autocompleta olvido de contraseña
-  function openForgotPassword() {
-    const correoGuardado = localStorage.getItem('correoCliente');
-    const correoInput = document.getElementById('forgotCorreo');
-    const info = document.getElementById('forgot-info');
+    function openForgotPassword() {
+      // Verificar si existe un código aún vigente
+      const expiration = Number(localStorage.getItem("recoveryExpiration"));
+      if (expiration && expiration > Date.now()) {
 
-    if(correoInput) {
-      correoInput.value = correoGuardado || '';
-      correoInput.readOnly = false;
-    }
-    if(info) {
-      info.textContent = correoGuardado
-        ? "Correo autocompletado del último inicio de sesión exitoso. Puedes modificarlo si lo necesitas."
-        : "";
-    }
-    toggleForgotPassword();
+          // Si el formulario de correo está abierto, cerrarlo
+          const forgotModal = document.getElementById("forgot-password-modal");
+          if (!forgotModal.classList.contains("hidden")) {
+              toggleForgotPassword();
+          }
+
+          // Abrir solo si el formulario de cambio aún no está abierto
+          const resetModal = document.getElementById("reset-password-modal");
+          if (resetModal.classList.contains("hidden")) {
+              toggleResetPassword();
+          }
+
+          iniciarCuentaRegresiva();
+
+          return;
+      }
+      // Si no existe código vigente, mostrar el formulario para solicitar correo
+      const correoGuardado = localStorage.getItem('correoCliente');
+      const correoInput = document.getElementById('forgotCorreo');
+      const info = document.getElementById('forgot-info');
+      if (correoInput) {
+          correoInput.value = correoGuardado || '';
+          correoInput.readOnly = false;
+      }
+      if (info) {
+          info.textContent = correoGuardado
+              ? "Correo autocompletado del último inicio de sesión exitoso. Puedes modificarlo si lo necesitas."
+              : "";
+      }
+      toggleForgotPassword();
   }
 
  // Mostrar / ocultar contraseña del primer campo (Único Ojo Activo)
@@ -1284,6 +1304,7 @@ tipoDocSelect.addEventListener('change', () => {
       window.location.href = '/';
     }
 
+    let recoveryTimer = null;
     // Enviar código de recuperación
     document.getElementById('forgotPasswordForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -1306,11 +1327,22 @@ tipoDocSelect.addEventListener('change', () => {
         });
         const msg = await res.text();
         if (res.ok) {
+
+          // Guarda el correo
+          localStorage.setItem("correoRecuperacion", correo);
+
+          // Guarda la fecha exacta en la que vencerá el código
+          const expiration = Date.now() + (5 * 60 * 1000);
+          localStorage.setItem("recoveryExpiration", expiration);
+
           showNotification("Código enviado correctamente.", 'success');
+          document.getElementById("codigo-expira-msg").innerHTML =
+              'El código expira en <span id="countdown">05:00</span>';
           toggleForgotPassword();
           toggleResetPassword();
-          iniciarCuentaRegresiva(5); // inicia 5 minutos
-        } else {
+
+          iniciarCuentaRegresiva();
+        }else {
           showNotification(msg, 'error');
         }
       } catch (err) {
@@ -1323,24 +1355,36 @@ tipoDocSelect.addEventListener('change', () => {
       }
     });
 
-    function iniciarCuentaRegresiva(minutos) {
+    
+    function iniciarCuentaRegresiva() {
       const countdownEl = document.getElementById('countdown');
       const msgEl = document.getElementById('codigo-expira-msg');
-      let tiempoRestante = minutos * 60;
       msgEl.classList.remove('hidden');
+      const expiration = Number(localStorage.getItem("recoveryExpiration"));
+      // Si ya existe un contador, lo detenemos
+      if (recoveryTimer) {
+          clearInterval(recoveryTimer);
+      }
+        recoveryTimer = setInterval(() => {
+          const restante = Math.floor((expiration - Date.now()) / 1000);
+          if (restante <= 0) {
+              clearInterval(recoveryTimer);
+              recoveryTimer = null;
 
-      const timer = setInterval(() => {
-        const mins = String(Math.floor(tiempoRestante / 60)).padStart(2, '0');
-        const secs = String(tiempoRestante % 60).padStart(2, '0');
-        countdownEl.textContent = `${mins}:${secs}`;
-        tiempoRestante--;
+              // Limpiar toda la recuperación
+              localStorage.removeItem("recoveryExpiration");
+              localStorage.removeItem("correoRecuperacion");
 
-        if (tiempoRestante < 0) {
-          clearInterval(timer);
-          msgEl.innerHTML = "<span class='text-red-600'>El código ha expirado. Solicita uno nuevo.</span>";
-        }
+              msgEl.innerHTML =
+                  "<span class='text-red-600'>El código ha expirado. Solicita uno nuevo.</span>";
+
+              return;
+          }
+          const mins = String(Math.floor(restante / 60)).padStart(2, '0');
+          const secs = String(restante % 60).padStart(2, '0');
+          countdownEl.textContent = `${mins}:${secs}`;
       }, 1000);
-    }
+  }
 
 
 // Diccionario de roles para mostrar nombres amigables
@@ -1493,7 +1537,7 @@ tipoDocSelect.addEventListener('change', () => {
     // Cambiar contraseña
     document.getElementById('resetPasswordForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const correo = document.getElementById('forgotCorreo').value.trim();
+      const correo = localStorage.getItem("correoRecuperacion");
       const codigo = document.getElementById('codigoRecuperacion').value.trim();
       const nuevaContrasena = document.getElementById('nuevaContrasena').value;
 
@@ -1505,11 +1549,18 @@ tipoDocSelect.addEventListener('change', () => {
         });
         const msg = await res.text();
         if (res.ok) {
-          showNotification("Contraseña actualizada. Inicia sesión.", 'success');
-          toggleResetPassword();
-          toggleLogin();
-          document.querySelector('#login-modal input[name="correo"]').value = correo;
-          document.querySelector('#login-modal input[name="contrasena"]').value = '';
+            // Limpiar recuperación
+            localStorage.removeItem("correoRecuperacion");
+            localStorage.removeItem("recoveryExpiration");
+
+            showNotification("Contraseña actualizada. Inicia sesión.", 'success');
+
+            toggleResetPassword();
+            toggleLogin();
+
+            document.querySelector('#login-modal input[name="correo"]').value = correo;
+            document.querySelector('#login-modal input[name="contrasena"]').value = '';
+
         }
         else {
           showNotification(msg, 'error');
