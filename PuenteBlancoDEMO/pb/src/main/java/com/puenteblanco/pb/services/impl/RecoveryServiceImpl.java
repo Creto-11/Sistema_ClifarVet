@@ -32,6 +32,12 @@ public class RecoveryServiceImpl implements RecoveryService {
         // Se quitó "User user =" porque no se utilizaba (limpia el aviso amarillo)
         userRepository.findClientByCorreo(correo)
                 .orElseThrow(() -> new RuntimeException("El correo no pertenece a ningún cliente registrado"));
+        // Invalidar todos los códigos anteriores
+        tokenRepository.findByCorreoAndUsadoFalse(correo)
+                .forEach(token -> {
+                    token.setUsado(true);
+                    tokenRepository.save(token);
+                });
 
         String codigo = generarCodigo();
         RecoveryToken token = RecoveryToken.builder()
