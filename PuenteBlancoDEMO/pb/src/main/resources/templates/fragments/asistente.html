@@ -180,25 +180,24 @@
                 container.scrollTop = container.scrollHeight;
 
                 // 3. Respuesta simulada y reactivación de botones
-                setTimeout(() => {
+                // 3. Respuesta real con IA
+                fetch('/api/ai/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: texto })
+                })
+                .then(response => response.json())
+                .then(data => {
                     const typingIndicator = document.getElementById(typoId);
                     if (typingIndicator) typingIndicator.remove();
 
-                    let respuestaBot = "Entiendo tu consulta. Muy pronto mi sistema de IA estará conectado para darte un diagnóstico exacto de salud. 🐾";
-
-                    if (texto.includes('Emergencia')) {
-                        respuestaBot = "🚨 <strong>¡ALERTA DE EMERGENCIA ACTIVADA!</strong> Comunícate de inmediato al <b>+51 999 999 999</b> o acércate a la clínica ahora mismo.";
-                    } else if (texto.includes('Horarios')) {
-                        respuestaBot = "📅 Atendemos de Lunes a Sábado de 8:00 AM a 8:00 PM. Domingos solo emergencias.";
-                    } else if (texto.includes('Ubicación')) {
-                        respuestaBot = "📍 Estamos en la Av. Principal 123 (frente al parque de las mascotas).";
-                    } else if (texto.includes('Vacunas')) {
-                        respuestaBot = "💉 El calendario base requiere vacunas a las 6, 9 y 12 semanas de edad. ¿Qué edad tiene tu mascota?";
-                    } else if (texto.includes('Prohibidos')) {
-                        respuestaBot = "🍏 ¡Cuidado! Evita darles cebolla, ajo, chocolate, pasas o uvas, ya que son altamente tóxicos.";
-                    } else if (texto.includes('enferma')) {
-                        respuestaBot = "🤒 Si presenta vómitos, diarrea o letargia prolongada, por favor agenda una consulta médica inmediata.";
-                    }
+                    // Formatear markdown básico si devuelve negritas
+                    let respuestaBot = data.response || "No recibí respuesta de la IA.";
+                    respuestaBot = respuestaBot.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    respuestaBot = respuestaBot.replace(/\*(.*?)\*/g, '<em>$1</em>');
+                    respuestaBot = respuestaBot.replace(/\n/g, '<br>');
 
                     // Renderizar respuesta
                     container.innerHTML += `
@@ -216,7 +215,25 @@
                     // NUEVO: Volver a activar y mostrar los botones para la siguiente pregunta
                     pintarBotonesSugerencia();
 
-                }, 1000);
+                })
+                .catch(error => {
+                    console.error("Error AI:", error);
+                    const typingIndicator = document.getElementById(typoId);
+                    if (typingIndicator) typingIndicator.remove();
+                    
+                    container.innerHTML += `
+                        <div class="flex items-start gap-2.5 max-w-[85%]">
+                            <div class="w-8 h-8 rounded-full overflow-hidden shrink-0 border-2 border-red-700 shadow-sm">
+                                <img src="/img/robot-medico.png" onerror="this.src='https://placehold.co/100x100?text=Bot'" class="w-full h-full object-cover">
+                            </div>
+                            <div class="bg-red-50 p-3 rounded-xl rounded-tl-none shadow-sm border border-red-200">
+                                <p class="text-xs text-red-800 leading-relaxed">Hubo un error de conexión con la IA. Por favor intenta de nuevo.</p>
+                            </div>
+                        </div>
+                    `;
+                    container.scrollTop = container.scrollHeight;
+                    pintarBotonesSugerencia();
+                });
             }
         </script>
     </div>

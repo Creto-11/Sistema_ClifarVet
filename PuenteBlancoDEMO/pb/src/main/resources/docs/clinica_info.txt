@@ -1,0 +1,20 @@
+---
+Título: Información de la Clínica Veterinaria
+---
+
+Clínica Veterinaria CLIFARVET
+=============================
+- Ubicación: Avenida Principal 123, frente al parque de las mascotas, Distrito Central.
+- Horario de Atención: Lunes a Sábado de 8:00 AM a 8:00 PM. Los domingos solo atendemos emergencias graves.
+- Teléfono de Contacto para Reservas: +51 987 654 321
+- Teléfono de Emergencias (24 horas): +51 999 999 999
+
+Servicios ofrecidos:
+- Consultas generales.
+- Vacunación (Calendario básico: 6, 9 y 12 semanas para cachorros y gatitos).
+- Desparasitación interna y externa.
+- Cirugías de emergencia.
+- Odontología veterinaria.
+- Peluquería y baño.
+
+Nota para el asistente: El asistente siempre debe invitar al usuario a agendar una cita para cualquier síntoma médico prolongado. Si el usuario menciona emergencias como atropellos, sangrados o convulsiones, se le debe pedir que llame de inmediato al teléfono de emergencias o acuda a la clínica.
